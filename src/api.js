@@ -231,6 +231,11 @@ export function cancelBooking(bookingId) {
   return request(`/client/bookings/${bookingId}/cancel`, { method: 'POST', auth: true });
 }
 
+/** Removes a past booking from the client's history (soft delete server-side). */
+export function deleteBookingRecord(bookingId) {
+  return request(`/client/bookings/${bookingId}`, { method: 'DELETE', auth: true });
+}
+
 /** Renter's pickup/return handover codes for a booking. */
 export function getHandoverCodes(bookingId) {
   return request(`/client/bookings/${bookingId}/handover`, { auth: true });

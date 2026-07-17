@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import * as api from '../api.js';
+import logoMark from '../assets/logo.png';
 import { SendIcon, ChatIcon, MailIcon, PhoneIcon, ShieldIcon } from '../icons.jsx';
 
 // Real client↔host chat plus the Ardena support conversation — same threads
@@ -60,7 +61,7 @@ function HostAvatar({ thread, size = 40, fontSize }) {
         className="avatar support-avatar"
         style={{ width: size, height: size, fontSize: fontSize || Math.round(size * 0.4) }}
       >
-        <ShieldIcon size={Math.round(size * 0.48)} />
+        <img src={logoMark} alt="Ardena" />
       </span>
     );
   }
