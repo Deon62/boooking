@@ -284,6 +284,25 @@ export function reportListing(carId, reason, details) {
   });
 }
 
+// ---------- notifications (auth) ----------
+
+export function getNotifications() {
+  return request('/client/notifications', { auth: true });
+}
+
+export function markNotificationRead(id) {
+  return request(`/client/notifications/${id}/read`, { method: 'PUT', auth: true });
+}
+
+/** Both toggles return the updated client profile. */
+export function setEmailNotifications(enabled) {
+  return request('/client/notifications/email', { method: 'POST', body: { enabled }, auth: true });
+}
+
+export function setInAppNotifications(enabled) {
+  return request('/client/notifications/in-app', { method: 'POST', body: { enabled }, auth: true });
+}
+
 // ---------- identity / driver's licence verification (Dojah KYC, auth) ----------
 
 /** Step 1 (optional): government ID lookup — verifies the ID and prefills the profile. */
@@ -335,6 +354,16 @@ export function sendMessageToHost(hostId, message) {
     body: { message },
     auth: true,
   });
+}
+
+// ---------- customer support chat (auth) ----------
+
+export function getSupportConversation() {
+  return request('/client/support/conversation', { auth: true });
+}
+
+export function sendSupportMessage(message) {
+  return request('/client/support/messages', { method: 'POST', body: { message }, auth: true });
 }
 
 // ---------- payment methods + payments (auth) ----------

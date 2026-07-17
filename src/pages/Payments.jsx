@@ -7,19 +7,27 @@ import { ShieldIcon } from '../icons.jsx';
 function formatMpesaNumber(raw) {
   const d = String(raw || '').replace(/\D/g, '');
   if (d.length >= 12) return `+${d.slice(0, 3)} ${d.slice(3, 6)} ${d.slice(6, 9)} ${d.slice(9)}`;
+  if (d.length === 10) return `${d.slice(0, 4)} ${d.slice(4, 7)} ${d.slice(7)}`;
   return raw || '';
 }
 
-/** A saved method rendered as a real-looking debit card. */
+/** A saved method rendered as a clean white debit card. */
 function DebitCard({ m }) {
   const isMpesa = m.method_type === 'mpesa';
   const brand = (m.card_type || '').toLowerCase();
-  const skin = isMpesa ? 'mpesa' : brand === 'visa' ? 'visa' : 'dark';
 
   return (
-    <div className={`debit-card ${skin}`}>
+    <div className="debit-card">
       <div className="dc-top">
-        <span className="dc-chip" />
+        <span className="dc-brand">
+          {isMpesa ? (
+            <img src={mpesaImg} alt="M-Pesa" className="dc-mpesa-img" />
+          ) : brand === 'mastercard' ? (
+            <MastercardMark height={18} />
+          ) : (
+            <span className="visa-logo">VISA</span>
+          )}
+        </span>
         {m.is_default && <span className="dc-default">Default</span>}
       </div>
       <div className="dc-number">
@@ -40,17 +48,6 @@ function DebitCard({ m }) {
             <b>{m.expiry_date}</b>
           </div>
         )}
-        <span className="dc-brand">
-          {isMpesa ? (
-            <span className="dc-brand-chip">
-              <img src={mpesaImg} alt="M-Pesa" />
-            </span>
-          ) : brand === 'mastercard' ? (
-            <MastercardMark height={26} />
-          ) : (
-            <span className="dc-visa">VISA</span>
-          )}
-        </span>
       </div>
     </div>
   );
@@ -94,11 +91,8 @@ export default function Payments() {
     });
 
   return (
-    <div className="page">
-      <div className="container" style={{ maxWidth: 1020 }}>
-        <h1 className="page-title">Payment methods</h1>
-        <p className="page-sub">Used for bookings on web and in the Ardena app.</p>
-
+    <div className="page pm-page">
+      <div className="container">
         <div className="pm-layout">
           <div>
             {loading ? (

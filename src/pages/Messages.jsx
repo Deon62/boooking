@@ -1,13 +1,13 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import * as api from '../api.js';
-import { SendIcon, ChatIcon } from '../icons.jsx';
+import { SendIcon, ChatIcon, MailIcon, PhoneIcon, ShieldIcon } from '../icons.jsx';
 
-// Real client↔host chat — same conversations as the Ardena app.
-// The backend has no websocket; like the app we fetch on open/send,
-// plus a light poll while the page is visible.
+// Real client↔host chat plus the Ardena support conversation — same threads
+// as the app. No websocket; we fetch on open/send and poll while visible.
 
 const POLL_MS = 15000;
+const SUPPORT_ID = 'support';
 
 function fmtMsgTime(iso) {
   if (!iso) return '';
@@ -19,6 +19,15 @@ function fmtMsgTime(iso) {
   return d.toLocaleDateString('en-KE', { day: 'numeric', month: 'short' });
 }
 
+function mapMessages(list, meType) {
+  return (list || []).map((m) => ({
+    id: m.id,
+    from: m.sender_type === meType ? 'me' : 'host',
+    text: m.message,
+    time: fmtMsgTime(m.created_at),
+  }));
+}
+
 function mapConversation(c) {
   return {
     hostId: c.host_id,
@@ -27,17 +36,34 @@ function mapConversation(c) {
     unread: !c.is_read_by_client,
     lastMessageAt: c.last_message_at,
     startedAt: c.created_at,
-    messages: (c.messages || []).map((m) => ({
-      id: m.id,
-      from: m.sender_type === 'client' ? 'me' : 'host',
-      text: m.message,
-      time: fmtMsgTime(m.created_at),
-    })),
+    messages: mapMessages(c.messages, 'client'),
+  };
+}
+
+function mapSupport(c) {
+  return {
+    hostId: SUPPORT_ID,
+    hostName: 'Ardena Support',
+    hostAvatar: null,
+    unread: false,
+    lastMessageAt: c?.last_message_at || null,
+    startedAt: c?.created_at || null,
+    messages: c ? mapMessages(c.messages, 'client') : [],
   };
 }
 
 function HostAvatar({ thread, size = 40, fontSize }) {
   const [failed, setFailed] = useState(false);
+  if (thread.hostId === SUPPORT_ID) {
+    return (
+      <span
+        className="avatar support-avatar"
+        style={{ width: size, height: size, fontSize: fontSize || Math.round(size * 0.4) }}
+      >
+        <ShieldIcon size={Math.round(size * 0.48)} />
+      </span>
+    );
+  }
   return (
     <span
       className="avatar"
@@ -55,6 +81,7 @@ function HostAvatar({ thread, size = 40, fontSize }) {
 export default function Messages() {
   const { state } = useLocation();
   const [threads, setThreads] = useState([]);
+  const [support, setSupport] = useState(mapSupport(null));
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [activeHostId, setActiveHostId] = useState(state?.hostId ?? null);
@@ -75,10 +102,12 @@ export default function Messages() {
   }, []);
 
   const refresh = useCallback(async () => {
-    const data = await api.getConversations();
-    let list = (data.conversations || []).map(mapConversation);
-    // Coming from "Message host" for a host with no thread yet — start one.
-    if (state?.hostId && !list.some((t) => t.hostId === state.hostId)) {
+    const [nots, sup] = await Promise.all([
+      api.getConversations(),
+      api.getSupportConversation().catch(() => null),
+    ]);
+    let list = (nots.conversations || []).map(mapConversation);
+    if (state?.hostId && state.hostId !== SUPPORT_ID && !list.some((t) => t.hostId === state.hostId)) {
       try {
         const conv = await api.getConversationWithHost(state.hostId);
         list = [mapConversation(conv), ...list];
@@ -87,6 +116,7 @@ export default function Messages() {
       }
     }
     adoptConversations(list);
+    if (sup) setSupport(mapSupport(sup));
     return list;
   }, [state?.hostId, adoptConversations]);
 
@@ -96,10 +126,13 @@ export default function Messages() {
     refresh()
       .then((list) => {
         if (!on) return;
-        if (activeHostId == null && list.length) setActiveHostId(list[0].hostId);
+        if (activeHostId == null) setActiveHostId(list.length ? list[0].hostId : SUPPORT_ID);
       })
       .catch((e) => {
-        if (on) setError(e.message || 'Couldn’t load your messages.');
+        if (on) {
+          setError(e.message || 'Couldn’t load your messages.');
+          if (activeHostId == null) setActiveHostId(SUPPORT_ID);
+        }
       })
       .finally(() => {
         if (on) setLoading(false);
@@ -110,7 +143,7 @@ export default function Messages() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Light poll while the tab is visible, so host replies appear like in the app.
+  // Light poll while the tab is visible, so replies appear like in the app.
   useEffect(() => {
     const tick = () => {
       if (document.visibilityState === 'visible') refresh().catch(() => {});
@@ -119,9 +152,15 @@ export default function Messages() {
     return () => clearInterval(timer);
   }, [refresh]);
 
-  // Opening a thread marks the host's messages as read (server-side too).
   const openThread = (hostId) => {
     setActiveHostId(hostId);
+    if (hostId === SUPPORT_ID) {
+      api
+        .getSupportConversation()
+        .then((c) => setSupport(mapSupport(c)))
+        .catch(() => {});
+      return;
+    }
     setThreads((prev) => prev.map((t) => (t.hostId === hostId ? { ...t, unread: false } : t)));
     api
       .getConversationWithHost(hostId)
@@ -129,20 +168,26 @@ export default function Messages() {
         const mapped = mapConversation(conv);
         setThreads((prev) =>
           prev.map((t) =>
-            t.hostId === hostId
-              ? { ...mapped, hostAvatar: mapped.hostAvatar || t.hostAvatar }
-              : t
+            t.hostId === hostId ? { ...mapped, hostAvatar: mapped.hostAvatar || t.hostAvatar } : t
           )
         );
       })
       .catch(() => {});
   };
 
-  const thread = threads.find((t) => t.hostId === activeHostId) || threads[0] || null;
+  const isSupport = activeHostId === SUPPORT_ID;
+  const thread = isSupport
+    ? support
+    : threads.find((t) => t.hostId === activeHostId) || threads[0] || support;
 
   useEffect(() => {
     if (bodyRef.current) bodyRef.current.scrollTop = bodyRef.current.scrollHeight;
   }, [thread?.messages.length, activeHostId]);
+
+  const appendTo = (hostId, updater) => {
+    if (hostId === SUPPORT_ID) setSupport((s) => updater(s));
+    else setThreads((prev) => prev.map((t) => (t.hostId === hostId ? updater(t) : t)));
+  };
 
   const send = async (e) => {
     e.preventDefault();
@@ -150,38 +195,25 @@ export default function Messages() {
     if (!text || !thread || sending) return;
     setSending(true);
     setDraft('');
+    const target = thread.hostId;
     const tempId = tempIdRef.current--;
     const optimistic = { id: tempId, from: 'me', text, time: fmtMsgTime(new Date().toISOString()) };
-    setThreads((prev) =>
-      prev.map((t) =>
-        t.hostId === thread.hostId ? { ...t, messages: [...t.messages, optimistic] } : t
-      )
-    );
+    appendTo(target, (t) => ({ ...t, messages: [...t.messages, optimistic] }));
     try {
-      const sent = await api.sendMessageToHost(thread.hostId, text);
-      setThreads((prev) =>
-        prev.map((t) =>
-          t.hostId === thread.hostId
-            ? {
-                ...t,
-                messages: t.messages.map((m) =>
-                  m.id === tempId
-                    ? { id: sent.id, from: 'me', text: sent.message, time: fmtMsgTime(sent.created_at) }
-                    : m
-                ),
-              }
-            : t
-        )
-      );
+      const sent =
+        target === SUPPORT_ID
+          ? await api.sendSupportMessage(text)
+          : await api.sendMessageToHost(target, text);
+      appendTo(target, (t) => ({
+        ...t,
+        messages: t.messages.map((m) =>
+          m.id === tempId
+            ? { id: sent.id, from: 'me', text: sent.message, time: fmtMsgTime(sent.created_at) }
+            : m
+        ),
+      }));
     } catch (err) {
-      // Roll back the optimistic message and restore the draft
-      setThreads((prev) =>
-        prev.map((t) =>
-          t.hostId === thread.hostId
-            ? { ...t, messages: t.messages.filter((m) => m.id !== tempId) }
-            : t
-        )
-      );
+      appendTo(target, (t) => ({ ...t, messages: t.messages.filter((m) => m.id !== tempId) }));
       setDraft(text);
       setError(err.message || 'Couldn’t send the message. Please try again.');
     } finally {
@@ -197,33 +229,32 @@ export default function Messages() {
     );
   }
 
-  if (!thread) {
-    return (
-      <div className="page container wide">
-        <div className="empty">
-          {error || (
-            <>
-              No conversations yet — message a host from any{' '}
-              <Link to="/" className="link">
-                car page
-              </Link>
-              .
-            </>
-          )}
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="page">
       <div className="container wide">
         <div className="msg-layout">
           <div className="msg-list">
+            {/* Ardena support is always available, pinned on top */}
+            <button
+              className={`msg-item support${isSupport ? ' active' : ''}`}
+              onClick={() => openThread(SUPPORT_ID)}
+            >
+              <HostAvatar thread={support} />
+              <span className="msg-item-text">
+                <b>Ardena Support</b>
+                <span>
+                  {support.messages.length
+                    ? support.messages[support.messages.length - 1].text
+                    : 'We’re here to help, any time'}
+                </span>
+              </span>
+              <span className="msg-item-time">{fmtMsgTime(support.lastMessageAt)}</span>
+            </button>
+
             {threads.map((t) => (
               <button
                 key={t.hostId}
-                className={`msg-item${t.hostId === thread.hostId ? ' active' : ''}`}
+                className={`msg-item${!isSupport && t.hostId === thread.hostId ? ' active' : ''}`}
                 onClick={() => openThread(t.hostId)}
               >
                 <HostAvatar thread={t} />
@@ -247,14 +278,16 @@ export default function Messages() {
             <div className="msg-head">
               <HostAvatar thread={thread} size={30} fontSize={13} />
               <b>{thread.hostName}</b>
-              {state?.carName && state?.hostId === thread.hostId && (
+              {!isSupport && state?.carName && state?.hostId === thread.hostId && (
                 <span className="car-meta"> · {state.carName}</span>
               )}
             </div>
             <div className="msg-body" ref={bodyRef}>
               {thread.messages.length === 0 ? (
                 <div className="empty" style={{ padding: '40px 20px' }}>
-                  Say hello to {thread.hostName}
+                  {isSupport
+                    ? 'Ask us anything — bookings, payments, or anything in between.'
+                    : `Say hello to ${thread.hostName}`}
                 </div>
               ) : (
                 thread.messages.map((m) => (
@@ -293,19 +326,47 @@ export default function Messages() {
           <aside className="msg-side">
             <HostAvatar thread={thread} size={96} fontSize={34} />
             <b style={{ fontSize: 15.5, textAlign: 'center' }}>{thread.hostName}</b>
-            <div className="car-meta" style={{ textAlign: 'center' }}>
-              Ardena host
-              {thread.startedAt
-                ? ` · chatting since ${new Date(thread.startedAt).toLocaleDateString('en-KE', {
-                    month: 'short',
-                    year: 'numeric',
-                  })}`
-                : ''}
-            </div>
-            <div className="notice" style={{ marginTop: 16, fontSize: 12.5 }}>
-              <ChatIcon size={14} style={{ verticalAlign: '-2px', marginRight: 6 }} />
-              Messages sync with the Ardena app — your host sees them there too.
-            </div>
+            {isSupport ? (
+              <>
+                <div className="car-meta" style={{ textAlign: 'center' }}>
+                  Typically replies within a few hours
+                </div>
+                <div className="widget-rows" style={{ width: '100%', marginTop: 14 }}>
+                  <div className="widget-row">
+                    <span>
+                      <MailIcon size={15} /> Email
+                    </span>
+                    <b style={{ fontSize: 12.5 }}>support@ardena.co.ke</b>
+                  </div>
+                  <div className="widget-row">
+                    <span>
+                      <PhoneIcon size={15} /> Call
+                    </span>
+                    <b>+254 702 248 984</b>
+                  </div>
+                </div>
+                <div className="notice" style={{ marginTop: 4, fontSize: 12.5 }}>
+                  <ShieldIcon size={14} style={{ verticalAlign: '-2px', marginRight: 6 }} />
+                  We never ask for your M-Pesa PIN, card details or password.
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="car-meta" style={{ textAlign: 'center' }}>
+                  Ardena host
+                  {thread.startedAt
+                    ? ` · chatting since ${new Date(thread.startedAt).toLocaleDateString('en-KE', {
+                        month: 'short',
+                        year: 'numeric',
+                      })}`
+                    : ''}
+                </div>
+                <div className="notice" style={{ marginTop: 16, fontSize: 12.5 }}>
+                  <ChatIcon size={14} style={{ verticalAlign: '-2px', marginRight: 6 }} />
+                  Messages sync with the Ardena app — your host sees them there too.
+                </div>
+              </>
+            )}
           </aside>
         </div>
       </div>

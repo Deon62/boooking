@@ -179,6 +179,11 @@ textarea {
   z-index: 50;
   background: rgba(238, 241, 248, 0.92);
   backdrop-filter: blur(12px);
+  box-shadow: none;
+  transition: box-shadow 0.2s ease;
+}
+
+.header.scrolled {
   box-shadow: 0 6px 18px rgba(163, 177, 198, 0.28);
 }
 
@@ -1672,7 +1677,7 @@ textarea {
 /* price breakdown */
 
 .breakdown {
-  padding: 24px 26px;
+  padding: 26px 26px 28px;
   border-radius: var(--r-lg);
   background: var(--surface);
   box-shadow: var(--neo-in);
@@ -1681,9 +1686,26 @@ textarea {
 .breakdown .row {
   display: flex;
   justify-content: space-between;
-  padding: 7px 0;
-  font-size: 14.5px;
+  align-items: baseline;
+  gap: 22px;
+  padding: 11px 0;
+  font-size: 14px;
   color: var(--text-2);
+}
+
+/* darker row titles; long values (locations) wrap cleanly on the right */
+.breakdown .row > span:first-child {
+  color: var(--text);
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.breakdown .row > span:last-child {
+  text-align: right;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  font-weight: 600;
+  line-height: 1.45;
 }
 
 .breakdown .row.total {
@@ -1774,10 +1796,22 @@ textarea {
 }
 
 /* payment methods page: debit-card visuals + info panel */
+.pm-page {
+  padding: 18px 0 32px;
+}
+
+.pm-page .page-title {
+  margin-bottom: 4px;
+}
+
+.pm-page .page-sub {
+  margin-bottom: 20px;
+}
+
 .pm-layout {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 320px;
-  gap: 30px;
+  grid-template-columns: minmax(0, 1fr) 360px;
+  gap: 34px;
   align-items: start;
 }
 
@@ -1787,56 +1821,37 @@ textarea {
   }
 }
 
+/* Fixed card width — real cards don't stretch with the screen. */
 .dc-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
-  gap: 24px;
+  grid-template-columns: repeat(auto-fill, 330px);
+  gap: 20px;
 }
 
+@media (max-width: 420px) {
+  .dc-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* white, sharp-edged, landscape card */
 .debit-card {
-  aspect-ratio: 1.586;
-  border-radius: 18px;
-  padding: 20px 22px;
+  aspect-ratio: 1.9;
+  border-radius: 0;
+  padding: 20px 24px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  color: #fff;
-  box-shadow: 0 14px 30px rgba(22, 24, 29, 0.22);
-}
-
-.debit-card.dark {
-  background: #16181d;
-}
-
-.debit-card.visa {
-  background: #1a1f71;
-}
-
-.debit-card.mpesa {
-  background: #16653a;
+  background: #fff;
+  color: #16181d;
+  border: 1px solid rgba(22, 24, 29, 0.08);
+  box-shadow: 0 12px 26px rgba(166, 180, 202, 0.4);
 }
 
 .dc-top {
   display: flex;
   align-items: center;
   justify-content: space-between;
-}
-
-.dc-chip {
-  width: 40px;
-  height: 29px;
-  border-radius: 6px;
-  background: #e2c268;
-  position: relative;
-  overflow: hidden;
-}
-
-.dc-chip::after {
-  content: '';
-  position: absolute;
-  inset: 8px 6px;
-  border: 1.5px solid rgba(22, 24, 29, 0.35);
-  border-radius: 3px;
 }
 
 .dc-default {
@@ -1846,15 +1861,16 @@ textarea {
   text-transform: uppercase;
   padding: 4px 12px;
   border-radius: var(--r-pill);
-  background: rgba(255, 255, 255, 0.18);
+  background: var(--primary);
   color: #fff;
 }
 
 .dc-number {
-  font-size: 18px;
+  font-size: 19px;
   font-weight: 700;
   letter-spacing: 2.5px;
   word-spacing: 6px;
+  color: #16181d;
 }
 
 .dc-bottom {
@@ -1875,7 +1891,7 @@ textarea {
   font-weight: 700;
   letter-spacing: 1px;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--hint);
 }
 
 .dc-meta b {
@@ -1883,33 +1899,16 @@ textarea {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 150px;
+  max-width: 170px;
 }
 
 .dc-brand {
-  margin-left: auto;
   display: inline-flex;
   align-items: center;
   flex-shrink: 0;
 }
 
-.dc-visa {
-  font-style: italic;
-  font-weight: 900;
-  font-size: 19px;
-  letter-spacing: 1px;
-  color: #fff;
-}
-
-.dc-brand-chip {
-  background: #fff;
-  border-radius: 8px;
-  padding: 4px 9px;
-  display: inline-flex;
-  align-items: center;
-}
-
-.dc-brand-chip img {
+.dc-mpesa-img {
   height: 16px;
   width: auto;
   display: block;
@@ -1945,7 +1944,7 @@ textarea {
 /* blue info panel, mirrors the reference design's settings panel */
 .pm-info {
   background: var(--primary);
-  border-radius: var(--r-lg);
+  border-radius: 0;
   padding: 26px 26px 24px;
   color: #fff;
   position: sticky;
@@ -2648,13 +2647,26 @@ a.trip-card:hover {
 .msg-side {
   position: sticky;
   top: 100px;
-  padding: 20px;
-  border-radius: var(--r-lg);
+  padding: 24px 22px;
+  border-radius: 0;
   background: var(--surface);
   box-shadow: var(--neo-out);
   display: flex;
   flex-direction: column;
   gap: 6px;
+}
+
+/* pinned Ardena support thread */
+.support-avatar {
+  background: var(--primary);
+  color: #fff;
+}
+
+.msg-item.support {
+  border-bottom: 1px solid rgba(163, 177, 198, 0.3);
+  border-radius: 0;
+  padding-bottom: 14px;
+  margin-bottom: 8px;
 }
 
 .msg-side > .avatar {
@@ -2716,8 +2728,8 @@ a.trip-card:hover {
 }
 
 .msg-list {
-  padding: 12px;
-  border-radius: var(--r-lg);
+  padding: 14px;
+  border-radius: 0;
   background: var(--surface);
   box-shadow: var(--neo-out);
 }
@@ -2758,12 +2770,12 @@ a.trip-card:hover {
 }
 
 .msg-thread {
-  border-radius: var(--r-lg);
+  border-radius: 0;
   background: var(--surface);
   box-shadow: var(--neo-out);
   display: flex;
   flex-direction: column;
-  height: 560px;
+  height: 620px;
 }
 
 .msg-head {
@@ -3229,6 +3241,183 @@ a.trip-card:hover {
 
 .footer-legal a:hover {
   color: var(--text);
+}
+
+/* ---------- notifications page ---------- */
+
+.nots-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 380px;
+  gap: 34px;
+  align-items: start;
+}
+
+/* sharp-edged panels on this page */
+.nots-card,
+.nots-settings {
+  border-radius: 0;
+}
+
+.nots-card {
+  min-height: 480px;
+}
+
+.nots-settings {
+  min-height: 480px;
+  padding: 30px 28px;
+  display: flex;
+  flex-direction: column;
+}
+
+.nots-settings .info-note {
+  margin-top: auto;
+}
+
+@media (max-width: 900px) {
+  .nots-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.nots-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 8px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid rgba(163, 177, 198, 0.3);
+}
+
+.nots-tabs {
+  display: flex;
+  gap: 22px;
+}
+
+.nots-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--hint);
+  padding: 6px 2px;
+  border-bottom: 2.5px solid transparent;
+  transition: color 0.12s, border-color 0.12s;
+}
+
+.nots-tab.active {
+  color: var(--text);
+  border-bottom-color: var(--primary);
+}
+
+.not-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  width: 100%;
+  text-align: left;
+  padding: 15px 6px;
+  transition: background 0.12s;
+}
+
+.not-row + .not-row {
+  border-top: 1px solid rgba(163, 177, 198, 0.22);
+}
+
+.not-row:hover {
+  background: rgba(163, 177, 198, 0.08);
+}
+
+.not-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--error);
+  flex-shrink: 0;
+  margin-top: 7px;
+}
+
+.not-dot.read {
+  background: transparent;
+}
+
+.not-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.not-main b {
+  font-size: 14.5px;
+  color: var(--text);
+}
+
+.not-main > span {
+  font-size: 13px;
+  color: var(--text-2);
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.not-side {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-shrink: 0;
+  padding-top: 2px;
+}
+
+.not-type {
+  font-style: normal;
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--text-2);
+  background: rgba(163, 177, 198, 0.18);
+  padding: 3px 10px;
+  border-radius: var(--r-pill);
+}
+
+.not-time {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--hint);
+  min-width: 74px;
+  text-align: right;
+}
+
+.nots-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  text-align: center;
+  padding: 46px 20px;
+}
+
+.nots-empty b {
+  font-size: 15px;
+}
+
+.nots-empty p {
+  font-size: 13px;
+  color: var(--hint);
+  font-weight: 600;
+  margin: 0;
+}
+
+.nots-settings h3 {
+  font-size: 15px;
+  font-weight: 800;
+  margin-bottom: 16px;
+}
+
+.nots-settings .toggle-row + .toggle-row {
+  margin-top: 6px;
 }
 
 /* ---------- responsive ---------- */

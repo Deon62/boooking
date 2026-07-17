@@ -242,8 +242,18 @@ function AccountMenu() {
 }
 
 export function Header() {
+  // Flat at the top of the page; the shadow only appears once you scroll.
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 4);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
   return (
-    <header className="header">
+    <header className={`header${scrolled ? ' scrolled' : ''}`}>
       <div className="header-inner">
         <Link to="/" className="logo">
           <img src={logoUrl} alt="Ardena" className="logo-img" />
