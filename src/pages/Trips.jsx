@@ -2,10 +2,19 @@ import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { formatKES } from '../data.js';
 import { fmtShort } from '../Calendar.jsx';
-import { mapBooking, useCars } from '../cars.js';
+import { mapBooking, useCars, ratingLabel } from '../cars.js';
 import { CarPhoto } from '../components.jsx';
 import { listBookings, deleteBookingRecord } from '../api.js';
-import { MapPinIcon, SteeringIcon, ClockIcon, HeartIcon, CalendarIcon } from '../icons.jsx';
+import {
+  MapPinIcon,
+  SteeringIcon,
+  CalendarIcon,
+  StarIcon,
+  TrashIcon,
+  CheckIcon,
+  XIcon,
+  UsersIcon,
+} from '../icons.jsx';
 
 const PAST = ['completed', 'cancelled', 'rejected'];
 
@@ -17,6 +26,7 @@ export default function Trips() {
   const [confirmId, setConfirmId] = useState(null);
   const [deleting, setDeleting] = useState(false);
   const { cars: allCars } = useCars();
+  const carById = new Map(allCars.map((c) => [c.id, c]));
 
   useEffect(() => {
     let on = true;
@@ -61,12 +71,7 @@ export default function Trips() {
       <div className="container" style={{ maxWidth: 1240 }}>
         <div className="trips-layout">
           <div>
-            <div className="wl-chip neutral">
-              <ClockIcon size={15} /> Past trips
-              {!loading && bookings.length > 0 && (
-                <span className="wl-count">{bookings.length}</span>
-              )}
-            </div>
+            <h2 className="plain-label">Past trips</h2>
 
             {loading ? (
               <div className="past-panel">
@@ -88,9 +93,13 @@ export default function Trips() {
               <div className="past-panel">
                 {bookings.map((b) => {
                   const isPast = PAST.includes(b.status);
+                  const liveCar = carById.get(b.car.id);
+                  const rowCar = b.car.photos.length
+                    ? b.car
+                    : { ...b.car, photos: liveCar?.photos || [] };
                   return (
                     <div className="past-row" key={b.id}>
-                      <CarPhoto car={b.car} className="pic" />
+                      <CarPhoto car={rowCar} className="pic" />
                       <div className="past-main">
                         <b>{b.car.name}</b>
                         <span>
@@ -106,43 +115,54 @@ export default function Trips() {
                         </span>
                       </div>
                       <div className="past-side">
-                        <span className={`status-pill ${b.status}`}>{b.status}</span>
+                        <span className={`status-text ${b.status}`}>{b.status}</span>
                         <b className="past-total">{formatKES(b.total)}</b>
                         <span className="past-days">
                           {b.days} day{b.days === 1 ? '' : 's'} trip
                         </span>
+                        {liveCar && (
+                          <span className="past-days">
+                            <StarIcon size={11} /> {ratingLabel(liveCar)}
+                          </span>
+                        )}
                         <div className="past-actions">
                           {confirmId === b.id ? (
                             <>
+                              <span className="past-days" style={{ alignSelf: 'center' }}>
+                                Delete?
+                              </span>
                               <button
-                                className="neo-btn btn-sm danger-btn"
+                                className="icon-btn danger"
+                                aria-label="Confirm delete"
                                 disabled={deleting}
                                 onClick={() => removeTrip(b.id)}
                               >
-                                {deleting ? 'Deleting…' : 'Yes, delete'}
+                                <CheckIcon size={15} />
                               </button>
                               <button
-                                className="neo-btn btn-sm"
+                                className="icon-btn"
+                                aria-label="Keep trip"
                                 disabled={deleting}
                                 onClick={() => setConfirmId(null)}
                               >
-                                Keep
+                                <XIcon size={15} />
                               </button>
                             </>
                           ) : (
                             <>
                               <button
-                                className="neo-btn btn-sm"
+                                className="flat-btn"
                                 onClick={() => navigate(`/trips/${b.id}`)}
                               >
                                 View
                               </button>
                               {isPast && (
                                 <button
-                                  className="neo-btn btn-sm danger-btn"
+                                  className="icon-btn danger"
+                                  aria-label="Delete trip"
                                   onClick={() => setConfirmId(b.id)}
                                 >
-                                  Delete
+                                  <TrashIcon size={15} />
                                 </button>
                               )}
                             </>
@@ -157,9 +177,7 @@ export default function Trips() {
           </div>
 
           <div>
-            <div className="wl-chip">
-              <HeartIcon filled size={15} /> You would also love
-            </div>
+            <h2 className="plain-label">You would also love</h2>
             <div className="love-panel">
               {suggestions.length === 0 ? (
                 <p className="trips-none" style={{ margin: 0 }}>
@@ -171,7 +189,14 @@ export default function Trips() {
                     <CarPhoto car={car} className="pic" />
                     <span className="love-text">
                       <b>{car.name}</b>
-                      <span>{formatKES(car.pricePerDay)}/day</span>
+                      <span className="love-meta">
+                        <StarIcon size={11} /> {ratingLabel(car)} · <UsersIcon size={11} />{' '}
+                        {car.seats} seats · {car.transmission}
+                      </span>
+                      <span className="love-meta">
+                        <MapPinIcon size={11} /> {car.locationName}
+                      </span>
+                      <span className="love-price">{formatKES(car.pricePerDay)}/day</span>
                     </span>
                   </Link>
                 ))

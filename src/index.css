@@ -179,6 +179,7 @@ textarea {
   z-index: 50;
   background: rgba(238, 241, 248, 0.92);
   backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(163, 177, 198, 0.35);
   box-shadow: none;
   transition: box-shadow 0.2s ease;
 }
@@ -2164,10 +2165,10 @@ a.trip-card:hover {
   color: var(--text-2);
 }
 
-/* my trips: two columns — past trips panel (wider) + suggestions */
+/* my trips: two columns — past trips panel (wider) + suggestions. Flat, no neo shadows. */
 .trips-layout {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 340px;
+  grid-template-columns: minmax(0, 1fr) 360px;
   gap: 34px;
   align-items: start;
 }
@@ -2178,11 +2179,18 @@ a.trip-card:hover {
   }
 }
 
-/* past trips: one sharp panel with detailed rows */
+/* plain section labels that sit on the page background */
+.plain-label {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: 0.2px;
+}
+
 .past-panel {
-  margin-top: 16px;
-  background: var(--surface);
-  box-shadow: var(--neo-out-sm);
+  margin-top: 14px;
+  background: #fff;
+  border: 1px solid rgba(22, 24, 29, 0.08);
   border-radius: 0;
   padding: 8px 26px;
 }
@@ -2204,7 +2212,7 @@ a.trip-card:hover {
   border-radius: 50%;
   overflow: hidden;
   flex-shrink: 0;
-  box-shadow: var(--neo-out-sm);
+  border: 1px solid rgba(22, 24, 29, 0.08);
 }
 
 .past-row .pic img {
@@ -2270,6 +2278,7 @@ a.trip-card:hover {
 
 .past-actions {
   display: flex;
+  align-items: center;
   gap: 10px;
   margin-top: 10px;
 }
@@ -2277,6 +2286,77 @@ a.trip-card:hover {
 .btn-sm {
   padding: 8px 18px;
   font-size: 12.5px;
+}
+
+/* simple status: colored text, no pill */
+.status-text {
+  font-size: 11.5px;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+}
+
+.status-text.confirmed {
+  color: var(--success);
+}
+
+.status-text.pending {
+  color: var(--warning);
+}
+
+.status-text.active {
+  color: var(--primary);
+}
+
+.status-text.completed {
+  color: var(--hint);
+}
+
+.status-text.cancelled,
+.status-text.rejected {
+  color: var(--error);
+}
+
+/* flat controls for the trips page */
+.flat-btn {
+  padding: 8px 20px;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--text-2);
+  background: #fff;
+  border: 1px solid rgba(22, 24, 29, 0.14);
+  border-radius: var(--r-pill);
+  transition: border-color 0.12s, color 0.12s;
+}
+
+.flat-btn:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.icon-btn {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #fff;
+  border: 1px solid rgba(22, 24, 29, 0.14);
+  color: var(--text-2);
+  transition: border-color 0.12s, color 0.12s;
+}
+
+.icon-btn:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.icon-btn.danger {
+  color: var(--error);
+}
+
+.icon-btn.danger:hover {
+  border-color: var(--error);
 }
 
 @media (max-width: 640px) {
@@ -2290,20 +2370,20 @@ a.trip-card:hover {
   }
 }
 
-/* suggestions panel (right column) */
+/* suggestions panel (right column) — flat */
 .love-panel {
-  margin-top: 16px;
-  background: var(--surface);
-  box-shadow: var(--neo-out-sm);
+  margin-top: 14px;
+  background: #fff;
+  border: 1px solid rgba(22, 24, 29, 0.08);
   border-radius: 0;
   padding: 10px 20px;
 }
 
 .love-item {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 14px;
-  padding: 13px 2px;
+  padding: 16px 2px;
   color: inherit;
 }
 
@@ -2312,12 +2392,12 @@ a.trip-card:hover {
 }
 
 .love-item .pic {
-  width: 52px;
-  height: 52px;
+  width: 58px;
+  height: 58px;
   border-radius: 50%;
   overflow: hidden;
   flex-shrink: 0;
-  box-shadow: var(--neo-out-sm);
+  border: 1px solid rgba(22, 24, 29, 0.08);
   transition: transform 0.15s ease;
 }
 
@@ -2342,7 +2422,7 @@ a.trip-card:hover {
 .love-text {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 4px;
   min-width: 0;
 }
 
@@ -2353,10 +2433,24 @@ a.trip-card:hover {
   text-overflow: ellipsis;
 }
 
-.love-text > span {
-  font-size: 12px;
-  font-weight: 700;
+.love-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11.5px;
+  font-weight: 600;
   color: var(--hint);
+}
+
+.love-meta svg {
+  flex-shrink: 0;
+}
+
+.love-price {
+  font-size: 12.5px;
+  font-weight: 800;
+  color: var(--text);
+  margin-top: 2px;
 }
 
 /* trip details page */

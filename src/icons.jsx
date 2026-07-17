@@ -228,6 +228,21 @@ export const BanIcon = (p) => (
   </I>
 );
 
+export const TrashIcon = (p) => (
+  <I {...p}>
+    <path d="M4 6.5h16" />
+    <path d="M9 6.5V4.8A1.3 1.3 0 0 1 10.3 3.5h3.4A1.3 1.3 0 0 1 15 4.8v1.7" />
+    <path d="M6.2 6.5 7 19a1.6 1.6 0 0 0 1.6 1.5h6.8A1.6 1.6 0 0 0 17 19l.8-12.5" />
+    <path d="M10 10.5v6M14 10.5v6" />
+  </I>
+);
+
+export const XIcon = (p) => (
+  <I {...p}>
+    <path d="M6 6l12 12M18 6L6 18" />
+  </I>
+);
+
 export const ShareIcon = (p) => (
   <I {...p}>
     <path d="M4 12.5V19a1.6 1.6 0 0 0 1.6 1.6h12.8A1.6 1.6 0 0 0 20 19v-6.5" />
