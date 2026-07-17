@@ -1,10 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { formatKES, DAMAGE_WAIVER_PRICE_PER_DAY } from '../data.js';
-import { useCar, useCarRatings, ratingLabel, noteRecentlyViewed } from '../cars.js';
+import { formatKES, formatDateLong, addDays, DAMAGE_WAIVER_PRICE_PER_DAY } from '../data.js';
+import {
+  useCar,
+  useCarRatings,
+  ratingLabel,
+  noteRecentlyViewed,
+  hostingDuration,
+  useHostAvatar,
+} from '../cars.js';
+import { fmtShort } from '../Calendar.jsx';
 import { CarPhoto, BackButton } from '../components.jsx';
 import { useApp } from '../store.jsx';
-import { reportListing, listBookings } from '../api.js';
+import { reportListing, listBookings, getCarAvailability } from '../api.js';
 import {
   CogIcon,
   FuelIcon,
@@ -19,6 +27,10 @@ import {
   CheckIcon,
   MapPinIcon,
   CreditCardIcon,
+  HeartIcon,
+  ShareIcon,
+  PhoneIcon,
+  IdCardIcon,
 } from '../icons.jsx';
 
 // Same options as the app's ReportListingScreen.
@@ -121,6 +133,86 @@ function ReportListing({ carId }) {
   );
 }
 
+/** Live availability from GET /cars/{id}/availability for the next 3 months. */
+function AvailabilityCard({ carId }) {
+  const [avail, setAvail] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let on = true;
+    setLoading(true);
+    getCarAvailability(carId, addDays(new Date(), 0), addDays(new Date(), 90))
+      .then((data) => {
+        if (on) setAvail(data);
+      })
+      .catch(() => {})
+      .finally(() => {
+        if (on) setLoading(false);
+      });
+    return () => {
+      on = false;
+    };
+  }, [carId]);
+
+  if (loading) {
+    return (
+      <div className="section">
+        <h2>Availability</h2>
+        <div className="skel-line" style={{ width: '60%', height: 46, borderRadius: 14 }} />
+      </div>
+    );
+  }
+
+  if (!avail) return null;
+
+  const ranges = (avail.unavailable_dates || []).slice(0, 4);
+
+  return (
+    <div className="section">
+      <h2>Availability</h2>
+      <div className="info-card">
+        <div className="info-row">
+          <span>
+            <CalendarIcon size={17} /> Right now
+          </span>
+          {avail.available ? (
+            <b style={{ color: 'var(--success)' }}>
+              <CheckIcon size={15} /> Available
+            </b>
+          ) : (
+            <b style={{ color: 'var(--warning)' }}>
+              {avail.next_available_date
+                ? `Next available ${formatDateLong(String(avail.next_available_date).slice(0, 10))}`
+                : 'Currently booked'}
+            </b>
+          )}
+        </div>
+        {ranges.length === 0 ? (
+          <div className="info-row">
+            <span>
+              <CheckIcon size={16} style={{ color: 'var(--success)' }} /> No upcoming bookings in
+              the next 3 months. All dates are open.
+            </span>
+          </div>
+        ) : (
+          ranges.map((r, i) => (
+            <div className="info-row" key={i}>
+              <span>
+                <BanIcon size={16} /> {fmtShort(String(r.start_date).slice(0, 10))} →{' '}
+                {fmtShort(String(r.end_date).slice(0, 10))}
+              </span>
+              <b style={{ color: 'var(--hint)' }}>Unavailable</b>
+            </div>
+          ))
+        )}
+        <p className="info-note">
+          Unavailable days are greyed out in the calendar when you book.
+        </p>
+      </div>
+    </div>
+  );
+}
+
 const DEFAULT_RULES = [
   'No smoking in the car',
   'Return with the same fuel level',
@@ -131,11 +223,13 @@ const DEFAULT_RULES = [
 export default function CarDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { user } = useApp();
+  const { user, wishlist, toggleWish } = useApp();
   const { car, loading, error } = useCar(id);
   const ratings = useCarRatings(id);
   // Messaging unlocks only after a paid booking for this car.
   const [hasBooked, setHasBooked] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const hostAvatar = useHostAvatar(car?.host.id, car?.host.avatarUrl);
 
   useEffect(() => {
     if (car) noteRecentlyViewed(car.id);
@@ -193,9 +287,32 @@ export default function CarDetails() {
   }
 
   const reviewCount = ratings.total;
-  const currentYear = new Date().getFullYear();
-  const yearsHosting = car.host.joined ? Math.max(1, currentYear - Number(car.host.joined)) : null;
+  const hosting = hostingDuration(car.host.createdAt);
   const hostFirstName = car.host.name.split(' ')[0];
+  const wished = wishlist.has(car.id);
+
+  const like = () => {
+    if (!toggleWish(car.id)) navigate('/login', { state: { next: `/cars/${car.id}` } });
+  };
+
+  const share = async () => {
+    const url = window.location.href;
+    try {
+      if (navigator.share) {
+        await navigator.share({ title: `${car.name} on Ardena`, url });
+        return;
+      }
+      throw new Error('no web share');
+    } catch {
+      try {
+        await navigator.clipboard.writeText(url);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      } catch {
+        /* clipboard blocked — nothing sensible to do */
+      }
+    }
+  };
   // Hosts write rules as free text, one per line; fall back to platform rules.
   const rules = car.rules
     ? car.rules.split('\n').map((r) => r.trim()).filter(Boolean)
@@ -240,9 +357,31 @@ export default function CarDetails() {
 
         <div className="details-layout" style={{ marginTop: 30 }}>
           <div>
-            <h1 className="page-title" style={{ marginBottom: 2 }}>
-              {car.name}
-            </h1>
+            <div className="title-row">
+              <h1 className="page-title" style={{ marginBottom: 2 }}>
+                {car.name}
+              </h1>
+              <div className="title-actions">
+                <button
+                  className={`pill-action${wished ? ' liked' : ''}`}
+                  onClick={like}
+                  aria-label="Like this car"
+                >
+                  <HeartIcon filled={wished} size={16} /> {wished ? 'Liked' : 'Like'}
+                </button>
+                <button className="pill-action" onClick={share} aria-label="Share this car">
+                  {copied ? (
+                    <>
+                      <CheckIcon size={16} /> Copied
+                    </>
+                  ) : (
+                    <>
+                      <ShareIcon size={16} /> Share
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
             <div className="rating-line">
               <StarIcon size={15} /> {ratingLabel(car)} · {reviewCount} review
               {reviewCount === 1 ? '' : 's'} · {car.locationName}, {car.city}
@@ -266,13 +405,15 @@ export default function CarDetails() {
               </div>
             </div>
 
+            <AvailabilityCard carId={car.id} />
+
             <div className="section host-duo">
               <div>
                 <h2>Meet your host</h2>
                 <div className="host-panel">
                   <span className="avatar" style={{ width: 68, height: 68, fontSize: 24 }}>
-                    {car.host.avatarUrl ? (
-                      <img src={car.host.avatarUrl} alt={car.host.name} />
+                    {hostAvatar ? (
+                      <img src={hostAvatar} alt={car.host.name} />
                     ) : (
                       car.host.name[0]
                     )}
@@ -293,7 +434,7 @@ export default function CarDetails() {
                       <span>Reviews</span>
                     </div>
                     <div>
-                      <b>{yearsHosting ? `${yearsHosting} yr${yearsHosting > 1 ? 's' : ''}` : '—'}</b>
+                      <b>{hosting || '—'}</b>
                       <span>Hosting</span>
                     </div>
                   </div>
@@ -358,6 +499,30 @@ export default function CarDetails() {
             </div>
 
             <div className="section">
+              <h2>Reviews</h2>
+              {ratings.loading ? (
+                <p style={{ color: 'var(--text-2)' }}>Loading reviews…</p>
+              ) : ratings.reviews.length === 0 ? (
+                <div className="dashed-card reviews-empty">
+                  <span className="reviews-empty-icon">
+                    <StarIcon size={22} />
+                  </span>
+                  <b>No reviews yet</b>
+                  <p>Be the first to rent it and share how the trip went.</p>
+                </div>
+              ) : (
+                ratings.reviews.map((r, i) => (
+                  <div className="review" key={i}>
+                    <div className="r-head">
+                      {r.name} <span>{r.date}</span>
+                    </div>
+                    <p>{r.text}</p>
+                  </div>
+                ))
+              )}
+            </div>
+
+            <div className="section">
               <h2>Car rules</h2>
               <div className="info-card">
                 {rules.map((r) => (
@@ -395,6 +560,40 @@ export default function CarDetails() {
             </div>
 
             <div className="section">
+              <h2>General policies &amp; safety</h2>
+              <div className="info-card">
+                <div className="info-row rule">
+                  <span>
+                    <IdCardIcon size={16} /> A valid driver&apos;s licence is required for
+                    self-drive trips
+                  </span>
+                </div>
+                <div className="info-row rule">
+                  <span>
+                    <ShieldIcon size={16} /> Seatbelts on for every passenger, at all times
+                  </span>
+                </div>
+                <div className="info-row rule">
+                  <span>
+                    <MapPinIcon size={16} /> Keep to public roads and observe speed limits; trips
+                    may be GPS tracked
+                  </span>
+                </div>
+                <div className="info-row rule">
+                  <span>
+                    <PhoneIcon size={16} /> 24/7 support on +254 702 248 984 if anything goes wrong
+                  </span>
+                </div>
+                <div className="info-row rule">
+                  <span>
+                    <BanIcon size={16} /> Report any accident or damage to your host and Ardena
+                    immediately
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div className="section">
               <h2>Cancellation policy</h2>
               <div className="info-card">
                 <div className="info-row">
@@ -414,30 +613,6 @@ export default function CarDetails() {
                   </span>
                 </div>
               </div>
-            </div>
-
-            <div className="section">
-              <h2>Reviews</h2>
-              {ratings.loading ? (
-                <p style={{ color: 'var(--text-2)' }}>Loading reviews…</p>
-              ) : ratings.reviews.length === 0 ? (
-                <div className="dashed-card reviews-empty">
-                  <span className="reviews-empty-icon">
-                    <StarIcon size={22} />
-                  </span>
-                  <b>No reviews yet</b>
-                  <p>Be the first to rent it and share how the trip went.</p>
-                </div>
-              ) : (
-                ratings.reviews.map((r, i) => (
-                  <div className="review" key={i}>
-                    <div className="r-head">
-                      {r.name} <span>{r.date}</span>
-                    </div>
-                    <p>{r.text}</p>
-                  </div>
-                ))
-              )}
             </div>
 
             <div className="section">

@@ -1,7 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { formatKES, formatDateLong } from '../data.js';
-import { mapBooking, useCar, useCarRatings, ratingLabel } from '../cars.js';
+import {
+  mapBooking,
+  useCar,
+  useCarRatings,
+  ratingLabel,
+  hostingDuration,
+  useHostAvatar,
+} from '../cars.js';
 import { CarPhoto, BackButton } from '../components.jsx';
 import { getBooking, cancelBooking, downloadReceipt, getHandoverCodes } from '../api.js';
 import {
@@ -111,6 +118,10 @@ export default function TripDetails() {
   // Live listing — brings the host avatar/joined-year and current price for rebooking.
   const { car: liveCar } = useCar(booking?.car.id || '');
   const ratings = useCarRatings(booking?.car.id || '');
+  const hostAvatar = useHostAvatar(
+    liveCar?.host.id || booking?.car.host.id,
+    liveCar?.host.avatarUrl
+  );
 
   if (loading) {
     return (
@@ -134,9 +145,7 @@ export default function TripDetails() {
   const galleryCar = { ...booking.car, photos };
   const host = liveCar?.host || booking.car.host;
   const hostFirstName = host.name.split(' ')[0];
-  const yearsHosting = host.joined
-    ? Math.max(1, new Date().getFullYear() - Number(host.joined))
-    : null;
+  const hosting = hostingDuration(liveCar?.host.createdAt);
   const cancellable = ['pending', 'confirmed'].includes(booking.status);
   const paid = ['confirmed', 'active', 'completed'].includes(booking.status);
   const bookedOn = fmtBookedOn(booking.createdAt);
@@ -284,7 +293,7 @@ export default function TripDetails() {
               <h2>Your host</h2>
               <div className="host-panel">
                 <span className="avatar" style={{ width: 68, height: 68, fontSize: 24 }}>
-                  {host.avatarUrl ? <img src={host.avatarUrl} alt={host.name} /> : host.name[0]}
+                  {hostAvatar ? <img src={hostAvatar} alt={host.name} /> : host.name[0]}
                 </span>
                 <b className="host-name">{host.name}</b>
                 {host.joined && <span className="car-meta">Host since {host.joined}</span>}
@@ -300,7 +309,7 @@ export default function TripDetails() {
                     <span>Reviews</span>
                   </div>
                   <div>
-                    <b>{yearsHosting ? `${yearsHosting} yr${yearsHosting > 1 ? 's' : ''}` : '—'}</b>
+                    <b>{hosting || '—'}</b>
                     <span>Hosting</span>
                   </div>
                 </div>

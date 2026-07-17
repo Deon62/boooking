@@ -393,6 +393,34 @@ const SUPABASE_ANON_KEY =
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im12emRkcmRma2d5ZG9pdHJibHBxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY5NzUwMjIsImV4cCI6MjA4MjU1MTAyMn0.g1Y4gOHwNyk_Wff_JtIZborgOsGfSccVASEikPR05gI';
 const AVATAR_BUCKET = 'client-profile-media';
 
+/** Host avatars live in host-profile-images as user_{hostId}/avatar_*.{jpg…} —
+ * the cars API often has host_avatar_url null even when a photo exists there. */
+export async function findHostAvatar(hostId) {
+  try {
+    const res = await fetch(`${SUPABASE_URL}/storage/v1/object/list/host-profile-images`, {
+      method: 'POST',
+      headers: {
+        apikey: SUPABASE_ANON_KEY,
+        Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        prefix: `user_${hostId}`,
+        limit: 100,
+        sortBy: { column: 'created_at', order: 'desc' },
+      }),
+    });
+    if (!res.ok) return null;
+    const files = await res.json();
+    if (!Array.isArray(files)) return null;
+    const file = files.find((f) => /^avatar_.*\.(jpg|jpeg|png|webp)$/i.test(f.name));
+    if (!file) return null;
+    return `${SUPABASE_URL}/storage/v1/object/public/host-profile-images/user_${hostId}/${file.name}`;
+  } catch {
+    return null;
+  }
+}
+
 export async function findClientAvatar(clientId) {
   try {
     const res = await fetch(`${SUPABASE_URL}/storage/v1/object/list/${AVATAR_BUCKET}`, {

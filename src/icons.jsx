@@ -228,6 +228,14 @@ export const BanIcon = (p) => (
   </I>
 );
 
+export const ShareIcon = (p) => (
+  <I {...p}>
+    <path d="M4 12.5V19a1.6 1.6 0 0 0 1.6 1.6h12.8A1.6 1.6 0 0 0 20 19v-6.5" />
+    <path d="M12 14.5V3.5" />
+    <path d="m7.8 7.2 4.2-3.9 4.2 3.9" />
+  </I>
+);
+
 export const ClockIcon = (p) => (
   <I {...p}>
     <circle cx="12" cy="12" r="9.5" />

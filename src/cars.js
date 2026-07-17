@@ -44,8 +44,54 @@ export function mapCar(c) {
       name: c.host_name || 'Ardena host',
       avatarUrl: c.host_avatar_url,
       joined: c.host_created_at ? String(new Date(c.host_created_at).getFullYear()) : null,
+      createdAt: c.host_created_at,
     },
   };
+}
+
+/** "3 mo" / "1 yr" style hosting duration — month granularity, matching the app. */
+export function hostingDuration(iso) {
+  if (!iso) return null;
+  const start = new Date(iso);
+  const now = new Date();
+  let months =
+    (now.getFullYear() - start.getFullYear()) * 12 + (now.getMonth() - start.getMonth());
+  if (months < 1) months = 1;
+  if (months < 12) return `${months} mo`;
+  const years = Math.floor(months / 12);
+  return `${years} yr${years > 1 ? 's' : ''}`;
+}
+
+// Host avatars resolved from Supabase storage when the API has none.
+const hostAvatarCache = new Map();
+
+export function useHostAvatar(hostId, existingUrl) {
+  const [url, setUrl] = useState(existingUrl || hostAvatarCache.get(hostId) || null);
+
+  useEffect(() => {
+    if (existingUrl) {
+      setUrl(existingUrl);
+      return undefined;
+    }
+    if (!hostId) {
+      setUrl(null);
+      return undefined;
+    }
+    if (hostAvatarCache.has(hostId)) {
+      setUrl(hostAvatarCache.get(hostId));
+      return undefined;
+    }
+    let on = true;
+    api.findHostAvatar(hostId).then((found) => {
+      hostAvatarCache.set(hostId, found);
+      if (on) setUrl(found);
+    });
+    return () => {
+      on = false;
+    };
+  }, [hostId, existingUrl]);
+
+  return url;
 }
 
 let listCache = null;

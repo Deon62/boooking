@@ -2,21 +2,64 @@ import React, { useEffect, useState } from 'react';
 import * as api from '../api.js';
 import { MastercardMark } from '../components.jsx';
 import mpesaImg from '../assets/mpesa.png';
-import { PhoneIcon, CreditCardIcon, PlusIcon } from '../icons.jsx';
+import { ShieldIcon } from '../icons.jsx';
 
-function methodDetail(m) {
-  if (m.method_type === 'mpesa') return m.mpesa_number || '';
-  if (m.card_last_four) {
-    return `•••• ${m.card_last_four}${m.expiry_date ? ` · exp ${m.expiry_date}` : ''}`;
-  }
-  return 'Entered securely on Paystack at checkout';
+function formatMpesaNumber(raw) {
+  const d = String(raw || '').replace(/\D/g, '');
+  if (d.length >= 12) return `+${d.slice(0, 3)} ${d.slice(3, 6)} ${d.slice(6, 9)} ${d.slice(9)}`;
+  return raw || '';
+}
+
+/** A saved method rendered as a real-looking debit card. */
+function DebitCard({ m }) {
+  const isMpesa = m.method_type === 'mpesa';
+  const brand = (m.card_type || '').toLowerCase();
+  const skin = isMpesa ? 'mpesa' : brand === 'visa' ? 'visa' : 'dark';
+
+  return (
+    <div className={`debit-card ${skin}`}>
+      <div className="dc-top">
+        <span className="dc-chip" />
+        {m.is_default && <span className="dc-default">Default</span>}
+      </div>
+      <div className="dc-number">
+        {isMpesa
+          ? formatMpesaNumber(m.mpesa_number)
+          : m.card_last_four
+            ? `•••• •••• •••• ${m.card_last_four}`
+            : '•••• •••• •••• ••••'}
+      </div>
+      <div className="dc-bottom">
+        <div className="dc-meta">
+          <span>{isMpesa ? 'Mobile money' : 'Cardholder'}</span>
+          <b>{m.name || (isMpesa ? 'M-Pesa' : 'Card')}</b>
+        </div>
+        {m.expiry_date && (
+          <div className="dc-meta">
+            <span>Expires</span>
+            <b>{m.expiry_date}</b>
+          </div>
+        )}
+        <span className="dc-brand">
+          {isMpesa ? (
+            <span className="dc-brand-chip">
+              <img src={mpesaImg} alt="M-Pesa" />
+            </span>
+          ) : brand === 'mastercard' ? (
+            <MastercardMark height={26} />
+          ) : (
+            <span className="dc-visa">VISA</span>
+          )}
+        </span>
+      </div>
+    </div>
+  );
 }
 
 export default function Payments() {
   const [methods, setMethods] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [adding, setAdding] = useState(false);
   const [phone, setPhone] = useState('');
   const [busy, setBusy] = useState(false);
 
@@ -48,111 +91,110 @@ export default function Payments() {
     run(async () => {
       await api.addMpesaMethod('M-Pesa', phone.replace(/\D/g, ''));
       setPhone('');
-      setAdding(false);
     });
 
   return (
     <div className="page">
-      <div className="container" style={{ maxWidth: 620 }}>
+      <div className="container" style={{ maxWidth: 1020 }}>
         <h1 className="page-title">Payment methods</h1>
         <p className="page-sub">Used for bookings on web and in the Ardena app.</p>
 
-        <div className="form-card">
-          {loading ? (
-            <>
-              <div className="skel-line" style={{ width: '80%', height: 52, borderRadius: 14 }} />
-              <div className="skel-line" style={{ width: '80%', height: 52, borderRadius: 14 }} />
-            </>
-          ) : methods.length === 0 && !adding ? (
-            <p style={{ color: 'var(--text-2)', fontSize: 14.5, marginBottom: 12 }}>
-              No payment methods yet — add one below, or just pay at checkout and we&apos;ll save it
-              for next time.
-            </p>
-          ) : (
-            methods.map((m) => (
-              <div className="pay-method static" key={m.id} style={{ cursor: 'default' }}>
-                <span className="icon">
-                  {m.method_type === 'mpesa' ? <PhoneIcon size={21} /> : <CreditCardIcon size={21} />}
-                </span>
-                <span style={{ flex: 1 }}>
-                  {m.name || (m.method_type === 'mpesa' ? 'M-Pesa' : 'Card')}
-                  <span className="sub">{methodDetail(m)}</span>
-                </span>
-                <span className="card-logos">
-                  {m.method_type === 'mpesa' ? (
-                    <img src={mpesaImg} alt="M-Pesa" className="mpesa-img" />
-                  ) : (
-                    <>
-                      <span className="visa-logo">VISA</span>
-                      <MastercardMark height={18} />
-                    </>
-                  )}
-                </span>
-                {m.is_default ? (
-                  <span className="status-pill confirmed" style={{ color: 'var(--primary)' }}>
-                    Default
-                  </span>
-                ) : (
+        <div className="pm-layout">
+          <div>
+            {loading ? (
+              <div className="dc-grid">
+                <div className="debit-card img-skel" style={{ position: 'relative' }} />
+                <div className="debit-card img-skel" style={{ position: 'relative' }} />
+              </div>
+            ) : methods.length === 0 ? (
+              <p className="pm-empty">
+                No saved methods yet. Add your M-Pesa number below, or just pay at checkout and
+                we&apos;ll save it for next time.
+              </p>
+            ) : (
+              <div className="dc-grid">
+                {methods.map((m) => (
+                  <div key={m.id}>
+                    <DebitCard m={m} />
+                    <div className="dc-actions">
+                      {!m.is_default && (
+                        <button
+                          className="link"
+                          disabled={busy}
+                          onClick={() => run(() => api.setDefaultPaymentMethod(m.id))}
+                        >
+                          Make default
+                        </button>
+                      )}
+                      <button
+                        className="link"
+                        style={{ color: 'var(--error)' }}
+                        disabled={busy}
+                        onClick={() => run(() => api.deletePaymentMethod(m.id))}
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            <div className="form-card" style={{ marginTop: 26 }}>
+              <div className="field" style={{ marginBottom: 0 }}>
+                <label>Add an M-Pesa number</label>
+                <div className="pm-add-row">
+                  <div className="control" style={{ flex: 1 }}>
+                    <input
+                      type="tel"
+                      placeholder="+254 7XX XXX XXX"
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
+                    />
+                  </div>
                   <button
-                    className="link"
-                    style={{ fontSize: 12.5, fontWeight: 700 }}
-                    disabled={busy}
-                    onClick={() => run(() => api.setDefaultPaymentMethod(m.id))}
+                    className="btn-primary"
+                    disabled={busy || phone.replace(/\D/g, '').length < 9}
+                    onClick={addMpesa}
                   >
-                    Make default
+                    {busy ? 'Saving…' : 'Save number'}
                   </button>
-                )}
-                <button
-                  className="link"
-                  style={{ fontSize: 12.5, fontWeight: 700, color: 'var(--error)' }}
-                  disabled={busy}
-                  onClick={() => run(() => api.deletePaymentMethod(m.id))}
-                >
-                  Remove
-                </button>
+                </div>
+                <p className="info-note" style={{ paddingBottom: 0 }}>
+                  Cards are added automatically the first time you pay by card. Card details are
+                  entered on Paystack&apos;s secure page, never here.
+                </p>
               </div>
-            ))
-          )}
-
-          {adding && (
-            <div className="field" style={{ marginTop: 8 }}>
-              <label>M-Pesa phone number</label>
-              <div className="control">
-                <input
-                  type="tel"
-                  placeholder="+254 7XX XXX XXX"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                />
-              </div>
-              <button
-                className="btn-primary btn-block"
-                style={{ marginTop: 12 }}
-                disabled={busy || phone.replace(/\D/g, '').length < 9}
-                onClick={addMpesa}
-              >
-                {busy ? 'Saving…' : 'Save M-Pesa number'}
-              </button>
+              {error && (
+                <div style={{ color: 'var(--error)', fontSize: 13.5, fontWeight: 700, marginTop: 12 }}>
+                  {error}
+                </div>
+              )}
             </div>
-          )}
-
-          {!adding && !loading && (
-            <button className="btn-google" style={{ marginTop: 8 }} onClick={() => setAdding(true)}>
-              <PlusIcon size={17} />
-              Add M-Pesa number
-            </button>
-          )}
-
-          {error && (
-            <div style={{ color: 'var(--error)', fontSize: 13.5, fontWeight: 700, marginTop: 12 }}>
-              {error}
-            </div>
-          )}
-
-          <div className="notice">
-            Cards are entered on <b>Paystack&apos;s secure page</b> during checkout. We never see
-            or store card numbers.
           </div>
+
+          <aside className="pm-info">
+            <h3>How payments work</h3>
+            <p>
+              You pay when you book, by M-Pesa STK push or card on Paystack&apos;s secure page.
+              Ardena holds the money and only releases it to the host after pickup. Refundable
+              deposits come back to you after the trip.
+            </p>
+            <hr />
+            <h3>Spotted something off?</h3>
+            <p>
+              Report anything suspicious to{' '}
+              <a href="mailto:support@ardena.co.ke">support@ardena.co.ke</a> or call{' '}
+              <a href="tel:+254702248984">+254 702 248 984</a>.
+            </p>
+            <div className="pm-never">
+              <ShieldIcon size={17} />
+              <span>
+                Ardena will <b>never</b> call or text asking for your M-Pesa PIN, card details or
+                password. If anyone does, they are not us. Report them right away.
+              </span>
+            </div>
+          </aside>
         </div>
       </div>
     </div>
