@@ -211,6 +211,29 @@ export function mapBooking(b) {
   };
 }
 
+// ---------- recently viewed (local, for the wishlist page) ----------
+
+const LS_RECENT = 'ardena.web.recentCars';
+const RECENT_MAX = 8;
+
+export function noteRecentlyViewed(id) {
+  try {
+    const current = JSON.parse(localStorage.getItem(LS_RECENT)) || [];
+    const next = [id, ...current.filter((x) => x !== id)].slice(0, RECENT_MAX);
+    localStorage.setItem(LS_RECENT, JSON.stringify(next));
+  } catch {
+    /* storage unavailable — skip */
+  }
+}
+
+export function getRecentlyViewed() {
+  try {
+    return JSON.parse(localStorage.getItem(LS_RECENT)) || [];
+  } catch {
+    return [];
+  }
+}
+
 /** Star label that copes with unrated cars. */
 export function ratingLabel(car) {
   return car.rating ? car.rating.toFixed(1) : 'New';

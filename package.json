@@ -2,7 +2,7 @@
   "name": "ardena-bookings-web",
   "private": true,
   "version": "0.1.0",
-  "description": "Ardena web booking portal (bookings.ardena.co.ke) — prototype with mock data",
+  "description": "Ardena web booking portal (bookings.ardena.co.ke) — book, pay and chat with the same account as the Ardena app",
   "type": "module",
   "scripts": {
     "dev": "vite",

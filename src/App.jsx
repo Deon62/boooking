@@ -45,6 +45,7 @@ const HIDE_FOOTER = [
   /^\/pay$/,
   /^\/book\//,
   /^\/confirmed\//,
+  /^\/wishlist$/,
 ];
 
 function FooterGate() {

@@ -78,10 +78,10 @@ function BookingForm({ car }) {
   const [dropoffTime, setDropoffTime] = useState('10:00');
   const [sameDropoff, setSameDropoff] = useState(true);
   const [dropoffLocation, setDropoffLocation] = useState('');
-  // Deliberately unselected so the renter makes an explicit choice.
   const [driveType, setDriveType] = useState(car.driveTypes.length === 1 ? car.driveTypes[0] : null);
-  const [protection, setProtection] = useState(null);
-  const [checkIn, setCheckIn] = useState(null);
+  // Sensible defaults, still switchable: basic protection + self check-in.
+  const [protection, setProtection] = useState('basic');
+  const [checkIn, setCheckIn] = useState('self');
   const damageWaiver = protection === 'waiver';
   const [notes, setNotes] = useState('');
   const [unavailable, setUnavailable] = useState(() => new Set());

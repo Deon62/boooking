@@ -228,6 +228,13 @@ export const BanIcon = (p) => (
   </I>
 );
 
+export const ClockIcon = (p) => (
+  <I {...p}>
+    <circle cx="12" cy="12" r="9.5" />
+    <path d="M12 6.5V12l3.5 2" />
+  </I>
+);
+
 export const ChevronRightIcon = (p) => (
   <I {...p}>
     <path d="m9 5 7 7-7 7" />

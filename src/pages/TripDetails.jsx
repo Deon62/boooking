@@ -304,9 +304,12 @@ export default function TripDetails() {
                     <span>Hosting</span>
                   </div>
                 </div>
-                <button className="neo-btn host-msg" onClick={messageHost}>
+                <button className="neo-btn host-msg" disabled={!paid} onClick={messageHost}>
                   <ChatIcon size={16} /> Message {hostFirstName}
                 </button>
+                {!paid && (
+                  <span className="host-msg-hint">Unlocks once the booking is paid</span>
+                )}
               </div>
             </div>
 

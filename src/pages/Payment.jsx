@@ -1,7 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { formatKES, formatDateLong } from '../data.js';
-import { CarPhoto, BackButton } from '../components.jsx';
+import { CarPhoto, BackButton, MastercardMark } from '../components.jsx';
+import mpesaImg from '../assets/mpesa.png';
 import { useApp } from '../store.jsx';
 import * as api from '../api.js';
 import { PhoneIcon, CreditCardIcon } from '../icons.jsx';
@@ -171,7 +172,7 @@ export default function Payment() {
                   <span className="sub">You&apos;ll get an STK push on your phone</span>
                 </span>
                 <span className="card-logos">
-                  <span className="mpesa-logo">M-PESA</span>
+                  <img src={mpesaImg} alt="M-Pesa" className="mpesa-img" />
                 </span>
               </button>
               <button
@@ -187,14 +188,7 @@ export default function Payment() {
                 </span>
                 <span className="card-logos">
                   <span className="visa-logo">VISA</span>
-                  <svg className="mc-logo" viewBox="0 0 36 22" aria-label="Mastercard">
-                    <circle cx="13" cy="11" r="10" fill="#eb001b" />
-                    <circle cx="23" cy="11" r="10" fill="#f79e1b" />
-                    <path
-                      d="M18 3.2a10 10 0 0 1 0 15.6 10 10 0 0 1 0-15.6z"
-                      fill="#ff5f00"
-                    />
-                  </svg>
+                  <MastercardMark />
                 </span>
               </button>
               <Link to="/payments" target="_blank" className="link manage-methods">

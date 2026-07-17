@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import * as api from '../api.js';
+import { MastercardMark } from '../components.jsx';
+import mpesaImg from '../assets/mpesa.png';
 import { PhoneIcon, CreditCardIcon, PlusIcon } from '../icons.jsx';
 
 function methodDetail(m) {
@@ -76,6 +78,16 @@ export default function Payments() {
                   {m.name || (m.method_type === 'mpesa' ? 'M-Pesa' : 'Card')}
                   <span className="sub">{methodDetail(m)}</span>
                 </span>
+                <span className="card-logos">
+                  {m.method_type === 'mpesa' ? (
+                    <img src={mpesaImg} alt="M-Pesa" className="mpesa-img" />
+                  ) : (
+                    <>
+                      <span className="visa-logo">VISA</span>
+                      <MastercardMark height={18} />
+                    </>
+                  )}
+                </span>
                 {m.is_default ? (
                   <span className="status-pill confirmed" style={{ color: 'var(--primary)' }}>
                     Default
@@ -138,7 +150,7 @@ export default function Payments() {
           )}
 
           <div className="notice">
-            Cards are entered on <b>Paystack&apos;s secure page</b> during checkout — we never see
+            Cards are entered on <b>Paystack&apos;s secure page</b> during checkout. We never see
             or store card numbers.
           </div>
         </div>

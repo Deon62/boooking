@@ -957,6 +957,10 @@ textarea {
   color: var(--primary);
 }
 
+.report-reason .radio-dot {
+  margin-left: auto;
+}
+
 .review {
   padding: 16px 18px;
   border-radius: var(--r-md);
@@ -1170,12 +1174,14 @@ textarea {
 }
 
 .choice-btn.selected .radio-dot,
-.protect-card.selected .radio-dot {
+.protect-card.selected .radio-dot,
+.report-reason.selected .radio-dot {
   border-color: var(--primary);
 }
 
 .choice-btn.selected .radio-dot::after,
-.protect-card.selected .radio-dot::after {
+.protect-card.selected .radio-dot::after,
+.report-reason.selected .radio-dot::after {
   content: '';
   position: absolute;
   inset: 2.5px;
@@ -1279,12 +1285,75 @@ textarea {
   color: #1a1f71;
 }
 
-.mpesa-logo {
-  font-style: italic;
-  font-weight: 900;
-  font-size: 13.5px;
-  letter-spacing: 0.4px;
-  color: #3cb54a;
+.mpesa-img {
+  height: 22px;
+  width: auto;
+  display: block;
+}
+
+/* dashed info containers (description, empty states) */
+.dashed-card {
+  border: 1.5px dashed rgba(122, 138, 160, 0.55);
+  border-radius: var(--r-lg);
+  padding: 18px 22px;
+}
+
+.car-desc {
+  margin-top: 16px;
+  color: var(--text-2);
+  max-width: 640px;
+  line-height: 1.6;
+}
+
+.reviews-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  text-align: center;
+  padding: 34px 22px;
+  max-width: 640px;
+}
+
+.reviews-empty-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--surface);
+  box-shadow: var(--neo-out-sm);
+  color: var(--primary);
+  margin-bottom: 8px;
+}
+
+.reviews-empty b {
+  font-size: 15px;
+}
+
+.reviews-empty p {
+  font-size: 13px;
+  color: var(--hint);
+  font-weight: 600;
+  margin: 0;
+}
+
+.host-msg:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.host-msg:disabled:hover {
+  background: #16181d;
+}
+
+.host-msg-hint {
+  display: block;
+  margin-top: 9px;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--hint);
+  text-align: center;
 }
 
 .mc-logo {
@@ -1297,6 +1366,127 @@ textarea {
   display: inline-block;
   font-size: 13px;
   margin-top: 2px;
+}
+
+/* wishlist: minimal chips + recently-viewed strip */
+.wl-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 10px 20px;
+  border-radius: var(--r-pill);
+  background: var(--surface);
+  box-shadow: var(--neo-out-sm);
+  font-weight: 800;
+  font-size: 13px;
+  letter-spacing: 0.3px;
+  color: var(--text-2);
+  margin-bottom: 6px;
+}
+
+.wl-chip svg {
+  color: var(--error);
+}
+
+.wl-chip.neutral svg {
+  color: var(--text-2);
+}
+
+.wl-count {
+  background: rgba(0, 127, 250, 0.1);
+  color: var(--primary);
+  border-radius: var(--r-pill);
+  padding: 2px 11px;
+  font-size: 12px;
+}
+
+.wl-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 70px 20px;
+  text-align: center;
+  color: var(--hint);
+}
+
+.wl-empty p {
+  font-size: 16.5px;
+  font-weight: 800;
+  color: var(--text-2);
+  margin: 0;
+}
+
+.wl-empty span {
+  font-size: 13.5px;
+  font-weight: 600;
+  max-width: 340px;
+}
+
+.wl-empty .btn-primary {
+  margin-top: 12px;
+}
+
+.recent-card {
+  display: flex;
+  gap: 26px;
+  overflow-x: auto;
+  padding: 24px 26px;
+  margin-top: 16px;
+  border-radius: var(--r-lg);
+  background: var(--surface);
+  box-shadow: var(--neo-out-sm);
+}
+
+.recent-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
+  min-width: 104px;
+  color: inherit;
+  text-align: center;
+}
+
+.recent-item .pic {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  overflow: hidden;
+  box-shadow: var(--neo-out-sm);
+  transition: transform 0.15s ease;
+}
+
+.recent-item:hover .pic {
+  transform: translateY(-2px) scale(1.04);
+}
+
+.recent-item .pic img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.recent-item .pic .ph {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  font-size: 24px;
+}
+
+.recent-item b {
+  font-size: 12.5px;
+  max-width: 118px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.recent-item span {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--hint);
 }
 
 .missing-hint {

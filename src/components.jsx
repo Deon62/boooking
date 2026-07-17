@@ -88,6 +88,22 @@ export function CarCardSkeleton() {
   );
 }
 
+/** Mastercard interlocking-circles mark (inline SVG, no asset needed). */
+export function MastercardMark({ height = 21 }) {
+  return (
+    <svg
+      className="mc-logo"
+      style={{ height, width: (height * 36) / 22 }}
+      viewBox="0 0 36 22"
+      aria-label="Mastercard"
+    >
+      <circle cx="13" cy="11" r="10" fill="#eb001b" />
+      <circle cx="23" cy="11" r="10" fill="#f79e1b" />
+      <path d="M18 3.2a10 10 0 0 1 0 15.6 10 10 0 0 1 0-15.6z" fill="#ff5f00" />
+    </svg>
+  );
+}
+
 /** User avatar: profile photo from the API when set, initials otherwise. */
 export function Avatar({ user, size = 36, fontSize }) {
   const [failed, setFailed] = useState(false);

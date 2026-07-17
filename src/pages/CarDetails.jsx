@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { formatKES, DAMAGE_WAIVER_PRICE_PER_DAY } from '../data.js';
-import { useCar, useCarRatings, ratingLabel } from '../cars.js';
+import { useCar, useCarRatings, ratingLabel, noteRecentlyViewed } from '../cars.js';
 import { CarPhoto, BackButton } from '../components.jsx';
 import { useApp } from '../store.jsx';
-import { reportListing } from '../api.js';
+import { reportListing, listBookings } from '../api.js';
 import {
   CogIcon,
   FuelIcon,
@@ -84,8 +84,8 @@ function ReportListing({ carId }) {
             className={`report-reason${reason === r ? ' selected' : ''}`}
             onClick={() => setReason(r)}
           >
-            {reason === r && <CheckIcon size={14} />}
             {r}
+            <span className="radio-dot" />
           </button>
         ))}
       </div>
@@ -134,6 +134,35 @@ export default function CarDetails() {
   const { user } = useApp();
   const { car, loading, error } = useCar(id);
   const ratings = useCarRatings(id);
+  // Messaging unlocks only after a paid booking for this car.
+  const [hasBooked, setHasBooked] = useState(false);
+
+  useEffect(() => {
+    if (car) noteRecentlyViewed(car.id);
+  }, [car?.id]);
+
+  useEffect(() => {
+    if (!user || !car) {
+      setHasBooked(false);
+      return undefined;
+    }
+    let on = true;
+    listBookings()
+      .then((data) => {
+        if (!on) return;
+        setHasBooked(
+          (data.bookings || []).some(
+            (b) =>
+              String(b.car_id) === car.id &&
+              ['confirmed', 'active', 'completed'].includes(b.status)
+          )
+        );
+      })
+      .catch(() => {});
+    return () => {
+      on = false;
+    };
+  }, [user?.id, car?.id]);
 
   if (loading) {
     return (
@@ -178,11 +207,9 @@ export default function CarDetails() {
   };
 
   const messageHost = () => {
-    if (!user) navigate('/login', { state: { next: '/messages' } });
-    else
-      navigate('/messages', {
-        state: { hostId: car.host.id, hostName: car.host.name, carName: car.name },
-      });
+    navigate('/messages', {
+      state: { hostId: car.host.id, hostName: car.host.name, carName: car.name },
+    });
   };
 
   const specs = [
@@ -220,7 +247,9 @@ export default function CarDetails() {
               <StarIcon size={15} /> {ratingLabel(car)} · {reviewCount} review
               {reviewCount === 1 ? '' : 's'} · {car.locationName}, {car.city}
             </div>
-            <p style={{ marginTop: 14, color: 'var(--text-2)', maxWidth: 640 }}>{car.description}</p>
+            {car.description && (
+              <p className="dashed-card car-desc">{car.description}</p>
+            )}
 
             <div className="section">
               <h2>Specs</h2>
@@ -268,9 +297,16 @@ export default function CarDetails() {
                       <span>Hosting</span>
                     </div>
                   </div>
-                  <button className="neo-btn host-msg" onClick={messageHost}>
+                  <button
+                    className="neo-btn host-msg"
+                    disabled={!hasBooked}
+                    onClick={messageHost}
+                  >
                     <ChatIcon size={16} /> Message {hostFirstName}
                   </button>
+                  {!hasBooked && (
+                    <span className="host-msg-hint">Unlocks after you book this car</span>
+                  )}
                 </div>
               </div>
 
@@ -385,7 +421,13 @@ export default function CarDetails() {
               {ratings.loading ? (
                 <p style={{ color: 'var(--text-2)' }}>Loading reviews…</p>
               ) : ratings.reviews.length === 0 ? (
-                <p style={{ color: 'var(--text-2)' }}>No reviews yet — be the first to rent it.</p>
+                <div className="dashed-card reviews-empty">
+                  <span className="reviews-empty-icon">
+                    <StarIcon size={22} />
+                  </span>
+                  <b>No reviews yet</b>
+                  <p>Be the first to rent it and share how the trip went.</p>
+                </div>
               ) : (
                 ratings.reviews.map((r, i) => (
                   <div className="review" key={i}>
