@@ -251,6 +251,20 @@ export const ShareIcon = (p) => (
   </I>
 );
 
+export const CopyIcon = (p) => (
+  <I {...p}>
+    <rect x="9" y="9" width="12" height="12" rx="2.5" />
+    <path d="M5 15H4.5A2.5 2.5 0 0 1 2 12.5v-8A2.5 2.5 0 0 1 4.5 2h8A2.5 2.5 0 0 1 15 4.5V5" />
+  </I>
+);
+
+export const RefreshIcon = (p) => (
+  <I {...p}>
+    <path d="M21 12a9 9 0 1 1-2.64-6.36" />
+    <polyline points="21 3 21 9 15 9" />
+  </I>
+);
+
 export const ClockIcon = (p) => (
   <I {...p}>
     <circle cx="12" cy="12" r="9.5" />

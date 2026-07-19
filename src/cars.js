@@ -246,6 +246,7 @@ export function mapBooking(b) {
     cancellationReason: b.cancellation_reason,
     refundPolicyReason: b.refund_policy_reason,
     requiresHandoverCode: Boolean(b.requires_handover_code),
+    endsAtISO: b.end_date, // raw datetime — extensions keep the same drop-off time
     createdAt: b.created_at,
     car: {
       id: String(b.car_id),

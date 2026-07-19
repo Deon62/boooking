@@ -231,6 +231,11 @@ export function cancelBooking(bookingId) {
   return request(`/client/bookings/${bookingId}/cancel`, { method: 'POST', auth: true });
 }
 
+/** Live refund preview if the client cancels right now — does NOT cancel. */
+export function getCancellationPreview(bookingId) {
+  return request(`/client/bookings/${bookingId}/cancellation-preview`, { auth: true });
+}
+
 /** Removes a past booking from the client's history (soft delete server-side). */
 export function deleteBookingRecord(bookingId) {
   return request(`/client/bookings/${bookingId}`, { method: 'DELETE', auth: true });
@@ -239,6 +244,43 @@ export function deleteBookingRecord(bookingId) {
 /** Renter's pickup/return handover codes for a booking. */
 export function getHandoverCodes(bookingId) {
   return request(`/client/bookings/${bookingId}/handover`, { auth: true });
+}
+
+/** Regenerate one handover code (phase: 'pickup' | 'return'); old code stops working. */
+export function refreshHandoverCode(bookingId, phase) {
+  return request(`/client/bookings/${bookingId}/handover/${phase}/refresh`, {
+    method: 'POST',
+    auth: true,
+  });
+}
+
+// ---------- trip extensions (auth) ----------
+// Client proposes a later drop-off → host approves → client pays the extra days
+// (M-Pesa only, at least 24h before the current drop-off).
+
+export function listExtensions(bookingId) {
+  return request(`/client/bookings/${bookingId}/extensions`, { auth: true });
+}
+
+export function requestExtension(bookingId, newEndDate, newDropoffLocation = null) {
+  return request(`/client/bookings/${bookingId}/extensions`, {
+    method: 'POST',
+    body: {
+      new_end_date: newEndDate,
+      dropoff_same_as_previous: !newDropoffLocation,
+      new_dropoff_location: newDropoffLocation || null,
+    },
+    auth: true,
+  });
+}
+
+/** STK push for a host-approved extension. Poll getPaymentStatus({ checkout_request_id }). */
+export function payExtension(bookingId, extensionId, paymentMethodId) {
+  return request(`/client/bookings/${bookingId}/extensions/${extensionId}/pay`, {
+    method: 'POST',
+    body: { payment_method_id: paymentMethodId },
+    auth: true,
+  });
 }
 
 async function requestBlob(path, retry = true) {

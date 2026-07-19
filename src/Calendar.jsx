@@ -61,6 +61,42 @@ function Month({ year, month, start, end, minDate, disabledDates, onPick, classN
   );
 }
 
+/** One-month single-date picker (trip-extension drop-off etc.). */
+export function SingleDateCalendar({ value, onChange, minDate }) {
+  const [view, setView] = useState(() => {
+    const base = value || minDate;
+    const d = base ? new Date(base + 'T00:00:00') : new Date();
+    return { year: d.getFullYear(), month: d.getMonth() };
+  });
+
+  const shift = (n) =>
+    setView((v) => {
+      const d = new Date(v.year, v.month + n, 1);
+      return { year: d.getFullYear(), month: d.getMonth() };
+    });
+
+  return (
+    <div className="cal-single">
+      <div className="cal-months">
+        <button type="button" className="cal-arrow left" onClick={() => shift(-1)} aria-label="Previous month">
+          ‹
+        </button>
+        <Month
+          year={view.year}
+          month={view.month}
+          start={value}
+          end={value}
+          minDate={minDate}
+          onPick={onChange}
+        />
+        <button type="button" className="cal-arrow right" onClick={() => shift(1)} aria-label="Next month">
+          ›
+        </button>
+      </div>
+    </div>
+  );
+}
+
 const FLEX_CHIPS = ['Exact dates', '± 1 day', '± 2 days', '± 3 days', '± 7 days', '± 14 days'];
 
 export function DateRangeCalendar({ start, end, onChange, minDate, disabledDates }) {
