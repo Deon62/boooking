@@ -4994,15 +4994,151 @@ a.trip-card:hover {
   align-items: center;
   text-align: center;
   gap: 8px;
-  padding: 90px 20px 120px;
+  padding: 70px 20px 110px;
 }
 
+/* animated "404 → face" mark (adapted from a free frontend snippet).
+   The internal transforms are in viewBox units, so display width can change
+   freely without breaking the animation. */
+.notfound .face {
+  display: block;
+  width: 190px;
+  height: auto;
+  color: var(--text);
+  margin-bottom: 10px;
+}
+
+.notfound .face__eyes,
+.notfound .face__eye-lid,
+.notfound .face__mouth-left,
+.notfound .face__mouth-right,
+.notfound .face__nose,
+.notfound .face__pupil {
+  animation: nf-eyes 1s 0.3s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+}
+
+.notfound .face__eye-lid,
+.notfound .face__pupil {
+  animation-duration: 4s;
+  animation-delay: 1.3s;
+  animation-iteration-count: infinite;
+}
+
+.notfound .face__eye-lid {
+  animation-name: nf-eye-lid;
+}
+
+.notfound .face__mouth-left,
+.notfound .face__mouth-right {
+  animation-timing-function: cubic-bezier(0.33, 1, 0.68, 1);
+}
+
+.notfound .face__mouth-left {
+  animation-name: nf-mouth-left;
+}
+
+.notfound .face__mouth-right {
+  animation-name: nf-mouth-right;
+}
+
+.notfound .face__nose {
+  animation-name: nf-nose;
+}
+
+.notfound .face__pupil {
+  animation-name: nf-pupil;
+}
+
+@keyframes nf-eye-lid {
+  from,
+  40%,
+  45%,
+  to {
+    transform: translateY(0);
+  }
+  42.5% {
+    transform: translateY(17.5px);
+  }
+}
+
+@keyframes nf-eyes {
+  from {
+    transform: translateY(112.5px);
+  }
+  to {
+    transform: translateY(15px);
+  }
+}
+
+@keyframes nf-pupil {
+  from,
+  37.5%,
+  40%,
+  45%,
+  87.5%,
+  to {
+    stroke-dashoffset: 0;
+    transform: translate(0, 0);
+  }
+  12.5%,
+  25%,
+  62.5%,
+  75% {
+    stroke-dashoffset: 0;
+    transform: translate(-35px, 0);
+  }
+  42.5% {
+    stroke-dashoffset: 35;
+    transform: translate(0, 17.5px);
+  }
+}
+
+@keyframes nf-mouth-left {
+  from,
+  50% {
+    stroke-dashoffset: -102;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes nf-mouth-right {
+  from,
+  50% {
+    stroke-dashoffset: 102;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes nf-nose {
+  from {
+    transform: translate(0, 0);
+  }
+  to {
+    transform: translate(0, 22.5px);
+  }
+}
+
+/* static "404" fallback (also the accessible reduced-motion view) */
 .notfound-code {
+  display: none;
   font-size: 76px;
   font-weight: 800;
   letter-spacing: -3px;
   line-height: 1;
   color: var(--text);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .notfound .face {
+    display: none;
+  }
+  .notfound-code {
+    display: block;
+  }
 }
 
 .notfound b {

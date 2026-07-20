@@ -86,7 +86,9 @@ shadow reserved for floating elements (modals, dropdowns, sticky widgets).
       `useToast`). Dark snackbar, auto-dismiss, click-to-dismiss, reduced-motion aware.
       Wired to wishlist like/unlike + share; **still to do**: route the ~10 inline
       `var(--error)` messages and other successes through it.
-- [x] 🟠 **404 / not-found route** — added `<Route path="*">` → branded `NotFound`.
+- [x] 🟠 **404 / not-found route** — added `<Route path="*">` → branded `NotFound`
+      with an animated "404 → face" SVG (theme-coloured strokes, static "404"
+      fallback under `prefers-reduced-motion`).
 - [x] 🟠 **Consistent loading skeletons** — every data page now has a layout-mirroring
       skeleton: Messages, Home shelves, Trips, car lists, CarDetails, **Booking**,
       **TripDetails**, and **Notifications** (rebuilt to match its row layout).
