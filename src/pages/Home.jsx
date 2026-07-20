@@ -3,8 +3,219 @@ import { CITIES, MIN_RENTAL_DAYS, addDays } from '../data.js';
 import { useCars } from '../cars.js';
 import { CarCard, CarCardSkeleton } from '../components.jsx';
 import { DateRangeCalendar, fmtShort } from '../Calendar.jsx';
-import { CheckIcon, MapPinIcon } from '../icons.jsx';
+import { CheckIcon, MapPinIcon, XIcon } from '../icons.jsx';
 import emptyVideo from '../assets/empty.webm';
+
+/** Mirrors the GET /cars filter surface (min_price/max_price, body_type,
+ * min_seats, transmission, fuel_type, driver_option). Applied client-side
+ * against the already-loaded catalogue. */
+const EMPTY_FILTERS = {
+  minPrice: 0,
+  maxPrice: 0,
+  types: [],
+  minSeats: 0,
+  transmission: '',
+  fuels: [],
+  drive: '',
+};
+
+const PRICE_BANDS = [
+  { label: 'Any price', min: 0, max: 0 },
+  { label: 'Under 4,000', min: 0, max: 4000 },
+  { label: '4,000 – 7,000', min: 4000, max: 7000 },
+  { label: '7,000 – 10,000', min: 7000, max: 10000 },
+  { label: '10,000+', min: 10000, max: 0 },
+];
+
+const SEAT_BANDS = [
+  { label: 'Any', min: 0 },
+  { label: '4+', min: 4 },
+  { label: '5+', min: 5 },
+  { label: '7+', min: 7 },
+];
+
+const DRIVE_OPTIONS = [
+  { label: 'Any', value: '' },
+  { label: 'Self drive', value: 'self' },
+  { label: 'With chauffeur', value: 'chauffeur' },
+];
+
+function matchesFilters(c, f) {
+  if (f.minPrice && c.pricePerDay < f.minPrice) return false;
+  if (f.maxPrice && c.pricePerDay > f.maxPrice) return false;
+  if (f.types.length && !f.types.includes(c.type)) return false;
+  if (f.minSeats && c.seats < f.minSeats) return false;
+  if (f.transmission && c.transmission !== f.transmission) return false;
+  if (f.fuels.length && !f.fuels.includes(c.fuel)) return false;
+  if (f.drive === 'self' && !c.driveTypes.includes('self')) return false;
+  if (f.drive === 'chauffeur' && !c.driveTypes.includes('withDriver')) return false;
+  return true;
+}
+
+function countActiveFilters(f) {
+  return (
+    (f.minPrice || f.maxPrice ? 1 : 0) +
+    (f.types.length ? 1 : 0) +
+    (f.minSeats ? 1 : 0) +
+    (f.transmission ? 1 : 0) +
+    (f.fuels.length ? 1 : 0) +
+    (f.drive ? 1 : 0)
+  );
+}
+
+function Chip({ on, onClick, children }) {
+  return (
+    <button type="button" className={`filter-chip${on ? ' on' : ''}`} onClick={onClick}>
+      {children}
+    </button>
+  );
+}
+
+/** Near-fullscreen filter sheet. Keeps a local draft so nothing changes on the
+ * page until "Show cars" is pressed; the button shows the live match count. */
+function FilterModal({ open, onClose, baseCars, options, applied, onApply }) {
+  const [draft, setDraft] = useState(applied);
+
+  useEffect(() => {
+    if (open) setDraft(applied);
+  }, [open, applied]);
+
+  useEffect(() => {
+    if (!open) return undefined;
+    const onKey = (e) => e.key === 'Escape' && onClose();
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [open, onClose]);
+
+  if (!open) return null;
+
+  const toggleArr = (key, val) =>
+    setDraft((d) => ({
+      ...d,
+      [key]: d[key].includes(val) ? d[key].filter((x) => x !== val) : [...d[key], val],
+    }));
+  const setOne = (key, val) => setDraft((d) => ({ ...d, [key]: d[key] === val ? '' : val }));
+  const setPrice = (min, max) => setDraft((d) => ({ ...d, minPrice: min, maxPrice: max }));
+
+  const count = baseCars.filter((c) => matchesFilters(c, draft)).length;
+
+  return (
+    <div className="filter-overlay" onClick={onClose}>
+      <div
+        className="filter-modal"
+        role="dialog"
+        aria-label="Filter cars"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="filter-head">
+          <h2>Filters</h2>
+          <button className="filter-close" aria-label="Close filters" onClick={onClose}>
+            <XIcon size={18} />
+          </button>
+        </div>
+
+        <div className="filter-body">
+          <div className="filter-section">
+            <h3>Price per day</h3>
+            <div className="chip-row">
+              {PRICE_BANDS.map((band) => (
+                <Chip
+                  key={band.label}
+                  on={draft.minPrice === band.min && draft.maxPrice === band.max}
+                  onClick={() => setPrice(band.min, band.max)}
+                >
+                  {band.label}
+                </Chip>
+              ))}
+            </div>
+          </div>
+
+          {options.types.length > 0 && (
+            <div className="filter-section">
+              <h3>Car type</h3>
+              <div className="chip-row">
+                {options.types.map((t) => (
+                  <Chip key={t} on={draft.types.includes(t)} onClick={() => toggleArr('types', t)}>
+                    {t}
+                  </Chip>
+                ))}
+              </div>
+            </div>
+          )}
+
+          <div className="filter-section">
+            <h3>Seats</h3>
+            <div className="chip-row">
+              {SEAT_BANDS.map((s) => (
+                <Chip
+                  key={s.label}
+                  on={draft.minSeats === s.min}
+                  onClick={() => setDraft((d) => ({ ...d, minSeats: s.min }))}
+                >
+                  {s.label}
+                </Chip>
+              ))}
+            </div>
+          </div>
+
+          {options.transmissions.length > 0 && (
+            <div className="filter-section">
+              <h3>Transmission</h3>
+              <div className="chip-row">
+                {options.transmissions.map((t) => (
+                  <Chip
+                    key={t}
+                    on={draft.transmission === t}
+                    onClick={() => setOne('transmission', t)}
+                  >
+                    {t}
+                  </Chip>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {options.fuels.length > 0 && (
+            <div className="filter-section">
+              <h3>Fuel</h3>
+              <div className="chip-row">
+                {options.fuels.map((f) => (
+                  <Chip key={f} on={draft.fuels.includes(f)} onClick={() => toggleArr('fuels', f)}>
+                    {f}
+                  </Chip>
+                ))}
+              </div>
+            </div>
+          )}
+
+          <div className="filter-section">
+            <h3>Drive option</h3>
+            <div className="chip-row">
+              {DRIVE_OPTIONS.map((o) => (
+                <Chip
+                  key={o.label}
+                  on={draft.drive === o.value}
+                  onClick={() => setDraft((d) => ({ ...d, drive: o.value }))}
+                >
+                  {o.label}
+                </Chip>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div className="filter-foot">
+          <button type="button" className="filter-reset" onClick={() => setDraft(EMPTY_FILTERS)}>
+            Reset
+          </button>
+          <button className="btn-primary" onClick={() => onApply(draft)}>
+            {count === 0 ? 'No matches' : `Show ${count} car${count === 1 ? '' : 's'}`}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 const SHELF_SIZE = 6;
 
@@ -77,6 +288,8 @@ export default function Home() {
   const [dropoff, setDropoff] = useState(addDays(new Date(), 1 + MIN_RENTAL_DAYS));
   const [calOpen, setCalOpen] = useState(false);
   const [cityOpen, setCityOpen] = useState(false);
+  const [filters, setFilters] = useState(EMPTY_FILTERS);
+  const [filterOpen, setFilterOpen] = useState(false);
   const wrapRef = useRef(null);
 
   useEffect(() => {
@@ -90,12 +303,28 @@ export default function Home() {
     return () => document.removeEventListener('mousedown', onClick);
   }, []);
 
-  const cars = useMemo(
+  const cityCars = useMemo(
     () => allCars.filter((car) => city === 'All cities' || car.city === city),
     [allCars, city]
   );
 
+  const cars = useMemo(
+    () => cityCars.filter((c) => matchesFilters(c, filters)),
+    [cityCars, filters]
+  );
+
   const shelves = useMemo(() => buildShelves(cars), [cars]);
+
+  const filterOptions = useMemo(
+    () => ({
+      types: [...new Set(allCars.map((c) => c.type).filter(Boolean))].sort(),
+      transmissions: [...new Set(allCars.map((c) => c.transmission).filter(Boolean))].sort(),
+      fuels: [...new Set(allCars.map((c) => c.fuel).filter(Boolean))].sort(),
+    }),
+    [allCars]
+  );
+
+  const activeFilters = countActiveFilters(filters);
 
   const whenLabel =
     pickup && dropoff ? `${fmtShort(pickup)} – ${fmtShort(dropoff)}` : pickup ? `${fmtShort(pickup)} – ?` : 'Add dates';
@@ -130,13 +359,18 @@ export default function Home() {
               </button>
               <button
                 className="search-icon-btn"
-                aria-label="Search"
-                onClick={() => setCalOpen(false)}
+                aria-label="Filters"
+                onClick={() => {
+                  setCalOpen(false);
+                  setCityOpen(false);
+                  setFilterOpen(true);
+                }}
               >
                 <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round">
                   <circle cx="10.5" cy="10.5" r="6.5" />
                   <line x1="15.5" y1="15.5" x2="21" y2="21" />
                 </svg>
+                {activeFilters > 0 && <span className="filter-badge">{activeFilters}</span>}
               </button>
             </div>
 
@@ -186,7 +420,7 @@ export default function Home() {
           </>
         ) : error ? (
           <div className="empty">Couldn&apos;t load cars — {error}</div>
-        ) : cars.length === 0 ? (
+        ) : cityCars.length === 0 ? (
           <div className="empty-state">
             <video className="empty-anim" src={emptyVideo} autoPlay loop muted playsInline />
             <b>No cars in {city} just yet</b>
@@ -200,6 +434,15 @@ export default function Home() {
               </button>
             )}
           </div>
+        ) : cars.length === 0 ? (
+          <div className="empty-state">
+            <video className="empty-anim" src={emptyVideo} autoPlay loop muted playsInline />
+            <b>No cars match your filters</b>
+            <p>Try loosening a filter or two to see more of the fleet.</p>
+            <button className="btn-primary" onClick={() => setFilters(EMPTY_FILTERS)}>
+              Clear filters
+            </button>
+          </div>
         ) : (
           <>
             {shelves.map((s) => (
@@ -208,6 +451,18 @@ export default function Home() {
           </>
         )}
       </div>
+
+      <FilterModal
+        open={filterOpen}
+        onClose={() => setFilterOpen(false)}
+        baseCars={cityCars}
+        options={filterOptions}
+        applied={filters}
+        onApply={(f) => {
+          setFilters(f);
+          setFilterOpen(false);
+        }}
+      />
     </div>
   );
 }
