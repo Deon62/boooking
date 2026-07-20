@@ -60,9 +60,9 @@ shadow reserved for floating elements (modals, dropdowns, sticky widgets).
 
 ## 2. Interaction & motion 🟠🟡
 
-- [ ] 🟠 **Focus-visible rings** — only 2 `:focus` rules exist site-wide. Add a
-      consistent `:focus-visible` outline on all buttons, links, inputs, and chips
-      for keyboard users (tap-highlight was already removed).
+- [x] 🟠 **Focus-visible rings** — added a global `:focus-visible` outline (primary,
+      2px offset) for keyboard users; mouse/touch focus stays clean (tap-highlight
+      was already removed).
 - [ ] 🟠 **Unified button press/hover states** — hovers/actives are defined
       per-component. Define `.btn`, `.btn-primary`, `.btn-ghost`, `.chip` once with
       shared hover/active/disabled behavior.
@@ -78,13 +78,13 @@ shadow reserved for floating elements (modals, dropdowns, sticky widgets).
 
 ## 3. Feedback & state (UX quality) 🟠
 
-- [ ] 🟠 **Toast/snackbar system** — there is none. Errors are inline red text in
-      ~10 places (`color: var(--error)`), successes are ad-hoc. Add one global toast
-      for success/error/info and route feedback through it.
-- [ ] 🟠 **404 / not-found route** — `App.jsx` has no catch-all `*` route, so unknown
-      URLs render a blank page. Add a branded 404 with a way home.
-- [ ] 🟠 **Consistent loading skeletons** — Messages, Home shelves, Trips, and car
-      lists have nice skeletons; but `CarDetails` shows a bare "Loading car…",
+- [x] 🟠 **Toast/snackbar system** — built (`src/toast.jsx`, `ToastProvider` +
+      `useToast`). Dark snackbar, auto-dismiss, click-to-dismiss, reduced-motion aware.
+      Wired to wishlist like/unlike + share; **still to do**: route the ~10 inline
+      `var(--error)` messages and other successes through it.
+- [x] 🟠 **404 / not-found route** — added `<Route path="*">` → branded `NotFound`.
+- [ ] 🟠 **Consistent loading skeletons** — Messages, Home shelves, Trips, car lists,
+      and now **CarDetails** have skeletons; still to do:
       `TripDetails`, `Account`, `Payments`, `Notifications`, `Booking` still show
       plain text or spinners. Give every page a skeleton that mirrors its layout.
 - [ ] 🟠 **Consistent empty states** — Home (no cars / no filter matches) uses the
@@ -126,7 +126,7 @@ shadow reserved for floating elements (modals, dropdowns, sticky widgets).
 - [ ] ⚪ "Recently viewed" rail on Home for return visitors (data already tracked).
 
 ### Car details
-- [ ] 🟠 Replace bare "Loading car…" with a **full skeleton** (gallery + title + specs).
+- [x] 🟠 Replaced bare "Loading car…" with a **full skeleton** (gallery + title + specs).
 - [ ] 🟡 **Photo gallery lightbox** — clicking the 5-photo grid should open a
       full-screen carousel, not just sit static.
 - [ ] 🟡 **Map for pickup location** (lat/long exist in the API) — a small static map
@@ -172,10 +172,9 @@ shadow reserved for floating elements (modals, dropdowns, sticky widgets).
       no-results, no-messages) in one style for a cohesive brand feel.
 - [ ] 🟡 **Success confirmation moment** — the booking confirmation could use a
       celebratory but tasteful animation + shareable trip summary.
-- [ ] 🟡 **Favicon/meta polish** — favicon currently points at the wide wordmark
-      (`logo.png`); use the compact logomark. Add `<meta name="description">`,
-      `theme-color`, and Open Graph tags (title/description/image) so shared links
-      look designed.
+- [x] 🟡 **Favicon/meta polish** — favicon now uses the compact logomark SVG; added
+      `<meta name="description">`, `theme-color`, and Open Graph/Twitter tags so
+      shared links look designed.
 - [ ] 🟡 **Referral / share hooks** — "share this car", "invite a friend" with clean
       share cards.
 - [ ] ⚪ **Loyalty / saved searches** — save a filter set, get notified when matches
@@ -216,11 +215,12 @@ shadow reserved for floating elements (modals, dropdowns, sticky widgets).
 
 ---
 
-## Quick wins (high impact, low effort) ⭐
+## Quick wins (high impact, low effort) ⭐ — ✅ ALL DONE
 
-- [ ] 🔴 Migrate auth `form-card` + inputs to the flat style (visible on first load).
-- [ ] 🟠 Add the 404 route.
-- [ ] 🟠 Add a global toast for success/error.
-- [ ] 🟠 Skeleton for Car Details (replaces "Loading car…").
-- [ ] 🟠 Focus-visible rings site-wide.
-- [ ] 🟡 Fix the favicon to the logomark + add meta description/OG tags.
+- [x] 🔴 Migrate auth `form-card` + inputs to the flat style (done in Phase 0).
+- [x] 🟠 Add the 404 route (`<Route path="*">` → branded `NotFound`).
+- [x] 🟠 Add a global toast for success/error (`src/toast.jsx`, `useToast`; wired to
+      wishlist like/unlike and the share action — extend to more spots over time).
+- [x] 🟠 Skeleton for Car Details (gallery + title + specs; replaces "Loading car…").
+- [x] 🟠 Focus-visible rings site-wide (`:focus-visible` outline, mouse users unaffected).
+- [x] 🟡 Favicon → logomark SVG + meta description, `theme-color`, and Open Graph tags.

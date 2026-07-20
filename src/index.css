@@ -9,8 +9,8 @@
      Ardena — flat premium design language.
      White surfaces, hairline borders, sharp corners; a soft drop
      shadow only for floating things (modals, dropdowns, sticky
-     widgets). The legacy --neo-* tokens are remapped to this
-     language so every existing surface flips at once.
+     widgets). Surface treatments are box-shadow based (--card-ring,
+     --elevated, --inset-ring) so applying them never shifts layout.
      ========================================================== */
   --bg: #f4f5f7;
   --surface: #ffffff;
@@ -32,13 +32,13 @@
   --shadow-md: 0 8px 24px rgba(16, 24, 40, 0.08);
   --shadow-lg: 0 22px 50px rgba(16, 24, 40, 0.16);
 
-  /* legacy soft-UI tokens → flat: a raised surface becomes a hairline
-     border (via a 0-spread box-shadow, so no layout shift); a pressed
-     well becomes an inset hairline. */
-  --neo-out: 0 0 0 1px var(--card-border);
-  --neo-out-sm: 0 0 0 1px var(--card-border);
-  --neo-out-lg: 0 0 0 1px var(--card-border), var(--shadow-md);
-  --neo-in: inset 0 0 0 1px var(--input-border);
+  /* surface treatments (box-shadow based, so no layout shift):
+     --card-ring  = hairline border for a resting card/surface
+     --elevated   = hairline border + soft shadow for floating elements
+     --inset-ring = inset hairline for wells / pressed states */
+  --card-ring: 0 0 0 1px var(--card-border);
+  --elevated: 0 0 0 1px var(--card-border), var(--shadow-md);
+  --inset-ring: inset 0 0 0 1px var(--input-border);
 
   /* sharp corners for cards/containers/inputs; pills stay round */
   --r-sm: 0;
@@ -82,6 +82,18 @@ a {
   text-decoration: none;
 }
 
+/* keyboard focus: a single, consistent ring for every interactive element.
+   Mouse/touch users don't see it (only :focus-visible fires). */
+:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+button:focus:not(:focus-visible),
+a:focus:not(:focus-visible) {
+  outline: none;
+}
+
 input,
 select,
 textarea {
@@ -115,25 +127,25 @@ textarea {
 .neo {
   background: var(--surface);
   border-radius: var(--r-lg);
-  box-shadow: var(--neo-out);
+  box-shadow: var(--card-ring);
 }
 
 .neo-sm {
   background: var(--surface);
   border-radius: var(--r-md);
-  box-shadow: var(--neo-out-sm);
+  box-shadow: var(--card-ring);
 }
 
 .neo-in {
   background: var(--surface);
   border-radius: var(--r-md);
-  box-shadow: var(--neo-in);
+  box-shadow: var(--inset-ring);
 }
 
 .neo-btn {
   background: var(--surface);
   border-radius: var(--r-pill);
-  box-shadow: var(--neo-out-sm);
+  box-shadow: var(--card-ring);
   padding: 12px 22px;
   font-weight: 700;
   font-size: 14px;
@@ -152,7 +164,7 @@ textarea {
 
 .neo-btn:active,
 .neo-btn.active {
-  box-shadow: var(--neo-in);
+  box-shadow: var(--inset-ring);
   color: var(--primary);
 }
 
@@ -270,7 +282,7 @@ textarea {
   padding: 6px 14px 6px 6px;
   border-radius: var(--r-pill);
   background: var(--surface);
-  box-shadow: var(--neo-out-sm);
+  box-shadow: var(--card-ring);
   font-weight: 800;
   font-size: 14px;
   color: var(--text);
@@ -278,7 +290,7 @@ textarea {
 }
 
 .account-btn:active {
-  box-shadow: var(--neo-in);
+  box-shadow: var(--inset-ring);
 }
 
 .avatar {
@@ -309,7 +321,7 @@ textarea {
   width: 240px;
   background: var(--surface);
   border-radius: var(--r-md);
-  box-shadow: var(--neo-out-lg);
+  box-shadow: var(--elevated);
   padding: 10px;
   z-index: 60;
 }
@@ -345,7 +357,7 @@ textarea {
 }
 
 .menu-item:hover {
-  box-shadow: var(--neo-in);
+  box-shadow: var(--inset-ring);
   color: var(--primary);
 }
 
@@ -377,7 +389,7 @@ textarea {
   padding: 10px;
   border-radius: var(--r-pill);
   background: var(--surface);
-  box-shadow: var(--neo-out);
+  box-shadow: var(--card-ring);
 }
 
 .search-field {
@@ -692,7 +704,7 @@ textarea {
   aspect-ratio: 4 / 3;
   overflow: hidden;
   border-radius: var(--r-lg);
-  box-shadow: var(--neo-out-sm);
+  box-shadow: var(--card-ring);
 }
 
 .car-photo img {
@@ -885,7 +897,7 @@ textarea {
   height: 46px;
   border-radius: 50%;
   background: var(--surface);
-  box-shadow: var(--neo-out);
+  box-shadow: var(--card-ring);
   display: grid;
   place-items: center;
   color: var(--text-2);
@@ -898,7 +910,7 @@ textarea {
 }
 
 .back-fab:active {
-  box-shadow: var(--neo-in);
+  box-shadow: var(--inset-ring);
 }
 
 @media (max-width: 900px) {
@@ -997,7 +1009,7 @@ textarea {
   display: grid;
   place-items: center;
   color: var(--text-2);
-  box-shadow: var(--neo-in);
+  box-shadow: var(--inset-ring);
   flex-shrink: 0;
 }
 
@@ -1037,7 +1049,7 @@ textarea {
   padding: 28px 26px 24px;
   border-radius: var(--r-lg);
   background: var(--surface);
-  box-shadow: var(--neo-out);
+  box-shadow: var(--card-ring);
   max-width: 360px;
 }
 
@@ -1108,7 +1120,7 @@ textarea {
   padding: 8px 22px;
   border-radius: var(--r-lg);
   background: var(--surface);
-  box-shadow: var(--neo-out-sm);
+  box-shadow: var(--card-ring);
 }
 
 .info-row {
@@ -1238,7 +1250,7 @@ textarea {
 
 .report-reason.selected {
   border: 1.5px solid var(--primary);
-  box-shadow: var(--neo-in);
+  background: var(--primary-tint);
   color: var(--primary);
 }
 
@@ -1280,7 +1292,7 @@ textarea {
   padding: 26px;
   border-radius: 0;
   background: var(--surface);
-  box-shadow: var(--neo-out-lg);
+  box-shadow: var(--elevated);
 }
 
 .book-widget .price-line {
@@ -1297,7 +1309,7 @@ textarea {
 .widget-rows {
   margin: 18px 0 20px;
   border-radius: var(--r-md);
-  box-shadow: var(--neo-in);
+  box-shadow: var(--inset-ring);
   padding: 6px 18px;
 }
 
@@ -1334,7 +1346,7 @@ textarea {
   padding: 30px;
   border-radius: var(--r-lg);
   background: var(--surface);
-  box-shadow: var(--neo-out);
+  box-shadow: var(--card-ring);
 }
 
 .field {
@@ -1382,7 +1394,7 @@ textarea {
   font-weight: 700;
   border: none;
   padding: 13px 18px;
-  box-shadow: var(--neo-in);
+  box-shadow: var(--inset-ring);
   background: rgba(163, 177, 198, 0.08);
 }
 
@@ -1444,7 +1456,7 @@ textarea {
 .choice-btn.selected {
   border: 1.5px solid var(--primary);
   color: var(--primary);
-  box-shadow: var(--neo-in);
+  background: var(--primary-tint);
 }
 
 .radio-dot {
@@ -1505,7 +1517,7 @@ textarea {
 
 .protect-card.selected {
   border: 1.5px solid var(--primary);
-  box-shadow: var(--neo-in);
+  background: var(--primary-tint);
 }
 
 .protect-card.disabled {
@@ -1599,7 +1611,7 @@ textarea {
   padding: 9px 18px;
   border-radius: var(--r-pill);
   background: var(--surface);
-  box-shadow: var(--neo-out-sm);
+  box-shadow: var(--card-ring);
   font-weight: 800;
   font-size: 13px;
   color: var(--text-2);
@@ -1612,7 +1624,7 @@ textarea {
 
 .pill-action:active {
   transform: translateY(1px);
-  box-shadow: var(--neo-in);
+  box-shadow: var(--inset-ring);
 }
 
 .pill-action.liked,
@@ -1651,7 +1663,7 @@ textarea {
   display: grid;
   place-items: center;
   background: var(--surface);
-  box-shadow: var(--neo-out-sm);
+  box-shadow: var(--card-ring);
   color: var(--primary);
   margin-bottom: 8px;
 }
@@ -1885,7 +1897,7 @@ textarea {
   align-items: center;
   padding: 20px;
   border-radius: var(--r-lg);
-  box-shadow: var(--neo-in);
+  box-shadow: var(--inset-ring);
   margin-top: 6px;
 }
 
@@ -1895,7 +1907,7 @@ textarea {
   flex-shrink: 0;
   border-radius: var(--r-md);
   background: #fff;
-  box-shadow: var(--neo-out-sm);
+  box-shadow: var(--card-ring);
   display: grid;
   place-items: center;
   overflow: hidden;
@@ -1956,7 +1968,7 @@ textarea {
   padding: 16px 18px;
   border-radius: var(--r-md);
   background: var(--surface);
-  box-shadow: var(--neo-out-sm);
+  box-shadow: var(--card-ring);
 }
 
 .toggle-row .t-label b {
@@ -1973,7 +1985,7 @@ textarea {
   width: 52px;
   height: 30px;
   border-radius: var(--r-pill);
-  box-shadow: var(--neo-in);
+  box-shadow: var(--inset-ring);
   position: relative;
   flex-shrink: 0;
   transition: background 0.2s;
@@ -2006,7 +2018,7 @@ textarea {
   padding: 26px 26px 28px;
   border-radius: var(--r-lg);
   background: var(--surface);
-  box-shadow: var(--neo-in);
+  box-shadow: var(--inset-ring);
 }
 
 .breakdown .row {
@@ -2071,7 +2083,7 @@ textarea {
   overflow: hidden;
   flex-shrink: 0;
   background: var(--surface);
-  box-shadow: var(--neo-out-sm);
+  box-shadow: var(--card-ring);
 }
 
 .mini-car .pic img {
@@ -2110,7 +2122,7 @@ textarea {
 }
 
 .pay-method.selected {
-  box-shadow: var(--neo-in);
+  background: var(--primary-tint);
   border: 1.5px solid var(--primary);
 }
 
@@ -2118,7 +2130,7 @@ textarea {
 .pay-method.static,
 .pay-method.static:hover {
   border: none;
-  box-shadow: var(--neo-out-sm);
+  box-shadow: var(--card-ring);
 }
 
 /* payment methods page: debit-card visuals + info panel */
@@ -2331,7 +2343,7 @@ textarea {
   place-items: center;
   font-size: 21px;
   background: var(--bg);
-  box-shadow: var(--neo-in);
+  box-shadow: var(--inset-ring);
   flex-shrink: 0;
 }
 
@@ -2355,7 +2367,7 @@ textarea {
   margin: 0 auto 22px;
   border-radius: 50%;
   background: var(--surface);
-  box-shadow: var(--neo-out-lg);
+  box-shadow: var(--elevated);
   display: grid;
   place-items: center;
   font-size: 44px;
@@ -2367,7 +2379,7 @@ textarea {
   margin-top: 14px;
   padding: 10px 26px;
   border-radius: var(--r-pill);
-  box-shadow: var(--neo-in);
+  box-shadow: var(--inset-ring);
   font-weight: 800;
   font-size: 17px;
   letter-spacing: 2.5px;
@@ -2480,7 +2492,7 @@ textarea {
   padding: 26px 28px;
   border-radius: var(--r-lg);
   background: var(--surface);
-  box-shadow: var(--neo-out-sm);
+  box-shadow: var(--card-ring);
   margin-bottom: 20px;
   align-items: center;
   color: inherit;
@@ -2489,7 +2501,7 @@ textarea {
 
 a.trip-card:hover {
   transform: translateY(-2px);
-  box-shadow: var(--neo-out);
+  box-shadow: var(--card-ring);
 }
 
 .trip-card .pic {
@@ -2498,7 +2510,7 @@ a.trip-card:hover {
   border-radius: 50%;
   overflow: hidden;
   flex-shrink: 0;
-  box-shadow: var(--neo-out-sm);
+  box-shadow: var(--card-ring);
 }
 
 .trip-card .pic img {
@@ -2941,7 +2953,7 @@ a.trip-card:hover {
   overflow: hidden;
   align-self: center;
   margin-bottom: 12px;
-  box-shadow: var(--neo-out-sm);
+  box-shadow: var(--card-ring);
 }
 
 .rebook-card .pic img {
@@ -3289,28 +3301,28 @@ a.trip-card:hover {
 
 .status-pill.confirmed {
   color: var(--success);
-  box-shadow: var(--neo-in);
+  box-shadow: var(--inset-ring);
 }
 
 .status-pill.pending {
   color: var(--warning);
-  box-shadow: var(--neo-in);
+  box-shadow: var(--inset-ring);
 }
 
 .status-pill.completed {
   color: var(--hint);
-  box-shadow: var(--neo-in);
+  box-shadow: var(--inset-ring);
 }
 
 .status-pill.active {
   color: var(--primary);
-  box-shadow: var(--neo-in);
+  box-shadow: var(--inset-ring);
 }
 
 .status-pill.cancelled,
 .status-pill.rejected {
   color: var(--error);
-  box-shadow: var(--neo-in);
+  box-shadow: var(--inset-ring);
 }
 
 /* ---------- custom dropdown ---------- */
@@ -3322,7 +3334,7 @@ a.trip-card:hover {
   min-width: 250px;
   background: var(--surface);
   border-radius: 20px;
-  box-shadow: var(--neo-out-lg), 0 24px 60px rgba(80, 95, 130, 0.25);
+  box-shadow: var(--elevated), 0 24px 60px rgba(80, 95, 130, 0.25);
   padding: 10px;
   z-index: 70;
 }
@@ -3343,7 +3355,7 @@ a.trip-card:hover {
 }
 
 .dd-item:hover {
-  box-shadow: var(--neo-in);
+  box-shadow: var(--inset-ring);
   color: var(--text);
 }
 
@@ -3365,7 +3377,7 @@ a.trip-card:hover {
   z-index: 70;
   background: var(--surface);
   border-radius: 26px;
-  box-shadow: var(--neo-out-lg), 0 24px 60px rgba(80, 95, 130, 0.25);
+  box-shadow: var(--elevated), 0 24px 60px rgba(80, 95, 130, 0.25);
   padding: 24px 40px 26px;
 }
 
@@ -3382,7 +3394,7 @@ a.trip-card:hover {
   margin: 0 auto 20px;
   padding: 5px;
   border-radius: var(--r-pill);
-  box-shadow: var(--neo-in);
+  box-shadow: var(--inset-ring);
 }
 
 .cal-tab {
@@ -3417,7 +3429,7 @@ a.trip-card:hover {
   place-items: center;
   font-size: 20px;
   color: var(--text-2);
-  box-shadow: var(--neo-out-sm);
+  box-shadow: var(--card-ring);
   background: var(--surface);
   z-index: 1;
 }
@@ -3431,7 +3443,7 @@ a.trip-card:hover {
 }
 
 .cal-arrow:active {
-  box-shadow: var(--neo-in);
+  box-shadow: var(--inset-ring);
 }
 
 .cal-month {
@@ -3504,14 +3516,14 @@ a.trip-card:hover {
   font-size: 13px;
   font-weight: 700;
   color: var(--text-2);
-  box-shadow: var(--neo-out-sm);
+  box-shadow: var(--card-ring);
   background: var(--surface);
   transition: box-shadow 0.12s, color 0.12s;
 }
 
 .cal-chip.active {
-  box-shadow: var(--neo-in);
-  color: var(--text);
+  background: var(--primary-tint);
+  color: var(--primary);
 }
 
 @media (max-width: 760px) {
@@ -3553,7 +3565,7 @@ a.trip-card:hover {
   padding: 12px;
   border-radius: var(--r-lg);
   background: var(--surface);
-  box-shadow: var(--neo-out);
+  box-shadow: var(--card-ring);
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -3576,7 +3588,7 @@ a.trip-card:hover {
 }
 
 .side-link.active {
-  box-shadow: var(--neo-in);
+  background: var(--primary-tint);
   color: var(--primary);
   font-weight: 700;
 }
@@ -3616,7 +3628,7 @@ a.trip-card:hover {
   border-radius: 12px;
   display: grid;
   place-items: center;
-  box-shadow: var(--neo-in);
+  box-shadow: var(--inset-ring);
   flex-shrink: 0;
 }
 
@@ -3656,7 +3668,7 @@ a.trip-card:hover {
   padding: 24px 22px;
   border-radius: 0;
   background: var(--surface);
-  box-shadow: var(--neo-out);
+  box-shadow: var(--card-ring);
   display: flex;
   flex-direction: column;
   gap: 6px;
@@ -3685,7 +3697,7 @@ a.trip-card:hover {
 .msg-side > .avatar {
   align-self: center;
   margin: 8px 0 10px;
-  box-shadow: var(--neo-out-sm);
+  box-shadow: var(--card-ring);
 }
 
 .msg-side > b,
@@ -3744,7 +3756,7 @@ a.trip-card:hover {
   padding: 14px;
   border-radius: 0;
   background: var(--surface);
-  box-shadow: var(--neo-out);
+  box-shadow: var(--card-ring);
 }
 
 .msg-item {
@@ -3758,9 +3770,12 @@ a.trip-card:hover {
   transition: all 0.12s;
 }
 
-.msg-item:hover,
+.msg-item:hover {
+  background: rgba(22, 24, 29, 0.04);
+}
+
 .msg-item.active {
-  box-shadow: var(--neo-in);
+  background: var(--primary-tint);
 }
 
 .msg-item-text {
@@ -3785,7 +3800,7 @@ a.trip-card:hover {
 .msg-thread {
   border-radius: 0;
   background: var(--surface);
-  box-shadow: var(--neo-out);
+  box-shadow: var(--card-ring);
   display: flex;
   flex-direction: column;
   height: 620px;
@@ -3832,7 +3847,7 @@ a.trip-card:hover {
   align-self: flex-start;
   background: #fff;
   color: var(--text-2);
-  box-shadow: var(--neo-out-sm);
+  box-shadow: var(--card-ring);
   border-bottom-left-radius: 6px;
 }
 
@@ -3920,7 +3935,7 @@ a.trip-card:hover {
   font-weight: 700;
   font-size: 14.5px;
   color: #3c4043;
-  box-shadow: var(--neo-out-sm);
+  box-shadow: var(--card-ring);
   transition: transform 0.1s;
 }
 
@@ -3993,7 +4008,7 @@ a.trip-card:hover {
 .notice {
   padding: 14px 18px;
   border-radius: var(--r-md);
-  box-shadow: var(--neo-in);
+  box-shadow: var(--inset-ring);
   font-size: 13.5px;
   color: var(--text-2);
   margin-top: 18px;
@@ -4531,4 +4546,99 @@ a.trip-card:hover {
   .container {
     padding: 0 18px;
   }
+}
+
+/* ---------- global toast ---------- */
+.toast-stack {
+  position: fixed;
+  left: 50%;
+  bottom: 28px;
+  transform: translateX(-50%);
+  z-index: 300;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+  pointer-events: none;
+  width: max-content;
+  max-width: 92vw;
+}
+
+.toast {
+  pointer-events: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 13px 18px;
+  background: #16181d;
+  color: #fff;
+  font-size: 13.5px;
+  font-weight: 700;
+  text-align: left;
+  box-shadow: var(--shadow-lg);
+  animation: toast-in 0.22s ease;
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.toast-ico {
+  display: inline-grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.toast-success .toast-ico {
+  color: var(--success);
+}
+
+.toast-error .toast-ico {
+  color: #ff6b6b;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toast {
+    animation: none;
+  }
+}
+
+/* ---------- 404 ---------- */
+.notfound {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 8px;
+  padding: 90px 20px 120px;
+}
+
+.notfound-code {
+  font-size: 76px;
+  font-weight: 800;
+  letter-spacing: -3px;
+  line-height: 1;
+  color: var(--text);
+}
+
+.notfound b {
+  font-size: 20px;
+  margin-top: 6px;
+}
+
+.notfound p {
+  color: var(--hint);
+  font-weight: 600;
+  max-width: 360px;
+}
+
+.notfound .btn-primary {
+  margin-top: 16px;
 }

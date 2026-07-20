@@ -12,6 +12,7 @@ import {
 import { fmtShort } from '../Calendar.jsx';
 import { CarPhoto, BackButton } from '../components.jsx';
 import { useApp } from '../store.jsx';
+import { useToast } from '../toast.jsx';
 import { reportListing, listBookings, getCarAvailability } from '../api.js';
 import {
   CogIcon,
@@ -224,6 +225,7 @@ export default function CarDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { user, wishlist, toggleWish } = useApp();
+  const toast = useToast();
   const { car, loading, error } = useCar(id);
   const ratings = useCarRatings(id);
   // Messaging unlocks only after a paid booking for this car.
@@ -260,8 +262,34 @@ export default function CarDetails() {
 
   if (loading) {
     return (
-      <div className="page container">
-        <div className="empty">Loading car…</div>
+      <div className="page">
+        <div className="container">
+          <div className="gallery5" aria-hidden="true">
+            {['g-main', '', '', '', ''].map((c, i) => (
+              <div className={`g-cell ${c}`} key={i} style={{ position: 'relative' }}>
+                <div className="img-skel" />
+              </div>
+            ))}
+          </div>
+          <div className="details-layout" style={{ marginTop: 30 }}>
+            <div>
+              <div className="skel-line" style={{ width: '46%', height: 28, marginTop: 0 }} />
+              <div className="skel-line" style={{ width: '30%', height: 14 }} />
+              <div className="spec-list" style={{ marginTop: 30 }}>
+                {Array.from({ length: 6 }, (_, i) => (
+                  <div
+                    key={i}
+                    className="skel-line"
+                    style={{ height: 66, marginTop: 0, borderRadius: 0 }}
+                  />
+                ))}
+              </div>
+            </div>
+            <aside>
+              <div className="skel-line" style={{ height: 240, marginTop: 0, borderRadius: 0 }} />
+            </aside>
+          </div>
+        </div>
       </div>
     );
   }
@@ -292,7 +320,12 @@ export default function CarDetails() {
   const wished = wishlist.has(car.id);
 
   const like = () => {
-    if (!toggleWish(car.id)) navigate('/login', { state: { next: `/cars/${car.id}` } });
+    const adding = !wished;
+    if (!toggleWish(car.id)) {
+      navigate('/login', { state: { next: `/cars/${car.id}` } });
+      return;
+    }
+    toast.success(adding ? 'Saved to your wishlist' : 'Removed from wishlist');
   };
 
   const share = async () => {
@@ -308,8 +341,9 @@ export default function CarDetails() {
         await navigator.clipboard.writeText(url);
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
+        toast.success('Link copied to clipboard');
       } catch {
-        /* clipboard blocked — nothing sensible to do */
+        toast.error('Couldn’t copy the link');
       }
     }
   };

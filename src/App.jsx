@@ -1,7 +1,8 @@
 import React from 'react';
-import { HashRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { HashRouter, Routes, Route, Navigate, useLocation, Link } from 'react-router-dom';
 import { useEffect } from 'react';
 import { AppProvider, useApp } from './store.jsx';
+import { ToastProvider } from './toast.jsx';
 import { Header, Footer } from './components.jsx';
 import Home from './pages/Home.jsx';
 import CarDetails from './pages/CarDetails.jsx';
@@ -57,13 +58,29 @@ function FooterGate() {
   return <Footer />;
 }
 
+function NotFound() {
+  return (
+    <div className="page container">
+      <div className="notfound">
+        <div className="notfound-code">404</div>
+        <b>This page took a wrong turn</b>
+        <p>The page you&apos;re looking for doesn&apos;t exist or may have moved.</p>
+        <Link to="/" className="btn-primary">
+          Back to browsing
+        </Link>
+      </div>
+    </div>
+  );
+}
+
 export default function App() {
   return (
     <AppProvider>
-      <HashRouter>
-        <ScrollToTop />
-        <Header />
-        <Routes>
+      <ToastProvider>
+        <HashRouter>
+          <ScrollToTop />
+          <Header />
+          <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/cars/:id" element={<CarDetails />} />
           <Route path="/book/:id" element={<RequireAuth><Booking /></RequireAuth>} />
@@ -80,9 +97,11 @@ export default function App() {
           <Route path="/forgot" element={<Forgot />} />
           <Route path="/profile" element={<RequireAuth><Profile /></RequireAuth>} />
           <Route path="/license" element={<RequireAuth><License /></RequireAuth>} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
         <FooterGate />
-      </HashRouter>
+        </HashRouter>
+      </ToastProvider>
     </AppProvider>
   );
 }
