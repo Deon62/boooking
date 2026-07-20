@@ -11,6 +11,7 @@ import {
   UserIcon,
   SuitcaseIcon,
   LogOutIcon,
+  CheckIcon,
   ChevronDownIcon,
   HeartIcon,
   HeartOutlineIcon,
@@ -46,14 +47,17 @@ export function BackButton({ to }) {
 /** Car photo: shimmer placeholder while loading, fade-in when ready,
  * icon fallback if the image fails. The frame always fills its parent so
  * object-fit: cover crops around the center instead of showing the top slice. */
-export function CarPhoto({ car, index = 0, className }) {
+export function CarPhoto({ car, index = 0, className, onClick }) {
   const [failed, setFailed] = useState(false);
   const [loaded, setLoaded] = useState(false);
   const src = car.photos[index] || car.photos[0];
   const frameCls = className ? `${className} photo-frame` : 'photo-frame';
+  const clickProps = onClick
+    ? { onClick, role: 'button', tabIndex: 0, style: { cursor: 'zoom-in' } }
+    : {};
   if (failed || !src) {
     return (
-      <div className={frameCls}>
+      <div className={frameCls} {...clickProps}>
         <div className="ph" style={{ background: 'linear-gradient(135deg,#dfe6f3,#c9d4ea)' }}>
           <CarIcon size={44} style={{ color: '#93a1ba' }} />
         </div>
@@ -61,7 +65,7 @@ export function CarPhoto({ car, index = 0, className }) {
     );
   }
   return (
-    <div className={frameCls}>
+    <div className={frameCls} {...clickProps}>
       {!loaded && <div className="img-skel" />}
       <img
         src={src}
@@ -71,6 +75,31 @@ export function CarPhoto({ car, index = 0, className }) {
         onLoad={() => setLoaded(true)}
         onError={() => setFailed(true)}
       />
+    </div>
+  );
+}
+
+/** Checkout progress indicator: Trip details → Payment → Confirmed.
+ * `current` is 1-based; earlier steps render as done (check), later as pending. */
+export function BookingSteps({ current }) {
+  const steps = ['Trip details', 'Payment', 'Confirmed'];
+  return (
+    <div className="booking-steps" aria-label={`Step ${current} of ${steps.length}`}>
+      {steps.map((label, i) => {
+        const n = i + 1;
+        const state = n < current ? 'done' : n === current ? 'active' : '';
+        return (
+          <React.Fragment key={label}>
+            <div className={`bstep ${state}`}>
+              <span className="bstep-dot">{n < current ? <CheckIcon size={14} /> : n}</span>
+              <span className="bstep-label">{label}</span>
+            </div>
+            {i < steps.length - 1 && (
+              <span className={`bstep-line${n < current ? ' done' : ''}`} />
+            )}
+          </React.Fragment>
+        );
+      })}
     </div>
   );
 }

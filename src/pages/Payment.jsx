@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { formatKES, formatDateLong } from '../data.js';
-import { CarPhoto, BackButton, MastercardMark } from '../components.jsx';
+import { CarPhoto, BackButton, MastercardMark, BookingSteps } from '../components.jsx';
 import mpesaImg from '../assets/mpesa.png';
 import payingVideo from '../assets/payment.webm';
 import { useApp } from '../store.jsx';
@@ -180,6 +180,7 @@ export default function Payment() {
 
       <div className="container">
         <BackButton />
+        <BookingSteps current={2} />
 
         <div className="booking-layout">
           <div className="form-card">
@@ -328,9 +329,16 @@ export default function Payment() {
                   </div>
                 )}
                 <div className="row total">
-                  <span>Total</span>
-                  <span>{formatKES(totalDue)}</span>
+                  <span>Total due now</span>
+                  <span key={totalDue} className="total-pop">
+                    {formatKES(totalDue)}
+                  </span>
                 </div>
+                {state.deposit > 0 && (
+                  <p className="breakdown-note">
+                    Includes a {formatKES(state.deposit)} deposit, refunded to you after the trip.
+                  </p>
+                )}
               </div>
             </div>
           </aside>

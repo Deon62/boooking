@@ -133,16 +133,22 @@ shadow reserved for floating elements (modals, dropdowns, sticky widgets).
 
 ### Car details
 - [x] 🟠 Replaced bare "Loading car…" with a **full skeleton** (gallery + title + specs).
-- [ ] 🟡 **Photo gallery lightbox** — clicking the 5-photo grid should open a
-      full-screen carousel, not just sit static.
-- [ ] 🟡 **Map for pickup location** (lat/long exist in the API) — a small static map
-      is a big trust/premium signal.
+- [x] 🟡 **Photo gallery lightbox** — clicking any gallery photo (or the "View all N
+      photos" pill) opens a full-screen carousel with keyboard + on-screen nav, a
+      counter, and Esc/backdrop close.
+- [x] 🟡 **Map for pickup location** — real OpenStreetMap embed (no API key) on Car
+      Details. Prefers the car's `latitude`/`longitude`; those are null upstream
+      today, so it centres on the city with an "approximate area" note and an Open-in-
+      Maps link. The b2b `MAPBOX_TOKEN` is b2b-auth-only, so no client token exists
+      yet — swap the OSM iframe for Mapbox GL once a public token endpoint lands.
 - [ ] 🟡 **Sticky price/reserve bar on mobile** so "Reserve" is always reachable.
 
 ### Booking / Payment
-- [ ] 🟠 Skeleton + clearer **step indicator** (Dates → Extras → Pay) for the flow.
-- [ ] 🟡 **Price breakdown transparency** — animate totals, show deposit vs rental
-      clearly, note "refundable" inline.
+- [x] 🟠 Skeleton (done) + **step indicator** — `BookingSteps` (Trip details →
+      Payment → Confirmed) shown on Booking (1), Payment (2), Confirmation (3).
+- [x] 🟡 **Price breakdown transparency** — "Total due now", a subtle pop animation
+      when the total changes, and an inline "includes a refundable deposit, refunded
+      after the trip" note (Booking + Payment).
 - [x] Payment waiting animation (`payment.webm`) in the processing overlay.
 
 ### Trips / Trip details

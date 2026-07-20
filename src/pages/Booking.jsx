@@ -9,7 +9,7 @@ import {
 } from '../data.js';
 import { useCar, unavailableDateSet } from '../cars.js';
 import { getCarAvailability } from '../api.js';
-import { CarPhoto, Toggle, BackButton } from '../components.jsx';
+import { CarPhoto, Toggle, BackButton, BookingSteps } from '../components.jsx';
 import { DateRangeCalendar, fmtShort } from '../Calendar.jsx';
 import { CalendarIcon, MapPinIcon, SteeringIcon, UsersIcon, PhoneIcon } from '../icons.jsx';
 
@@ -185,6 +185,7 @@ function BookingForm({ car }) {
     <div className="page">
       <div className="container">
         <BackButton to={`/cars/${car.id}`} />
+        <BookingSteps current={1} />
 
         <div className="booking-layout">
           <div className="form-card">
@@ -417,9 +418,16 @@ function BookingForm({ car }) {
                   </div>
                 )}
                 <div className="row total">
-                  <span>Total</span>
-                  <span>{formatKES(pricing.total)}</span>
+                  <span>Total due now</span>
+                  <span key={pricing.total} className="total-pop">
+                    {formatKES(pricing.total)}
+                  </span>
                 </div>
+                {pricing.deposit > 0 && (
+                  <p className="breakdown-note">
+                    Includes a {formatKES(pricing.deposit)} deposit, refunded to you after the trip.
+                  </p>
+                )}
               </div>
 
               <button

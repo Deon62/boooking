@@ -929,6 +929,7 @@ textarea {
 
 /* 5-photo Airbnb-style gallery: hero left, 2x2 thumbs right */
 .gallery5 {
+  position: relative;
   display: grid;
   grid-template-columns: 2fr 1fr 1fr;
   grid-template-rows: 1fr 1fr;
@@ -936,6 +937,26 @@ textarea {
   height: clamp(320px, 38vw, 460px);
   border-radius: var(--r-lg);
   overflow: hidden;
+}
+
+/* "View all photos" pill, bottom-right of the gallery */
+.gallery-all {
+  position: absolute;
+  right: 16px;
+  bottom: 16px;
+  padding: 9px 16px;
+  border-radius: var(--r-pill);
+  background: #fff;
+  border: 1px solid rgba(22, 24, 29, 0.14);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.12s;
+}
+
+.gallery-all:hover {
+  transform: translateY(-1px);
 }
 
 .gallery5 .g-cell {
@@ -965,6 +986,146 @@ textarea {
   display: grid;
   place-items: center;
   font-size: 54px;
+}
+
+/* ---------- photo lightbox ---------- */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  display: grid;
+  place-items: center;
+  padding: 40px;
+  background: rgba(11, 11, 15, 0.92);
+  animation: pay-fade 0.2s ease;
+}
+
+.lightbox-img {
+  max-width: 92vw;
+  max-height: 86vh;
+  object-fit: contain;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.lightbox-close,
+.lightbox-nav {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.12);
+  transition: background 0.12s;
+}
+
+.lightbox-close:hover,
+.lightbox-nav:hover {
+  background: rgba(255, 255, 255, 0.24);
+}
+
+.lightbox-close {
+  top: 20px;
+  right: 24px;
+  width: 44px;
+  height: 44px;
+}
+
+.lightbox-nav {
+  top: 50%;
+  transform: translateY(-50%);
+  width: 50px;
+  height: 50px;
+}
+
+.lightbox-nav.prev {
+  left: 24px;
+}
+
+.lightbox-nav.next {
+  right: 24px;
+}
+
+.lightbox-count {
+  position: absolute;
+  bottom: 26px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 6px 14px;
+  border-radius: var(--r-pill);
+  background: rgba(255, 255, 255, 0.14);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+@media (max-width: 640px) {
+  .lightbox {
+    padding: 12px;
+  }
+  .lightbox-nav {
+    width: 42px;
+    height: 42px;
+  }
+  .lightbox-nav.prev {
+    left: 10px;
+  }
+  .lightbox-nav.next {
+    right: 10px;
+  }
+}
+
+/* ---------- pickup map ---------- */
+.pickup-map {
+  position: relative;
+  width: 100%;
+  height: 300px;
+  overflow: hidden;
+  border: 1px solid var(--card-border);
+  background: #e9edf3;
+}
+
+.pickup-map iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+}
+
+/* centre pin for the approximate (city-level) view */
+.pickup-pin {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 18px;
+  height: 18px;
+  transform: translate(-50%, -100%);
+  border-radius: 50% 50% 50% 0;
+  background: var(--primary);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.35);
+  rotate: -45deg;
+  pointer-events: none;
+}
+
+.pickup-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+
+.pickup-place {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-2);
+}
+
+.pickup-place svg {
+  color: var(--hint);
 }
 
 .rating-line {
@@ -2066,12 +2227,118 @@ textarea {
 }
 
 .breakdown .row.total {
-  border-top: 1.5px solid rgba(163, 177, 198, 0.45);
+  border-top: 1.5px solid var(--card-border);
   margin-top: 10px;
   padding-top: 14px;
   font-size: 17px;
   font-weight: 800;
   color: var(--text);
+}
+
+/* the total gets a subtle pop when it changes (days/extras) */
+.total-pop {
+  display: inline-block;
+  animation: total-pop 0.28s ease;
+}
+
+@keyframes total-pop {
+  0% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(1.09);
+    color: var(--primary);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .total-pop {
+    animation: none;
+  }
+}
+
+.breakdown-note {
+  margin-top: 12px;
+  font-size: 12.5px;
+  font-weight: 600;
+  line-height: 1.5;
+  color: var(--hint);
+}
+
+/* ---------- checkout step indicator ---------- */
+.booking-steps {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 4px 0 28px;
+}
+
+.bstep {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.bstep-dot {
+  width: 26px;
+  height: 26px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 1.5px solid var(--input-border);
+  background: #fff;
+  font-size: 12.5px;
+  font-weight: 800;
+  color: var(--hint);
+}
+
+.bstep-label {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--hint);
+}
+
+.bstep.active .bstep-dot {
+  border-color: var(--primary);
+  background: var(--primary-tint);
+  color: var(--primary);
+}
+
+.bstep.active .bstep-label {
+  color: var(--text);
+}
+
+.bstep.done .bstep-dot {
+  border-color: var(--primary);
+  background: var(--primary);
+  color: #fff;
+}
+
+.bstep.done .bstep-label {
+  color: var(--text-2);
+}
+
+.bstep-line {
+  width: 36px;
+  height: 2px;
+  background: var(--input-border);
+}
+
+.bstep-line.done {
+  background: var(--primary);
+}
+
+@media (max-width: 560px) {
+  .bstep-label {
+    display: none;
+  }
+  .bstep-line {
+    width: 22px;
+  }
 }
 
 /* booking layout */

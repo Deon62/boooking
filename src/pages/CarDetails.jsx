@@ -32,7 +32,117 @@ import {
   ShareIcon,
   PhoneIcon,
   IdCardIcon,
+  XIcon,
 } from '../icons.jsx';
+
+// Approximate city centres — used to place the pickup map until per-car
+// latitude/longitude are populated upstream (they're null today).
+const CITY_COORDS = {
+  Nairobi: [-1.286389, 36.817223],
+  Nakuru: [-0.303099, 36.08],
+  Mombasa: [-4.043477, 39.668206],
+  Kisumu: [-0.091702, 34.767956],
+  Eldoret: [0.514277, 35.269779],
+};
+
+const Chevron = ({ dir }) => (
+  <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+    {dir === 'left' ? <polyline points="15 6 9 12 15 18" /> : <polyline points="9 6 15 12 9 18" />}
+  </svg>
+);
+
+/** Full-screen photo carousel. Arrow keys / on-screen arrows navigate; Esc or
+ * a backdrop click closes. */
+function Lightbox({ photos, index, setIndex, onClose }) {
+  const go = (step) => setIndex((i) => (i + step + photos.length) % photos.length);
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key === 'Escape') onClose();
+      else if (e.key === 'ArrowRight') go(1);
+      else if (e.key === 'ArrowLeft') go(-1);
+    };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [photos.length]);
+
+  return (
+    <div className="lightbox" onClick={onClose} role="dialog" aria-label="Photos">
+      <button className="lightbox-close" onClick={onClose} aria-label="Close">
+        <XIcon size={22} />
+      </button>
+      {photos.length > 1 && (
+        <button
+          className="lightbox-nav prev"
+          aria-label="Previous photo"
+          onClick={(e) => {
+            e.stopPropagation();
+            go(-1);
+          }}
+        >
+          <Chevron dir="left" />
+        </button>
+      )}
+      <img className="lightbox-img" src={photos[index]} alt="" onClick={(e) => e.stopPropagation()} />
+      {photos.length > 1 && (
+        <button
+          className="lightbox-nav next"
+          aria-label="Next photo"
+          onClick={(e) => {
+            e.stopPropagation();
+            go(1);
+          }}
+        >
+          <Chevron dir="right" />
+        </button>
+      )}
+      <div className="lightbox-count">
+        {index + 1} / {photos.length}
+      </div>
+    </div>
+  );
+}
+
+/** Pickup location map. Prefers the car's real coordinates; falls back to the
+ * city centre with a note. Uses the free OpenStreetMap embed (no API key) —
+ * swap for Mapbox GL once a client-side token endpoint exists. */
+function PickupMap({ car }) {
+  const exact = Boolean(car.latitude && car.longitude);
+  const coords = exact ? [car.latitude, car.longitude] : CITY_COORDS[car.city];
+  if (!coords) return null;
+  const [lat, lng] = coords;
+  const d = exact ? 0.012 : 0.06;
+  const bbox = `${lng - d},${lat - d},${lng + d},${lat + d}`;
+  const src = `https://www.openstreetmap.org/export/embed.html?bbox=${encodeURIComponent(
+    bbox
+  )}&layer=mapnik${exact ? `&marker=${lat},${lng}` : ''}`;
+  const link = `https://www.openstreetmap.org/?mlat=${lat}&mlon=${lng}#map=${exact ? 15 : 12}/${lat}/${lng}`;
+
+  return (
+    <div className="section detail-divide">
+      <h2>Pickup location</h2>
+      <div className="pickup-map">
+        <iframe title="Pickup location map" src={src} loading="lazy" />
+        {!exact && <span className="pickup-pin" aria-hidden="true" />}
+      </div>
+      <div className="pickup-meta">
+        <span className="pickup-place">
+          <MapPinIcon size={16} /> {car.locationName}
+          {car.city ? `, ${car.city}` : ''}
+        </span>
+        <a href={link} target="_blank" rel="noopener noreferrer" className="link">
+          Open in Maps
+        </a>
+      </div>
+      {!exact && (
+        <p className="info-note" style={{ paddingBottom: 0 }}>
+          Showing the general {car.city} area — your host shares the exact pickup point once your
+          booking is confirmed.
+        </p>
+      )}
+    </div>
+  );
+}
 
 // Same options as the app's ReportListingScreen.
 const REPORT_REASONS = [
@@ -231,6 +341,7 @@ export default function CarDetails() {
   // Messaging unlocks only after a paid booking for this car.
   const [hasBooked, setHasBooked] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [lightbox, setLightbox] = useState(null);
   const hostAvatar = useHostAvatar(car?.host.id, car?.host.avatarUrl);
 
   useEffect(() => {
@@ -363,6 +474,10 @@ export default function CarDetails() {
     });
   };
 
+  const openLightbox = (i) => {
+    if (car.photos.length) setLightbox(Math.min(i, car.photos.length - 1));
+  };
+
   const specs = [
     { icon: <CogIcon size={20} />, label: 'Transmission', value: car.transmission },
     { icon: <FuelIcon size={20} />, label: 'Fuel', value: car.fuel },
@@ -382,12 +497,26 @@ export default function CarDetails() {
         <BackButton to="/" />
 
         <div className="gallery5">
-          <CarPhoto car={car} index={0} className="g-cell g-main" />
-          <CarPhoto car={car} index={1} className="g-cell" />
-          <CarPhoto car={car} index={2} className="g-cell" />
-          <CarPhoto car={car} index={3} className="g-cell" />
-          <CarPhoto car={car} index={4} className="g-cell" />
+          <CarPhoto car={car} index={0} className="g-cell g-main" onClick={() => openLightbox(0)} />
+          <CarPhoto car={car} index={1} className="g-cell" onClick={() => openLightbox(1)} />
+          <CarPhoto car={car} index={2} className="g-cell" onClick={() => openLightbox(2)} />
+          <CarPhoto car={car} index={3} className="g-cell" onClick={() => openLightbox(3)} />
+          <CarPhoto car={car} index={4} className="g-cell" onClick={() => openLightbox(4)} />
+          {car.photos.length > 0 && (
+            <button className="gallery-all" onClick={() => openLightbox(0)}>
+              View all {car.photos.length} photos
+            </button>
+          )}
         </div>
+
+        {lightbox !== null && (
+          <Lightbox
+            photos={car.photos}
+            index={lightbox}
+            setIndex={setLightbox}
+            onClose={() => setLightbox(null)}
+          />
+        )}
 
         <div className="details-layout" style={{ marginTop: 30 }}>
           <div>
@@ -546,6 +675,8 @@ export default function CarDetails() {
                 </div>
               </div>
             </div>
+
+            <PickupMap car={car} />
 
             <div className="section detail-divide">
               <h2>Reviews</h2>

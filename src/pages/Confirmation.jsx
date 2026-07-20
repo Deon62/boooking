@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { formatKES, formatDateLong } from '../data.js';
 import { mapBooking } from '../cars.js';
-import { CarPhoto } from '../components.jsx';
+import { CarPhoto, BookingSteps } from '../components.jsx';
 import { getBooking } from '../api.js';
 import { CheckIcon } from '../icons.jsx';
 
@@ -50,6 +50,7 @@ export default function Confirmation() {
   return (
     <div className="page">
       <div className="container" style={{ maxWidth: 640 }}>
+        <BookingSteps current={3} />
         <div className="confirm-hero">
           <div className="confirm-tick">
             <CheckIcon size={38} />

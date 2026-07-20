@@ -29,6 +29,8 @@ export function mapCar(c) {
     rating: c.rating ?? null,
     city: c.host_city,
     locationName: c.location_name,
+    latitude: c.latitude ?? null,
+    longitude: c.longitude ?? null,
     driveTypes: c.allowed_drive_types?.length ? c.allowed_drive_types : ['self'],
     minAge: c.min_age_requirement,
     minRentalDays: c.min_rental_days || 1,
