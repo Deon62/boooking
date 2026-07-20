@@ -38,6 +38,8 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  /* no dark flash when tapping links/buttons on touch + click */
+  -webkit-tap-highlight-color: transparent;
 }
 
 html {
@@ -472,6 +474,33 @@ textarea {
   }
 }
 
+/* home storefront shelves: a titled row of six cars, no horizontal scroll */
+.shelf {
+  margin-top: 26px;
+}
+
+.shelf-head {
+  margin-bottom: 12px;
+}
+
+.shelf-title {
+  font-size: 19px;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+}
+
+.shelf-sub {
+  margin-top: 2px;
+  color: var(--hint);
+  font-size: 13.5px;
+  font-weight: 600;
+}
+
+/* the cards use the shared responsive grid; the shelf-head owns the spacing */
+.shelf-cards {
+  margin-top: 0;
+}
+
 .car-card {
   display: block;
 }
@@ -534,7 +563,9 @@ textarea {
 }
 
 .img-skel,
-.skel-line {
+.skel-line,
+.skel-circle,
+.skel-bubble {
   background: linear-gradient(90deg, #dee4ef 25%, #ecf0f7 50%, #dee4ef 75%);
   background-size: 200% 100%;
   animation: shimmer 1.6s linear infinite;
@@ -550,6 +581,34 @@ textarea {
   height: 15px;
   border-radius: 8px;
   margin-top: 12px;
+}
+
+.skel-circle {
+  border-radius: 50%;
+  flex-shrink: 0;
+  display: inline-block;
+}
+
+.skel-bubble {
+  height: 42px;
+  border-radius: 16px;
+}
+
+.skel-bubble.me {
+  align-self: flex-end;
+  border-bottom-right-radius: 6px;
+}
+
+.skel-bubble.host {
+  align-self: flex-start;
+  border-bottom-left-radius: 6px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skel-circle,
+  .skel-bubble {
+    animation: none;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -2381,7 +2440,15 @@ a.trip-card:hover {
   display: flex;
   align-items: flex-start;
   gap: 20px;
-  padding: 20px 2px;
+  padding: 20px 14px;
+  margin: 0 -14px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background 0.12s;
+}
+
+.past-row:hover {
+  background: rgba(0, 127, 250, 0.045);
 }
 
 .past-row + .past-row {
@@ -3763,6 +3830,41 @@ a.trip-card:hover {
 .empty .big {
   font-size: 46px;
   margin-bottom: 14px;
+}
+
+/* animated empty state (e.g. no cars in a city) */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 48px 20px 80px;
+}
+
+.empty-anim {
+  width: 240px;
+  max-width: 72vw;
+  height: auto;
+  margin-bottom: 6px;
+}
+
+.empty-state b {
+  font-size: 19px;
+  font-weight: 800;
+  color: var(--text);
+}
+
+.empty-state p {
+  margin-top: 8px;
+  max-width: 420px;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.6;
+  color: var(--hint);
+}
+
+.empty-state .btn-primary {
+  margin-top: 20px;
 }
 
 /* Footer — mirrors ardena.co.ke (ardena-web/styles.css) */

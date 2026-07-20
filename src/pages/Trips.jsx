@@ -98,7 +98,19 @@ export default function Trips() {
                     ? b.car
                     : { ...b.car, photos: liveCar?.photos || [] };
                   return (
-                    <div className="past-row" key={b.id}>
+                    <div
+                      className="past-row"
+                      key={b.id}
+                      role="button"
+                      tabIndex={0}
+                      onClick={() => navigate(`/trips/${b.id}`)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault();
+                          navigate(`/trips/${b.id}`);
+                        }
+                      }}
+                    >
                       <CarPhoto car={rowCar} className="pic" />
                       <div className="past-main">
                         <b>{b.car.name}</b>
@@ -125,49 +137,41 @@ export default function Trips() {
                             <StarIcon size={11} /> {ratingLabel(liveCar)}
                           </span>
                         )}
-                        <div className="past-actions">
-                          {confirmId === b.id ? (
-                            <>
-                              <span className="past-days" style={{ alignSelf: 'center' }}>
-                                Delete?
-                              </span>
-                              <button
-                                className="icon-btn danger"
-                                aria-label="Confirm delete"
-                                disabled={deleting}
-                                onClick={() => removeTrip(b.id)}
-                              >
-                                <CheckIcon size={15} />
-                              </button>
-                              <button
-                                className="icon-btn"
-                                aria-label="Keep trip"
-                                disabled={deleting}
-                                onClick={() => setConfirmId(null)}
-                              >
-                                <XIcon size={15} />
-                              </button>
-                            </>
-                          ) : (
-                            <>
-                              <button
-                                className="flat-btn"
-                                onClick={() => navigate(`/trips/${b.id}`)}
-                              >
-                                View
-                              </button>
-                              {isPast && (
+                        {isPast && (
+                          <div className="past-actions" onClick={(e) => e.stopPropagation()}>
+                            {confirmId === b.id ? (
+                              <>
+                                <span className="past-days" style={{ alignSelf: 'center' }}>
+                                  Delete?
+                                </span>
                                 <button
                                   className="icon-btn danger"
-                                  aria-label="Delete trip"
-                                  onClick={() => setConfirmId(b.id)}
+                                  aria-label="Confirm delete"
+                                  disabled={deleting}
+                                  onClick={() => removeTrip(b.id)}
                                 >
-                                  <TrashIcon size={15} />
+                                  <CheckIcon size={15} />
                                 </button>
-                              )}
-                            </>
-                          )}
-                        </div>
+                                <button
+                                  className="icon-btn"
+                                  aria-label="Keep trip"
+                                  disabled={deleting}
+                                  onClick={() => setConfirmId(null)}
+                                >
+                                  <XIcon size={15} />
+                                </button>
+                              </>
+                            ) : (
+                              <button
+                                className="icon-btn danger"
+                                aria-label="Delete trip"
+                                onClick={() => setConfirmId(b.id)}
+                              >
+                                <TrashIcon size={15} />
+                              </button>
+                            )}
+                          </div>
+                        )}
                       </div>
                     </div>
                   );

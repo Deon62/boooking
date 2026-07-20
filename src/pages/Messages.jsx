@@ -224,8 +224,57 @@ export default function Messages() {
 
   if (loading) {
     return (
-      <div className="page container wide">
-        <div className="empty">Loading messages…</div>
+      <div className="page">
+        <div className="container wide">
+          <div className="msg-layout" aria-hidden="true">
+            <div className="msg-list">
+              {Array.from({ length: 6 }, (_, i) => (
+                <div className="msg-item" key={i}>
+                  <span className="skel-circle" style={{ width: 40, height: 40 }} />
+                  <span className="msg-item-text" style={{ flex: 1 }}>
+                    <span className="skel-line" style={{ width: '55%', marginTop: 0 }} />
+                    <span className="skel-line" style={{ width: '78%', height: 12 }} />
+                  </span>
+                </div>
+              ))}
+            </div>
+
+            <div className="msg-thread">
+              <div className="msg-head">
+                <span className="skel-circle" style={{ width: 30, height: 30 }} />
+                <span className="skel-line" style={{ width: 150, height: 14, marginTop: 0 }} />
+              </div>
+              <div className="msg-body">
+                {[
+                  ['host', '54%'],
+                  ['me', '42%'],
+                  ['host', '64%'],
+                  ['me', '36%'],
+                  ['host', '50%'],
+                  ['me', '46%'],
+                ].map(([side, w], i) => (
+                  <div className={`skel-bubble ${side}`} style={{ width: w }} key={i} />
+                ))}
+              </div>
+              <div className="msg-input">
+                <span
+                  className="skel-line"
+                  style={{ flex: 1, height: 44, marginTop: 0, borderRadius: 999 }}
+                />
+              </div>
+            </div>
+
+            <aside className="msg-side">
+              <span className="skel-circle" style={{ width: 96, height: 96, margin: '8px 0 10px' }} />
+              <span className="skel-line" style={{ width: 130, height: 15, alignSelf: 'center' }} />
+              <span className="skel-line" style={{ width: 180, height: 11, alignSelf: 'center' }} />
+              <span
+                className="skel-line"
+                style={{ width: '100%', height: 60, marginTop: 16, borderRadius: 14 }}
+              />
+            </aside>
+          </div>
+        </div>
       </div>
     );
   }

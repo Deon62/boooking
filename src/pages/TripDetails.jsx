@@ -682,36 +682,53 @@ export default function TripDetails() {
               />
             )}
 
-            <div className="section">
-              <h2>Your host</h2>
-              <div className="host-panel">
-                <span className="avatar" style={{ width: 68, height: 68, fontSize: 24 }}>
-                  {hostAvatar ? <img src={hostAvatar} alt={host.name} /> : host.name[0]}
-                </span>
-                <b className="host-name">{host.name}</b>
-                {host.joined && <span className="car-meta">Host since {host.joined}</span>}
-                <div className="host-stats">
-                  <div>
-                    <b>
-                      {liveCar ? ratingLabel(liveCar) : '—'} <StarIcon size={12} />
-                    </b>
-                    <span>Rating</span>
+            <div className="section host-duo">
+              <div>
+                <h2>Your host</h2>
+                <div className="host-panel">
+                  <span className="avatar" style={{ width: 68, height: 68, fontSize: 24 }}>
+                    {hostAvatar ? <img src={hostAvatar} alt={host.name} /> : host.name[0]}
+                  </span>
+                  <b className="host-name">{host.name}</b>
+                  {host.joined && <span className="car-meta">Host since {host.joined}</span>}
+                  <div className="host-stats">
+                    <div>
+                      <b>
+                        {liveCar ? ratingLabel(liveCar) : '—'} <StarIcon size={12} />
+                      </b>
+                      <span>Rating</span>
+                    </div>
+                    <div>
+                      <b>{ratings.total}</b>
+                      <span>Reviews</span>
+                    </div>
+                    <div>
+                      <b>{hosting || '—'}</b>
+                      <span>Hosting</span>
+                    </div>
                   </div>
-                  <div>
-                    <b>{ratings.total}</b>
-                    <span>Reviews</span>
-                  </div>
-                  <div>
-                    <b>{hosting || '—'}</b>
-                    <span>Hosting</span>
-                  </div>
+                  <button className="neo-btn host-msg" disabled={!paid} onClick={messageHost}>
+                    <ChatIcon size={16} /> Message {hostFirstName}
+                  </button>
+                  {!paid && (
+                    <span className="host-msg-hint">Unlocks once the booking is paid</span>
+                  )}
                 </div>
-                <button className="neo-btn host-msg" disabled={!paid} onClick={messageHost}>
-                  <ChatIcon size={16} /> Message {hostFirstName}
-                </button>
-                {!paid && (
-                  <span className="host-msg-hint">Unlocks once the booking is paid</span>
-                )}
+              </div>
+
+              <div>
+                <h2>About this host</h2>
+                <div className="host-about">
+                  <p>
+                    {hostFirstName} is an Ardena host{liveCar?.city ? ` in ${liveCar.city}` : ''}.
+                    Ardena hosts respond in under 30 minutes on average and are identity-verified
+                    before their cars go live.
+                  </p>
+                  <p>
+                    Your payment is held securely by Ardena and only released to the host after
+                    pickup, with 24/7 support throughout your trip.
+                  </p>
+                </div>
               </div>
             </div>
 
