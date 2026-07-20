@@ -1037,7 +1037,7 @@ textarea {
   position: sticky;
   top: 100px;
   padding: 26px;
-  border-radius: var(--r-lg);
+  border-radius: 0;
   background: var(--surface);
   box-shadow: var(--neo-out-lg);
 }
