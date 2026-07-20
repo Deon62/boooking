@@ -13,6 +13,7 @@ import { fmtShort } from '../Calendar.jsx';
 import { CarPhoto, BackButton } from '../components.jsx';
 import { useApp } from '../store.jsx';
 import { useToast } from '../toast.jsx';
+import { useScrollLock } from '../useScrollLock.js';
 import { reportListing, listBookings, getCarAvailability } from '../api.js';
 import {
   CogIcon,
@@ -54,6 +55,7 @@ const Chevron = ({ dir }) => (
 /** Full-screen photo carousel. Arrow keys / on-screen arrows navigate; Esc or
  * a backdrop click closes. */
 function Lightbox({ photos, index, setIndex, onClose }) {
+  useScrollLock(true);
   const go = (step) => setIndex((i) => (i + step + photos.length) % photos.length);
   useEffect(() => {
     const onKey = (e) => {

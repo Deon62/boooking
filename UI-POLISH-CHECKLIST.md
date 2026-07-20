@@ -63,16 +63,20 @@ shadow reserved for floating elements (modals, dropdowns, sticky widgets).
 - [x] 🟠 **Focus-visible rings** — added a global `:focus-visible` outline (primary,
       2px offset) for keyboard users; mouse/touch focus stays clean (tap-highlight
       was already removed).
-- [ ] 🟠 **Unified button press/hover states** — hovers/actives are defined
-      per-component. Define `.btn`, `.btn-primary`, `.btn-ghost`, `.chip` once with
-      shared hover/active/disabled behavior.
-- [ ] 🟡 **Micro-interactions**: subtle card lift on hover (some pages have it,
-      others don't), button press scale, heart "pop" when liking, smooth
-      120–200ms transitions as a rule not an exception.
-- [ ] 🟡 **Page/route transitions** — a light fade or slide between routes makes the
-      SPA feel intentional. Respect `prefers-reduced-motion`.
-- [ ] 🟡 **Modal/overlay polish** — the filter and payment overlays are good; apply
-      the same enter animation + scroll-lock (prevent body scroll while open) to all.
+- [x] 🟠 **Unified button press/hover states** — one shared transition + a single
+      press-scale (`scale(0.95–0.97)`) across `.btn-primary`, `.neo-btn`, `.flat-btn`,
+      `.icon-btn`, `.pill-action`, `.filter-chip`, `.search-icon-btn`; consistent
+      disabled; reduced-motion aware. Also removed the leftover **blue glow** shadows
+      on primary buttons, the search/filter icon, and the payments info panel.
+- [x] 🟡 **Micro-interactions** — button press-scale (above), a springy **heart "pop"**
+      on the wishlist button, and 120–260ms transitions as the rule. (Card hover
+      lifts were already present on the clickable cards.)
+- [x] 🟡 **Page/route transitions** — a gentle opacity fade as each `.page` mounts
+      (opacity only, so it can't re-anchor `position:fixed` overlays); reduced-motion
+      aware.
+- [x] 🟡 **Modal/overlay polish** — added a `useScrollLock` hook and applied it to the
+      filter modal, the photo lightbox, and the payment overlay (body no longer
+      scrolls behind them); they already share the same fade-in.
 
 ---
 
@@ -106,14 +110,23 @@ shadow reserved for floating elements (modals, dropdowns, sticky widgets).
 
 ## 4. Component consistency 🟠
 
-- [ ] 🟠 **One card component** — `.form-card`, `.info-card`, `.host-panel`,
-      `.past-panel`, `.love-panel`, `.debit-card`, `.nots-card` are all "a card"
-      with different treatments. Reduce to one `<Card>` + variants.
-- [ ] 🟠 **One input component** — dashed `.control` vs plain inputs vs the price
-      fields. Standardize wrapper, label, focus, error, and disabled styling.
-- [ ] 🟠 **One chip/pill component** — filter chips, `.wl-count-pill`, `.nav-link`,
-      `.status-pill`, `.status-text`, `.report-reason`, `.badge` overlap in intent.
-      Consolidate into `<Chip>` / `<Badge>` / `<StatusPill>`.
+> Note: **Phase 0 already unified the _visuals_** of these (all cards = white +
+> hairline via `--card-ring`; all inputs = solid hairline `.control` with primary
+> focus; chips = flat bordered). What remained here was DRY code-hygiene — a
+> literal `<Card>`/`<Input>`/`<Chip>` React extraction — which is high churn across
+> ~15 files for **no visual change** and real regression risk, so it's intentionally
+> deferred. The behavioural consolidation (buttons, chips) landed in §2.
+
+- [~] 🟠 **One card component** — visually unified in Phase 0 (identical white +
+      hairline treatment). Literal `<Card>` extraction deferred (low value / high churn).
+- [~] 🟠 **One input component** — all inputs share `.control` (solid hairline,
+      primary focus, `.err` state) since Phase 0 + the validation work. Literal
+      `<Input>` extraction deferred.
+- [x] 🟠 **Chip consistency** — selectable chips share one flat-bordered look with a
+      consistent selected state (booking `.choice-btn` + `.report-reason` now share
+      dimensions/transition). Filter-modal chips keep their distinct dark-fill
+      "selected" on purpose (it reads as a filter toggle, not a form choice).
+      Status pills stay separate — they're semantic colour, not a control.
 - [ ] 🟡 **Icon audit** — sizes range 11–22px inconsistently within the same rows.
       Standardize to 2–3 sizes and consistent stroke weight.
 - [ ] 🟡 **Avatar consistency** — host avatars vary (68px on details, 96px in

@@ -4,6 +4,7 @@ import { useCars } from '../cars.js';
 import { CarCard, CarCardSkeleton, EmptyState } from '../components.jsx';
 import { DateRangeCalendar, fmtShort } from '../Calendar.jsx';
 import { CheckIcon, MapPinIcon, XIcon } from '../icons.jsx';
+import { useScrollLock } from '../useScrollLock.js';
 
 /** Mirrors the GET /cars filter surface (min_price/max_price, body_type,
  * min_seats, transmission, fuel_type, driver_option). Applied client-side
@@ -74,6 +75,7 @@ function Chip({ on, onClick, children }) {
  * page until "Show cars" is pressed; the button shows the live match count. */
 function FilterModal({ open, onClose, baseCars, options, applied, onApply }) {
   const [draft, setDraft] = useState(applied);
+  useScrollLock(open);
 
   useEffect(() => {
     if (open) setDraft(applied);

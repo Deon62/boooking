@@ -5,6 +5,7 @@ import { CarPhoto, BackButton, MastercardMark, BookingSteps } from '../component
 import mpesaImg from '../assets/mpesa.png';
 import payingVideo from '../assets/payment.webm';
 import { useApp } from '../store.jsx';
+import { useScrollLock } from '../useScrollLock.js';
 import * as api from '../api.js';
 import { PhoneIcon, CreditCardIcon } from '../icons.jsx';
 
@@ -40,6 +41,9 @@ export default function Payment() {
     },
     []
   );
+
+  // Lock the page behind the processing overlay.
+  useScrollLock(phase === 'working' || phase === 'waiting');
 
   const car = state?.car || null;
 
