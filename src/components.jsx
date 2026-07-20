@@ -3,6 +3,7 @@ import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { useApp } from './store.jsx';
 import { formatKES } from './data.js';
 import logoUrl from './assets/logo.svg';
+import logomarkUrl from './assets/logomark.svg';
 import appstoreImg from './assets/appstore.png';
 import playImg from './assets/play.png';
 import {
@@ -255,8 +256,8 @@ export function Header() {
   return (
     <header className={`header${scrolled ? ' scrolled' : ''}`}>
       <div className="header-inner">
-        <Link to="/" className="logo">
-          <img src={logoUrl} alt="Ardena" className="logo-img" />
+        <Link to="/" className="logo" aria-label="Ardena">
+          <img src={logomarkUrl} alt="Ardena" className="logo-mark-img" />
         </Link>
         <nav className="header-nav">
           <NavLink to="/" end className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`}>

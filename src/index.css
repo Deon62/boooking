@@ -209,6 +209,13 @@ textarea {
   object-fit: contain;
 }
 
+.logo-mark-img {
+  height: 32px;
+  width: auto;
+  object-fit: contain;
+  display: block;
+}
+
 .header-nav {
   display: flex;
   align-items: center;
@@ -1420,125 +1427,173 @@ textarea {
   margin-top: 2px;
 }
 
-/* wishlist: minimal chips + recently-viewed strip */
-.wl-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 9px;
-  padding: 10px 20px;
-  border-radius: var(--r-pill);
-  background: var(--surface);
-  box-shadow: var(--neo-out-sm);
-  font-weight: 800;
-  font-size: 13px;
-  letter-spacing: 0.3px;
-  color: var(--text-2);
+/* wishlist — two collage cards: Recently viewed + Liked */
+.wl-head {
   margin-bottom: 6px;
 }
 
-.wl-chip svg {
-  color: var(--error);
-}
-
-.wl-chip.neutral svg {
-  color: var(--text-2);
-}
-
-.wl-count {
-  background: rgba(0, 127, 250, 0.1);
-  color: var(--primary);
-  border-radius: var(--r-pill);
-  padding: 2px 11px;
-  font-size: 12px;
-}
-
-.wl-empty {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-  padding: 70px 20px;
-  text-align: center;
+.wl-sub {
   color: var(--hint);
-}
-
-.wl-empty p {
-  font-size: 16.5px;
-  font-weight: 800;
-  color: var(--text-2);
-  margin: 0;
-}
-
-.wl-empty span {
-  font-size: 13.5px;
+  font-size: 14px;
   font-weight: 600;
-  max-width: 340px;
+  margin-top: 2px;
 }
 
-.wl-empty .btn-primary {
-  margin-top: 12px;
+.wish-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 22px;
+  margin-top: 24px;
+  max-width: 760px;
 }
 
-.recent-card {
-  display: flex;
-  gap: 26px;
-  overflow-x: auto;
-  padding: 24px 26px;
-  margin-top: 16px;
-  border-radius: var(--r-lg);
-  background: var(--surface);
-  box-shadow: var(--neo-out-sm);
+@media (max-width: 720px) {
+  .wish-cards {
+    grid-template-columns: 1fr;
+    max-width: 380px;
+  }
 }
 
-.recent-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 7px;
-  min-width: 104px;
-  color: inherit;
-  text-align: center;
-}
-
-.recent-item .pic {
-  width: 72px;
-  height: 72px;
-  border-radius: 50%;
+.wish-card {
+  background: #fff;
+  border: 1px solid rgba(22, 24, 29, 0.1);
   overflow: hidden;
-  box-shadow: var(--neo-out-sm);
-  transition: transform 0.15s ease;
+  transition: box-shadow 0.15s ease, border-color 0.15s ease;
 }
 
-.recent-item:hover .pic {
-  transform: translateY(-2px) scale(1.04);
+.wish-card:hover {
+  border-color: rgba(22, 24, 29, 0.18);
+  box-shadow: 0 10px 24px rgba(16, 24, 40, 0.07);
 }
 
-.recent-item .pic img {
+/* collage: a mosaic of up to four car photos that reshapes to the count */
+.collage {
+  aspect-ratio: 1 / 1;
+  display: grid;
+  gap: 2px;
+  background: rgba(22, 24, 29, 0.06);
+  position: relative;
+}
+
+.collage.n-1 {
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr;
+}
+
+.collage.n-2 {
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr;
+}
+
+.collage.n-3 {
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+}
+
+.collage.n-3 .collage-tile:first-child {
+  grid-row: span 2;
+}
+
+.collage.n-4 {
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+}
+
+.collage-tile {
+  position: relative;
+  overflow: hidden;
+  display: block;
+  background: #eef1f8;
+}
+
+.collage-tile .collage-pic,
+.collage-tile .photo-frame {
+  width: 100%;
+  height: 100%;
+}
+
+.collage-tile img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  display: block;
+  transition: transform 0.3s ease;
 }
 
-.recent-item .pic .ph {
+.wish-card:hover .collage-tile img {
+  transform: scale(1.04);
+}
+
+.collage-tile .ph {
   width: 100%;
   height: 100%;
   display: grid;
   place-items: center;
+  font-size: 30px;
+}
+
+/* "+N" badge over the last tile when more cars exist than fit */
+.collage-more {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgba(11, 11, 15, 0.52);
+  color: #fff;
   font-size: 24px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
 }
 
-.recent-item b {
+/* empty collage: a single calm tile inviting a browse */
+.collage.collage-empty {
+  display: grid;
+  place-items: center;
+  background: linear-gradient(160deg, #f4f6fb, #e9edf6);
+}
+
+.collage-empty-icon {
+  width: 54px;
+  height: 54px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #fff;
+  color: var(--hint);
+  box-shadow: 0 6px 16px rgba(16, 24, 40, 0.06);
+}
+
+.collage.skeleton {
+  display: block;
+}
+
+/* card footer: title + count */
+.wish-card-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 15px 17px;
+}
+
+.wish-card-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 14.5px;
+  font-weight: 800;
+  color: var(--text);
+}
+
+.wish-card-title .wc-ico-clock {
+  color: var(--hint);
+}
+
+.wish-card-count {
   font-size: 12.5px;
-  max-width: 118px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.recent-item span {
-  font-size: 11.5px;
   font-weight: 700;
   color: var(--hint);
+  white-space: nowrap;
 }
 
 .missing-hint {
