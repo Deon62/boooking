@@ -156,7 +156,7 @@ function AvailabilityCard({ carId }) {
 
   if (loading) {
     return (
-      <div className="section">
+      <div className="section detail-divide">
         <h2>Availability</h2>
         <div className="skel-line" style={{ width: '60%', height: 46, borderRadius: 14 }} />
       </div>
@@ -168,9 +168,9 @@ function AvailabilityCard({ carId }) {
   const ranges = (avail.unavailable_dates || []).slice(0, 4);
 
   return (
-    <div className="section">
+    <div className="section detail-divide">
       <h2>Availability</h2>
-      <div className="info-card">
+      <div className="detail-list">
         <div className="info-row">
           <span>
             <CalendarIcon size={17} /> Right now
@@ -407,7 +407,7 @@ export default function CarDetails() {
 
             <AvailabilityCard carId={car.id} />
 
-            <div className="section host-duo">
+            <div className="section detail-divide host-duo">
               <div>
                 <h2>Meet your host</h2>
                 <div className="host-panel">
@@ -452,53 +452,68 @@ export default function CarDetails() {
               </div>
 
               <div>
-                <h2>Rental details</h2>
-                <div className="info-card">
-                  <div className="info-row">
-                    <span>
-                      <CreditCardIcon size={17} /> Price per day
-                    </span>
-                    <b>{formatKES(car.pricePerDay)}</b>
-                  </div>
-                  <div className="info-row">
-                    <span>
-                      <CalendarIcon size={17} /> Minimum rental
-                    </span>
-                    <b>
-                      {car.minRentalDays} day{car.minRentalDays > 1 ? 's' : ''}
-                    </b>
-                  </div>
-                  <div className="info-row">
-                    <span>
-                      <UsersIcon size={17} /> Minimum driver age
-                    </span>
-                    <b>{car.minAge} years</b>
-                  </div>
-                  <div className="info-row">
-                    <span>
-                      <SteeringIcon size={17} /> Drive options
-                    </span>
-                    <b>{car.driveTypes.map((t) => (t === 'self' ? 'Self drive' : 'Chauffeur')).join(' · ')}</b>
-                  </div>
-                  {car.deposit != null && (
-                    <div className="info-row">
-                      <span>
-                        <ShieldIcon size={17} /> Refundable deposit
-                      </span>
-                      <b>{formatKES(car.deposit)}</b>
-                    </div>
-                  )}
-                  <div className="info-row">
-                    <span>
-                      <MapPinIcon size={17} /> Pickup point
-                    </span>
-                    <b>{car.locationName}</b>
-                  </div>
+                <h2>About this host</h2>
+                <div className="host-about">
+                  <p>
+                    {hostFirstName} is an Ardena host{car.city ? ` in ${car.city}` : ''}. Ardena
+                    hosts respond in under 30 minutes on average and are identity-verified before
+                    their cars go live.
+                  </p>
+                  <p>
+                    Your payment is held securely by Ardena and only released to the host after
+                    pickup, with 24/7 support throughout your trip.
+                  </p>
                 </div>
               </div>
             </div>
 
-            <div className="section">
+            <div className="section detail-divide">
+              <h2>Rental details</h2>
+              <div className="detail-list">
+                <div className="info-row">
+                  <span>
+                    <CreditCardIcon size={17} /> Price per day
+                  </span>
+                  <b>{formatKES(car.pricePerDay)}</b>
+                </div>
+                <div className="info-row">
+                  <span>
+                    <CalendarIcon size={17} /> Minimum rental
+                  </span>
+                  <b>
+                    {car.minRentalDays} day{car.minRentalDays > 1 ? 's' : ''}
+                  </b>
+                </div>
+                <div className="info-row">
+                  <span>
+                    <UsersIcon size={17} /> Minimum driver age
+                  </span>
+                  <b>{car.minAge} years</b>
+                </div>
+                <div className="info-row">
+                  <span>
+                    <SteeringIcon size={17} /> Drive options
+                  </span>
+                  <b>{car.driveTypes.map((t) => (t === 'self' ? 'Self drive' : 'Chauffeur')).join(' · ')}</b>
+                </div>
+                {car.deposit != null && (
+                  <div className="info-row">
+                    <span>
+                      <ShieldIcon size={17} /> Refundable deposit
+                    </span>
+                    <b>{formatKES(car.deposit)}</b>
+                  </div>
+                )}
+                <div className="info-row">
+                  <span>
+                    <MapPinIcon size={17} /> Pickup point
+                  </span>
+                  <b>{car.locationName}</b>
+                </div>
+              </div>
+            </div>
+
+            <div className="section detail-divide">
               <h2>Reviews</h2>
               {ratings.loading ? (
                 <p style={{ color: 'var(--text-2)' }}>Loading reviews…</p>
@@ -522,9 +537,9 @@ export default function CarDetails() {
               )}
             </div>
 
-            <div className="section">
+            <div className="section detail-divide">
               <h2>Car rules</h2>
-              <div className="info-card">
+              <div className="detail-list">
                 {rules.map((r) => (
                   <div className="info-row rule" key={r}>
                     <span>
@@ -535,9 +550,9 @@ export default function CarDetails() {
               </div>
             </div>
 
-            <div className="section">
+            <div className="section detail-divide">
               <h2>Protection</h2>
-              <div className="info-card">
+              <div className="detail-list">
                 <div className="info-row">
                   <span>
                     <ShieldIcon size={17} /> Comprehensive insurance
@@ -559,9 +574,9 @@ export default function CarDetails() {
               </div>
             </div>
 
-            <div className="section">
+            <div className="section detail-divide">
               <h2>General policies &amp; safety</h2>
-              <div className="info-card">
+              <div className="detail-list">
                 <div className="info-row rule">
                   <span>
                     <IdCardIcon size={16} /> A valid driver&apos;s licence is required for
@@ -593,9 +608,9 @@ export default function CarDetails() {
               </div>
             </div>
 
-            <div className="section">
+            <div className="section detail-divide">
               <h2>Cancellation policy</h2>
-              <div className="info-card">
+              <div className="detail-list">
                 <div className="info-row">
                   <span>
                     <CheckIcon size={16} style={{ color: 'var(--success)' }} /> Free cancellation up
@@ -615,7 +630,7 @@ export default function CarDetails() {
               </div>
             </div>
 
-            <div className="section">
+            <div className="section detail-divide">
               <ReportListing carId={car.id} />
             </div>
           </div>

@@ -913,6 +913,35 @@ textarea {
   color: var(--hint);
 }
 
+/* flat detail sections: sit on the page background, separated by a hairline.
+   Rows keep their own dividers via `.info-row + .info-row`. */
+.section.detail-divide {
+  margin-top: 34px;
+  padding-top: 28px;
+  border-top: 1px solid rgba(163, 177, 198, 0.4);
+}
+
+.detail-list .info-row:first-child {
+  padding-top: 4px;
+}
+
+/* small host/company blurb, right of the host panel — plain text, no card */
+.host-about {
+  max-width: 460px;
+  padding-top: 4px;
+}
+
+.host-about p {
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--text-2);
+  font-weight: 600;
+}
+
+.host-about p + p {
+  margin-top: 14px;
+}
+
 .report-link {
   display: inline-flex;
   align-items: center;
@@ -977,11 +1006,11 @@ textarea {
 }
 
 .review {
-  padding: 16px 18px;
-  border-radius: var(--r-md);
-  background: var(--surface);
-  box-shadow: var(--neo-out-sm);
-  margin-bottom: 14px;
+  padding: 16px 0;
+}
+
+.review + .review {
+  border-top: 1px solid rgba(163, 177, 198, 0.3);
 }
 
 .review .r-head {
@@ -2102,6 +2131,104 @@ textarea {
   font-size: 17px;
   letter-spacing: 2.5px;
   color: var(--primary);
+}
+
+/* ---------- payment processing overlay ---------- */
+
+.pay-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(238, 241, 248, 0.72);
+  backdrop-filter: blur(8px);
+  animation: pay-fade 0.2s ease;
+}
+
+@keyframes pay-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.pay-overlay-card {
+  width: 100%;
+  max-width: 360px;
+  padding: 18px 34px 30px;
+  background: #fff;
+  border-radius: var(--r-lg);
+  box-shadow: 0 24px 60px rgba(16, 24, 40, 0.2);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.pay-anim {
+  width: 220px;
+  height: 165px;
+  object-fit: contain;
+}
+
+.pay-overlay-title {
+  margin-top: 4px;
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--text);
+}
+
+.pay-overlay-text {
+  margin-top: 8px;
+  font-size: 13.5px;
+  font-weight: 600;
+  line-height: 1.5;
+  color: var(--text-2);
+}
+
+.pay-dots {
+  display: flex;
+  gap: 6px;
+  margin-top: 18px;
+}
+
+.pay-dots span {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--primary);
+  opacity: 0.35;
+  animation: pay-bounce 1s infinite ease-in-out;
+}
+
+.pay-dots span:nth-child(2) {
+  animation-delay: 0.15s;
+}
+
+.pay-dots span:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+@keyframes pay-bounce {
+  0%,
+  100% {
+    opacity: 0.3;
+    transform: translateY(0);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(-4px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pay-dots span {
+    animation: none;
+  }
 }
 
 /* ---------- trips ---------- */

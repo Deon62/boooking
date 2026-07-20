@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { formatKES, formatDateLong } from '../data.js';
 import { CarPhoto, BackButton, MastercardMark } from '../components.jsx';
 import mpesaImg from '../assets/mpesa.png';
+import payingVideo from '../assets/payment.webm';
 import { useApp } from '../store.jsx';
 import * as api from '../api.js';
 import { PhoneIcon, CreditCardIcon } from '../icons.jsx';
@@ -153,6 +154,30 @@ export default function Payment() {
 
   return (
     <div className="page">
+      {busy && (
+        <div className="pay-overlay" role="status" aria-live="polite">
+          <div className="pay-overlay-card">
+            <video
+              className="pay-anim"
+              src={payingVideo}
+              autoPlay
+              loop
+              muted
+              playsInline
+            />
+            <b className="pay-overlay-title">
+              {phase === 'working' ? 'Setting up your payment' : 'Waiting for confirmation'}
+            </b>
+            <p className="pay-overlay-text">{statusText}</p>
+            <div className="pay-dots" aria-hidden="true">
+              <span />
+              <span />
+              <span />
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="container">
         <BackButton />
 
