@@ -1,10 +1,9 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { CITIES, MIN_RENTAL_DAYS, addDays } from '../data.js';
 import { useCars } from '../cars.js';
-import { CarCard, CarCardSkeleton } from '../components.jsx';
+import { CarCard, CarCardSkeleton, EmptyState } from '../components.jsx';
 import { DateRangeCalendar, fmtShort } from '../Calendar.jsx';
 import { CheckIcon, MapPinIcon, XIcon } from '../icons.jsx';
-import emptyVideo from '../assets/empty.webm';
 
 /** Mirrors the GET /cars filter surface (min_price/max_price, body_type,
  * min_seats, transmission, fuel_type, driver_option). Applied client-side
@@ -421,28 +420,27 @@ export default function Home() {
         ) : error ? (
           <div className="empty">Couldn&apos;t load cars — {error}</div>
         ) : cityCars.length === 0 ? (
-          <div className="empty-state">
-            <video className="empty-anim" src={emptyVideo} autoPlay loop muted playsInline />
-            <b>No cars in {city} just yet</b>
-            <p>
-              We&apos;re signing up verified hosts across Kenya all the time. Try another city or
-              take a look at the whole fleet.
-            </p>
-            {city !== 'All cities' && (
-              <button className="btn-primary" onClick={() => setCity('All cities')}>
-                Show cars in all cities
-              </button>
-            )}
-          </div>
+          <EmptyState
+            title={`No cars in ${city} just yet`}
+            message="We're signing up verified hosts across Kenya all the time. Try another city or take a look at the whole fleet."
+            action={
+              city !== 'All cities' && (
+                <button className="btn-primary" onClick={() => setCity('All cities')}>
+                  Show cars in all cities
+                </button>
+              )
+            }
+          />
         ) : cars.length === 0 ? (
-          <div className="empty-state">
-            <video className="empty-anim" src={emptyVideo} autoPlay loop muted playsInline />
-            <b>No cars match your filters</b>
-            <p>Try loosening a filter or two to see more of the fleet.</p>
-            <button className="btn-primary" onClick={() => setFilters(EMPTY_FILTERS)}>
-              Clear filters
-            </button>
-          </div>
+          <EmptyState
+            title="No cars match your filters"
+            message="Try loosening a filter or two to see more of the fleet."
+            action={
+              <button className="btn-primary" onClick={() => setFilters(EMPTY_FILTERS)}>
+                Clear filters
+              </button>
+            }
+          />
         ) : (
           <>
             {shelves.map((s) => (

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import * as api from '../api.js';
-import { Toggle } from '../components.jsx';
+import { Toggle, EmptyState } from '../components.jsx';
 import { BellIcon, CheckIcon } from '../icons.jsx';
 
 function timeAgo(iso) {
@@ -107,22 +107,28 @@ export default function Notifications() {
             </div>
 
             {loading ? (
-              <>
-                <div className="skel-line" style={{ width: '70%', height: 40, borderRadius: 12 }} />
-                <div className="skel-line" style={{ width: '60%', height: 40, borderRadius: 12 }} />
-              </>
-            ) : shown.length === 0 ? (
-              <div className="nots-empty">
-                <span className="reviews-empty-icon">
-                  {tab === 'unread' ? <CheckIcon size={22} /> : <BellIcon size={22} />}
-                </span>
-                <b>{tab === 'unread' ? 'You’re all caught up' : 'Nothing here yet'}</b>
-                <p>
-                  {tab === 'unread'
-                    ? 'New booking updates and announcements will land here.'
-                    : 'Notifications you’ve read will appear here.'}
-                </p>
+              <div aria-hidden="true">
+                {Array.from({ length: 4 }, (_, i) => (
+                  <div className="not-row" key={i} style={{ cursor: 'default' }}>
+                    <span className="skel-circle" style={{ width: 9, height: 9, marginTop: 6 }} />
+                    <span className="not-main" style={{ flex: 1 }}>
+                      <span className="skel-line" style={{ width: '40%', height: 13, marginTop: 0 }} />
+                      <span className="skel-line" style={{ width: '75%', height: 12 }} />
+                    </span>
+                  </div>
+                ))}
               </div>
+            ) : shown.length === 0 ? (
+              <EmptyState
+                variant="compact"
+                icon={tab === 'unread' ? <CheckIcon size={22} /> : <BellIcon size={22} />}
+                title={tab === 'unread' ? 'You’re all caught up' : 'Nothing here yet'}
+                message={
+                  tab === 'unread'
+                    ? 'New booking updates and announcements will land here.'
+                    : 'Notifications you’ve read will appear here.'
+                }
+              />
             ) : (
               shown.map((n) => (
                 <button className="not-row" key={n.id} onClick={() => openNotification(n)}>

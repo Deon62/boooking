@@ -83,18 +83,24 @@ shadow reserved for floating elements (modals, dropdowns, sticky widgets).
       Wired to wishlist like/unlike + share; **still to do**: route the ~10 inline
       `var(--error)` messages and other successes through it.
 - [x] 🟠 **404 / not-found route** — added `<Route path="*">` → branded `NotFound`.
-- [ ] 🟠 **Consistent loading skeletons** — Messages, Home shelves, Trips, car lists,
-      and now **CarDetails** have skeletons; still to do:
-      `TripDetails`, `Account`, `Payments`, `Notifications`, `Booking` still show
-      plain text or spinners. Give every page a skeleton that mirrors its layout.
-- [ ] 🟠 **Consistent empty states** — Home (no cars / no filter matches) uses the
-      `empty.webm` animation and is great. Bring the same treatment to empty
-      Messages, Notifications, Payments (no cards), Wishlist (already good), Trips
-      (already good). One reusable `<EmptyState>` component.
-- [ ] 🟠 **Inline form validation** — auth/booking forms validate on submit only.
-      Add gentle field-level validation + clear error text tied to each field.
-- [ ] 🟡 **Optimistic UI everywhere it matters** — wishlist already is; apply to
-      notifications read/unread, payment-method add/remove, trip cancel.
+- [x] 🟠 **Consistent loading skeletons** — every data page now has a layout-mirroring
+      skeleton: Messages, Home shelves, Trips, car lists, CarDetails, **Booking**,
+      **TripDetails**, and **Notifications** (rebuilt to match its row layout).
+      Payments already had one; Account renders instantly from the cached profile.
+- [x] 🟠 **Consistent empty states** — one reusable `<EmptyState>` (in
+      `components.jsx`) with two variants: `animation` (the `empty.webm` hero, used on
+      Home) and `compact` (icon in a tinted circle, used for panels/inline). Rolled
+      out to Home, Notifications, Payments, Messages (empty thread), and Trips.
+      Wishlist keeps its bespoke collage placeholder. Follow-up: the old
+      `.nots-empty` / `.pm-empty` CSS is now dead and can be removed in a cleanup pass.
+- [x] 🟠 **Inline form validation** — Login + Signup now validate per-field
+      (`src/validate.js`), with a red field border and message under each input,
+      cleared as you type (`noValidate` so our messages own the UX). Forgot keeps its
+      step-based validation. Follow-up: extend the pattern to the booking form.
+- [x] 🟡 **Optimistic UI** — wishlist (was), notifications read/unread (was), and now
+      **payment-method remove/set-default** (instant + rollback), **trip delete**
+      (instant + rollback), all with toast confirmation; **trip cancel** shows a
+      success/error toast.
 
 ---
 

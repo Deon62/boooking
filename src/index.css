@@ -1382,6 +1382,25 @@ textarea {
   border: 1.5px solid var(--primary);
 }
 
+/* invalid field: red border + message below */
+.control.err,
+.field .control.err {
+  border-color: var(--error);
+}
+
+.control.err:focus-within,
+.field .control.err:focus-within {
+  border-color: var(--error);
+}
+
+.field-error {
+  display: block;
+  margin-top: 6px;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--error);
+}
+
 .field .control input,
 .field .control select,
 .field .control textarea {
@@ -4062,6 +4081,35 @@ a.trip-card:hover {
 
 .empty-state .btn-primary {
   margin-top: 20px;
+}
+
+/* compact variant: icon in a tinted circle, for panels / inline empties */
+.empty-state--compact {
+  padding: 44px 20px;
+}
+
+.empty-state-icon {
+  width: 56px;
+  height: 56px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--primary-tint);
+  color: var(--primary);
+  margin-bottom: 10px;
+}
+
+.empty-state--compact b {
+  font-size: 16px;
+}
+
+.empty-state--compact p {
+  font-size: 13px;
+  margin-top: 6px;
+}
+
+.empty-state--compact .btn-primary {
+  margin-top: 16px;
 }
 
 /* Footer — mirrors ardena.co.ke (ardena-web/styles.css) */

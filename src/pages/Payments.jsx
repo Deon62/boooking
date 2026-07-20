@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import * as api from '../api.js';
-import { MastercardMark } from '../components.jsx';
+import { MastercardMark, EmptyState } from '../components.jsx';
+import { useToast } from '../toast.jsx';
 import mpesaImg from '../assets/mpesa.png';
-import { ShieldIcon } from '../icons.jsx';
+import { ShieldIcon, CreditCardIcon } from '../icons.jsx';
 
 function formatMpesaNumber(raw) {
   const d = String(raw || '').replace(/\D/g, '');
@@ -54,6 +55,7 @@ function DebitCard({ m }) {
 }
 
 export default function Payments() {
+  const toast = useToast();
   const [methods, setMethods] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -70,25 +72,46 @@ export default function Payments() {
     refresh().finally(() => setLoading(false));
   }, []);
 
-  const run = async (fn) => {
+  // Optimistic: update the list immediately, roll back + toast on failure.
+  const remove = (id) => {
+    const prev = methods;
+    setMethods((m) => m.filter((x) => x.id !== id));
+    api
+      .deletePaymentMethod(id)
+      .then(() => toast.success('Payment method removed'))
+      .catch((e) => {
+        setMethods(prev);
+        toast.error(e.message || 'Couldn’t remove that method');
+      });
+  };
+
+  const makeDefault = (id) => {
+    const prev = methods;
+    setMethods((m) => m.map((x) => ({ ...x, is_default: x.id === id })));
+    api
+      .setDefaultPaymentMethod(id)
+      .then(() => toast.success('Default payment method updated'))
+      .catch((e) => {
+        setMethods(prev);
+        toast.error(e.message || 'Couldn’t update the default');
+      });
+  };
+
+  const addMpesa = async () => {
     if (busy) return;
     setBusy(true);
     setError('');
     try {
-      await fn();
+      await api.addMpesaMethod('M-Pesa', phone.replace(/\D/g, ''));
+      setPhone('');
       await refresh();
+      toast.success('M-Pesa number saved');
     } catch (e) {
-      setError(e.message || 'Something went wrong.');
+      toast.error(e.message || 'Couldn’t save that number');
     } finally {
       setBusy(false);
     }
   };
-
-  const addMpesa = () =>
-    run(async () => {
-      await api.addMpesaMethod('M-Pesa', phone.replace(/\D/g, ''));
-      setPhone('');
-    });
 
   return (
     <div className="page pm-page">
@@ -101,10 +124,12 @@ export default function Payments() {
                 <div className="debit-card img-skel" style={{ position: 'relative' }} />
               </div>
             ) : methods.length === 0 ? (
-              <p className="pm-empty">
-                No saved methods yet. Add your M-Pesa number below, or just pay at checkout and
-                we&apos;ll save it for next time.
-              </p>
+              <EmptyState
+                variant="compact"
+                icon={<CreditCardIcon size={22} />}
+                title="No saved methods yet"
+                message="Add your M-Pesa number below, or just pay at checkout and we’ll save it for next time."
+              />
             ) : (
               <div className="dc-grid">
                 {methods.map((m) => (
@@ -112,19 +137,14 @@ export default function Payments() {
                     <DebitCard m={m} />
                     <div className="dc-actions">
                       {!m.is_default && (
-                        <button
-                          className="link"
-                          disabled={busy}
-                          onClick={() => run(() => api.setDefaultPaymentMethod(m.id))}
-                        >
+                        <button className="link" onClick={() => makeDefault(m.id)}>
                           Make default
                         </button>
                       )}
                       <button
                         className="link"
                         style={{ color: 'var(--error)' }}
-                        disabled={busy}
-                        onClick={() => run(() => api.deletePaymentMethod(m.id))}
+                        onClick={() => remove(m.id)}
                       >
                         Remove
                       </button>

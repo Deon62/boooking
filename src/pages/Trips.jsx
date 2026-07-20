@@ -3,8 +3,9 @@ import { Link, useNavigate } from 'react-router-dom';
 import { formatKES } from '../data.js';
 import { fmtShort } from '../Calendar.jsx';
 import { mapBooking, useCars, ratingLabel } from '../cars.js';
-import { CarPhoto } from '../components.jsx';
+import { CarPhoto, EmptyState } from '../components.jsx';
 import { listBookings, deleteBookingRecord } from '../api.js';
+import { useToast } from '../toast.jsx';
 import {
   MapPinIcon,
   SteeringIcon,
@@ -14,12 +15,14 @@ import {
   CheckIcon,
   XIcon,
   UsersIcon,
+  SuitcaseIcon,
 } from '../icons.jsx';
 
 const PAST = ['completed', 'cancelled', 'rejected'];
 
 export default function Trips() {
   const navigate = useNavigate();
+  const toast = useToast();
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -45,18 +48,17 @@ export default function Trips() {
     };
   }, []);
 
-  const removeTrip = async (id) => {
-    if (deleting) return;
-    setDeleting(true);
-    try {
-      await deleteBookingRecord(id);
-      setBookings((prev) => prev.filter((b) => b.id !== id));
-      setConfirmId(null);
-    } catch (e) {
-      setError(e.message || 'Couldn’t delete this trip.');
-    } finally {
-      setDeleting(false);
-    }
+  // Optimistic: drop the row immediately, restore it if the delete fails.
+  const removeTrip = (id) => {
+    const prev = bookings;
+    setBookings((list) => list.filter((b) => b.id !== id));
+    setConfirmId(null);
+    deleteBookingRecord(id)
+      .then(() => toast.success('Trip removed'))
+      .catch((e) => {
+        setBookings(prev);
+        toast.error(e.message || 'Couldn’t delete this trip.');
+      });
   };
 
   // "You would also love": top-rated cars the renter hasn't booked yet.
@@ -86,9 +88,17 @@ export default function Trips() {
             ) : error ? (
               <div className="empty">{error}</div>
             ) : bookings.length === 0 ? (
-              <p className="trips-none">
-                No trips yet. <Link to="/">Browse cars</Link> to book your first one.
-              </p>
+              <EmptyState
+                variant="compact"
+                icon={<SuitcaseIcon size={22} />}
+                title="No trips yet"
+                message="Your booked trips will show up here, ready to manage."
+                action={
+                  <Link to="/" className="btn-primary">
+                    Browse cars
+                  </Link>
+                }
+              />
             ) : (
               <div className="past-panel">
                 {bookings.map((b) => {

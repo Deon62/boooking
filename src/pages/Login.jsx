@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useApp } from '../store.jsx';
 import { GOOGLE_WEB_CLIENT_ID, forgotPassword, verifyResetOtp, resetPassword } from '../api.js';
 import { EyeIcon, EyeOffIcon } from '../icons.jsx';
+import { validateLogin, validateSignup } from '../validate.js';
 
 // Real auth against api.ardena.xyz — same accounts as the client0 app.
 
@@ -89,10 +90,16 @@ function FormError({ children }) {
   );
 }
 
-function PasswordInput({ value, onChange, placeholder = '••••••••' }) {
+/** Per-field validation message shown directly under its input. */
+function FieldError({ children }) {
+  if (!children) return null;
+  return <span className="field-error">{children}</span>;
+}
+
+function PasswordInput({ value, onChange, placeholder = '••••••••', error }) {
   const [show, setShow] = useState(false);
   return (
-    <div className="control">
+    <div className={`control${error ? ' err' : ''}`}>
       <input
         type={show ? 'text' : 'password'}
         placeholder={placeholder}
@@ -119,13 +126,18 @@ export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [errors, setErrors] = useState({});
   const [busy, setBusy] = useState(false);
 
+  const clearErr = (k) => setErrors((x) => (x[k] ? { ...x, [k]: undefined } : x));
   const goNext = () => navigate(state?.next || '/', { replace: true });
 
   const submit = async (e) => {
     e.preventDefault();
     if (busy) return;
+    const errs = validateLogin({ email, password });
+    setErrors(errs);
+    if (Object.keys(errs).length) return;
     setError('');
     setBusy(true);
     try {
@@ -144,22 +156,34 @@ export default function Login() {
         <h1 className="page-title" style={{ textAlign: 'center', marginBottom: 20 }}>
           Log in
         </h1>
-        <form className="form-card auth-card" onSubmit={submit}>
+        <form className="form-card auth-card" onSubmit={submit} noValidate>
           <div className="field">
             <label>Email</label>
-            <div className="control">
+            <div className={`control${errors.email ? ' err' : ''}`}>
               <input
                 type="email"
                 placeholder="you@example.com"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  clearErr('email');
+                }}
+                autoComplete="email"
               />
             </div>
+            <FieldError>{errors.email}</FieldError>
           </div>
           <div className="field">
             <label>Password</label>
-            <PasswordInput value={password} onChange={(e) => setPassword(e.target.value)} />
+            <PasswordInput
+              value={password}
+              error={errors.password}
+              onChange={(e) => {
+                setPassword(e.target.value);
+                clearErr('password');
+              }}
+            />
+            <FieldError>{errors.password}</FieldError>
           </div>
           <FormError>{error}</FormError>
           <button
@@ -197,21 +221,18 @@ export function Signup() {
   const [password, setPassword] = useState('');
   const [confirm, setConfirm] = useState('');
   const [error, setError] = useState('');
+  const [errors, setErrors] = useState({});
   const [busy, setBusy] = useState(false);
 
+  const clearErr = (k) => setErrors((x) => (x[k] ? { ...x, [k]: undefined } : x));
   const goHome = () => navigate('/', { replace: true });
 
   const submit = async (e) => {
     e.preventDefault();
     if (busy) return;
-    if (password.length < 8) {
-      setError('Password must be at least 8 characters.');
-      return;
-    }
-    if (password !== confirm) {
-      setError('Passwords don’t match.');
-      return;
-    }
+    const errs = validateSignup({ name, email, password, confirm });
+    setErrors(errs);
+    if (Object.keys(errs).length) return;
     setError('');
     setBusy(true);
     try {
@@ -235,46 +256,64 @@ export function Signup() {
         <h1 className="page-title" style={{ textAlign: 'center', marginBottom: 26 }}>
           Create your account
         </h1>
-        <form className="form-card" onSubmit={submit}>
+        <form className="form-card" onSubmit={submit} noValidate>
           <div className="field">
             <label>Full name</label>
-            <div className="control">
+            <div className={`control${errors.name ? ' err' : ''}`}>
               <input
                 type="text"
                 placeholder="Jane Wanjiku"
                 value={name}
-                onChange={(e) => setName(e.target.value)}
-                required
+                onChange={(e) => {
+                  setName(e.target.value);
+                  clearErr('name');
+                }}
+                autoComplete="name"
               />
             </div>
+            <FieldError>{errors.name}</FieldError>
           </div>
           <div className="field">
             <label>Email</label>
-            <div className="control">
+            <div className={`control${errors.email ? ' err' : ''}`}>
               <input
                 type="email"
                 placeholder="you@example.com"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  clearErr('email');
+                }}
+                autoComplete="email"
               />
             </div>
+            <FieldError>{errors.email}</FieldError>
           </div>
           <div className="field">
             <label>Password</label>
             <PasswordInput
               placeholder="At least 8 characters"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              error={errors.password}
+              onChange={(e) => {
+                setPassword(e.target.value);
+                clearErr('password');
+              }}
             />
+            <FieldError>{errors.password}</FieldError>
           </div>
           <div className="field">
             <label>Confirm password</label>
             <PasswordInput
               placeholder="Repeat your password"
               value={confirm}
-              onChange={(e) => setConfirm(e.target.value)}
+              error={errors.confirm}
+              onChange={(e) => {
+                setConfirm(e.target.value);
+                clearErr('confirm');
+              }}
             />
+            <FieldError>{errors.confirm}</FieldError>
           </div>
           <FormError>{error}</FormError>
           <button

@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import * as api from '../api.js';
+import { EmptyState } from '../components.jsx';
 import logoMark from '../assets/logo.png';
 import { SendIcon, ChatIcon, MailIcon, PhoneIcon, ShieldIcon } from '../icons.jsx';
 
@@ -334,11 +335,15 @@ export default function Messages() {
             </div>
             <div className="msg-body" ref={bodyRef}>
               {thread.messages.length === 0 ? (
-                <div className="empty" style={{ padding: '40px 20px' }}>
-                  {isSupport
-                    ? 'Ask us anything — bookings, payments, or anything in between.'
-                    : `Say hello to ${thread.hostName}`}
-                </div>
+                <EmptyState
+                  variant="compact"
+                  icon={<ChatIcon size={22} />}
+                  message={
+                    isSupport
+                      ? 'Ask us anything — bookings, payments, or anything in between.'
+                      : `Say hello to ${thread.hostName}`
+                  }
+                />
               ) : (
                 thread.messages.map((m) => (
                   <div key={m.id} className={`bubble ${m.from === 'me' ? 'me' : 'host'}`}>

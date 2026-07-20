@@ -46,8 +46,29 @@ export default function Booking() {
 
   if (loading) {
     return (
-      <div className="page container">
-        <div className="empty">Loading car…</div>
+      <div className="page">
+        <div className="container">
+          <div className="booking-layout" aria-hidden="true">
+            <div className="form-card">
+              {Array.from({ length: 4 }, (_, i) => (
+                <div className="field" key={i}>
+                  <div className="skel-line" style={{ width: '32%', height: 12, marginTop: 0 }} />
+                  <div className="skel-line" style={{ width: '100%', height: 46, borderRadius: 0 }} />
+                </div>
+              ))}
+            </div>
+            <aside className="side-sticky">
+              <div className="form-card">
+                <div className="skel-line" style={{ width: '55%', height: 20, marginTop: 0 }} />
+                <div className="skel-line" style={{ width: '100%', height: 130, borderRadius: 0 }} />
+                <div
+                  className="skel-line"
+                  style={{ width: '100%', height: 46, borderRadius: 0, marginTop: 20 }}
+                />
+              </div>
+            </aside>
+          </div>
+        </div>
       </div>
     );
   }

@@ -11,6 +11,7 @@ import {
   useHostAvatar,
 } from '../cars.js';
 import { CarPhoto, BackButton } from '../components.jsx';
+import { useToast } from '../toast.jsx';
 import {
   getBooking,
   cancelBooking,
@@ -468,6 +469,7 @@ function ExtendTripCard({ booking, onBookingUpdate }) {
 export default function TripDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const toast = useToast();
   const [booking, setBooking] = useState(null);
   const [loading, setLoading] = useState(true);
   const [confirmCancel, setConfirmCancel] = useState(false);
@@ -502,8 +504,35 @@ export default function TripDetails() {
 
   if (loading) {
     return (
-      <div className="page container">
-        <div className="empty">Loading trip…</div>
+      <div className="page trip-detail">
+        <div className="container">
+          <div className="details-layout" style={{ marginTop: 26 }} aria-hidden="true">
+            <div>
+              <div className="trip-head dashed-card" style={{ gap: 20 }}>
+                <div className="skel-circle" style={{ width: 88, height: 88 }} />
+                <div style={{ flex: 1 }}>
+                  <div className="skel-line" style={{ width: '45%', height: 24, marginTop: 0 }} />
+                  <div className="skel-line" style={{ width: '30%', height: 13 }} />
+                </div>
+              </div>
+              {Array.from({ length: 2 }, (_, i) => (
+                <div className="section" key={i}>
+                  <div className="skel-line" style={{ width: '30%', height: 18, marginTop: 0 }} />
+                  <div
+                    className="skel-line"
+                    style={{ width: '100%', height: 120, borderRadius: 0, marginTop: 14 }}
+                  />
+                </div>
+              ))}
+            </div>
+            <aside>
+              <div
+                className="skel-line"
+                style={{ width: '100%', height: 260, borderRadius: 0, marginTop: 0 }}
+              />
+            </aside>
+          </div>
+        </div>
       </div>
     );
   }
@@ -562,8 +591,10 @@ export default function TripDetails() {
       } else {
         setCancelNote('Trip cancelled.');
       }
+      toast.success('Trip cancelled');
     } catch (e) {
       setError(e.message || 'Couldn’t cancel the trip. Please try again.');
+      toast.error('Couldn’t cancel the trip');
     } finally {
       setCancelling(false);
     }

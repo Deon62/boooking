@@ -6,6 +6,7 @@ import logoUrl from './assets/logo.svg';
 import logomarkUrl from './assets/logomark.svg';
 import appstoreImg from './assets/appstore.png';
 import playImg from './assets/play.png';
+import emptyVideo from './assets/empty.webm';
 import {
   UserIcon,
   SuitcaseIcon,
@@ -70,6 +71,24 @@ export function CarPhoto({ car, index = 0, className }) {
         onLoad={() => setLoaded(true)}
         onError={() => setFailed(true)}
       />
+    </div>
+  );
+}
+
+/** Reusable empty state. `variant="animation"` shows the empty.webm hero loop
+ * (for full-page empties); `variant="compact"` shows an icon in a tinted circle
+ * (for panels and inline empties). `action` is an optional button/link node. */
+export function EmptyState({ variant = 'animation', icon, title, message, action }) {
+  return (
+    <div className={`empty-state${variant === 'compact' ? ' empty-state--compact' : ''}`}>
+      {variant === 'animation' ? (
+        <video className="empty-anim" src={emptyVideo} autoPlay loop muted playsInline />
+      ) : (
+        icon && <span className="empty-state-icon">{icon}</span>
+      )}
+      {title && <b>{title}</b>}
+      {message && <p>{message}</p>}
+      {action}
     </div>
   );
 }
