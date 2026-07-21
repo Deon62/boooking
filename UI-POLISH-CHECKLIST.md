@@ -140,8 +140,9 @@ shadow reserved for floating elements (modals, dropdowns, sticky widgets).
 
 ### Home
 - [ ] 🟡 Add a **sort control** (price, newest, seats) alongside the filter modal.
-- [ ] 🟡 Show **active filters as removable chips** under the search bar (currently
-      only a count badge on the search icon).
+- [x] 🟡 Show **active filters as removable chips** under the search bar (each
+      facet is an individually-removable pill, plus a "Clear all"; the count badge
+      on the search icon stays).
 - [ ] 🟡 Make the **When/Where search actually feed availability** (dates already in
       state; wire `start_date`/`end_date` into the query for true availability).
 - [ ] ⚪ "Recently viewed" rail on Home for return visitors (data already tracked).

@@ -33,6 +33,9 @@ export function AppProvider({ children }) {
   // then re-hydrate from the backend below.
   const [client, setClient] = useState(() => (api.hasSession() ? api.loadStoredClient() : null));
   const [wishlist, setWishlist] = useState(() => new Set());
+  // True while a stored session exists but its profile hasn't hydrated yet — lets
+  // the header hold off on the "Log in" button so it can't flash for a returning user.
+  const [authPending, setAuthPending] = useState(() => api.hasSession() && !api.loadStoredClient());
 
   const adoptProfile = (profile) => {
     api.storeClient(profile);
@@ -63,6 +66,9 @@ export function AppProvider({ children }) {
       .catch((e) => {
         // 401 here means the refresh token is dead too — signed out for real.
         if (!cancelled && e.status === 401) setClient(null);
+      })
+      .finally(() => {
+        if (!cancelled) setAuthPending(false);
       });
     return () => {
       cancelled = true;
@@ -133,6 +139,7 @@ export function AppProvider({ children }) {
 
   const value = {
     user: mapClient(client),
+    authPending,
     signInWithPassword,
     signInWithGoogle,
     signUp,

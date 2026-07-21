@@ -217,7 +217,7 @@ export function Toggle({ on, onChange }) {
 }
 
 function AccountMenu() {
-  const { user, signOut } = useApp();
+  const { user, authPending, signOut } = useApp();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const ref = useRef(null);
@@ -231,6 +231,9 @@ function AccountMenu() {
   }, []);
 
   if (!user) {
+    // A returning session is still hydrating — reserve the space but don't flash
+    // "Log in" before we know whether they're signed in.
+    if (authPending) return <span className="account-placeholder" aria-hidden="true" />;
     return (
       <Link to="/login" className="btn-primary" style={{ padding: '11px 24px' }}>
         Log in

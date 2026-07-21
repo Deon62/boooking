@@ -63,6 +63,36 @@ function countActiveFilters(f) {
   );
 }
 
+/** Flatten the active filters into individually-removable chips shown under the
+ * search bar. Each `clear` returns the filters with just that facet removed. */
+function activeFilterChips(f) {
+  const chips = [];
+  if (f.minPrice || f.maxPrice) {
+    const band = PRICE_BANDS.find((b) => b.min === f.minPrice && b.max === f.maxPrice);
+    const label = band
+      ? band.label
+      : f.maxPrice
+      ? `${f.minPrice.toLocaleString()} – ${f.maxPrice.toLocaleString()}`
+      : `${f.minPrice.toLocaleString()}+`;
+    chips.push({ key: 'price', label, clear: (d) => ({ ...d, minPrice: 0, maxPrice: 0 }) });
+  }
+  f.types.forEach((t) =>
+    chips.push({ key: `type-${t}`, label: t, clear: (d) => ({ ...d, types: d.types.filter((x) => x !== t) }) })
+  );
+  if (f.minSeats)
+    chips.push({ key: 'seats', label: `${f.minSeats}+ seats`, clear: (d) => ({ ...d, minSeats: 0 }) });
+  if (f.transmission)
+    chips.push({ key: 'transmission', label: f.transmission, clear: (d) => ({ ...d, transmission: '' }) });
+  f.fuels.forEach((fl) =>
+    chips.push({ key: `fuel-${fl}`, label: fl, clear: (d) => ({ ...d, fuels: d.fuels.filter((x) => x !== fl) }) })
+  );
+  if (f.drive) {
+    const label = DRIVE_OPTIONS.find((o) => o.value === f.drive)?.label || f.drive;
+    chips.push({ key: 'drive', label, clear: (d) => ({ ...d, drive: '' }) });
+  }
+  return chips;
+}
+
 function Chip({ on, onClick, children }) {
   return (
     <button type="button" className={`filter-chip${on ? ' on' : ''}`} onClick={onClick}>
@@ -326,6 +356,7 @@ export default function Home() {
   );
 
   const activeFilters = countActiveFilters(filters);
+  const activeChips = activeFilterChips(filters);
 
   const whenLabel =
     pickup && dropoff ? `${fmtShort(pickup)} – ${fmtShort(dropoff)}` : pickup ? `${fmtShort(pickup)} – ?` : 'Add dates';
@@ -412,6 +443,30 @@ export default function Home() {
               </div>
             )}
           </div>
+
+          {activeChips.length > 0 && (
+            <div className="active-filters">
+              {activeChips.map((c) => (
+                <button
+                  key={c.key}
+                  type="button"
+                  className="active-filter"
+                  onClick={() => setFilters((d) => c.clear(d))}
+                  aria-label={`Remove filter ${c.label}`}
+                >
+                  {c.label}
+                  <XIcon size={13} />
+                </button>
+              ))}
+              <button
+                type="button"
+                className="active-filter-clear"
+                onClick={() => setFilters(EMPTY_FILTERS)}
+              >
+                Clear all
+              </button>
+            </div>
+          )}
         </div>
 
         {loading ? (

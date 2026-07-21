@@ -343,6 +343,14 @@ textarea {
   box-shadow: var(--inset-ring);
 }
 
+/* Holds the account slot's width while a returning session hydrates (no flash,
+ * no layout shift). Roughly matches the collapsed avatar button footprint. */
+.account-placeholder {
+  display: inline-block;
+  width: 48px;
+  height: 48px;
+}
+
 .avatar {
   width: 36px;
   height: 36px;
@@ -440,6 +448,56 @@ textarea {
   border-radius: var(--r-pill);
   background: var(--surface);
   box-shadow: var(--card-ring);
+}
+
+/* Active filters as removable pills under the search bar. */
+.active-filters {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin: 14px auto 0;
+  max-width: 860px;
+}
+
+.active-filter {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 8px 7px 14px;
+  border-radius: var(--r-pill);
+  background: var(--primary-tint, rgba(0, 127, 250, 0.1));
+  color: var(--primary);
+  border: 1px solid transparent;
+  font-size: 13px;
+  font-weight: 700;
+  transition: background 0.15s, transform 0.1s;
+}
+
+.active-filter:hover {
+  background: rgba(0, 127, 250, 0.16);
+}
+
+.active-filter:active {
+  transform: scale(0.96);
+}
+
+.active-filter svg {
+  opacity: 0.75;
+}
+
+.active-filter-clear {
+  padding: 7px 14px;
+  border-radius: var(--r-pill);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--hint);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.active-filter-clear:hover {
+  color: var(--text);
 }
 
 .search-field {
@@ -754,6 +812,11 @@ textarea {
   overflow: hidden;
   border-radius: var(--r-lg);
   box-shadow: var(--card-ring);
+}
+
+/* Home shelves get softly rounded car cards (the rest of the site stays sharp). */
+.shelf-cards .car-photo {
+  border-radius: 12px;
 }
 
 .car-photo img {
