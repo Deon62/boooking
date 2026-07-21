@@ -3671,7 +3671,7 @@ a.trip-card:hover {
   box-shadow: none;
 }
 
-.cal-single .cal-day.sel {
+.cal-single .cal-day.sel::before {
   background: var(--primary);
 }
 
@@ -3798,31 +3798,6 @@ a.trip-card:hover {
   transform: translateX(-50%);
 }
 
-.cal-tabs {
-  display: flex;
-  gap: 4px;
-  width: fit-content;
-  margin: 0 auto 20px;
-  padding: 5px;
-  border-radius: var(--r-pill);
-  box-shadow: var(--inset-ring);
-}
-
-.cal-tab {
-  padding: 8px 22px;
-  border-radius: var(--r-pill);
-  font-weight: 700;
-  font-size: 13.5px;
-  color: var(--text-2);
-}
-
-.cal-tab.active {
-  background: #fff;
-  box-shadow: 2px 2px 8px rgba(163, 177, 198, 0.6);
-  color: var(--text);
-  font-weight: 800;
-}
-
 .cal-months {
   position: relative;
   display: flex;
@@ -3884,57 +3859,54 @@ a.trip-card:hover {
 }
 
 .cal-day {
+  position: relative;
   height: 38px;
-  border-radius: 50%;
   font-size: 13.5px;
   font-weight: 700;
   color: var(--text);
   display: grid;
   place-items: center;
-  transition: box-shadow 0.1s;
+  transition: color 0.1s;
 }
 
-.cal-day:hover:not(.disabled):not(.sel) {
+/* Round token drawn behind the number — used for hover and selected endpoints. */
+.cal-day::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  z-index: -1;
+}
+
+.cal-day:hover:not(.disabled):not(.sel)::before {
   box-shadow: inset 0 0 0 1.5px var(--text);
 }
 
+/* Continuous range band. The two endpoints carry a half-band on their inner
+ * side so the fill runs seamlessly out of each round token — no square edges. */
 .cal-day.in-range {
-  background: rgba(163, 177, 198, 0.28);
-  border-radius: 0;
+  background: var(--range-band, rgba(163, 177, 198, 0.28));
+}
+
+.cal-day.range-start {
+  background: linear-gradient(to right, transparent 50%, var(--range-band, rgba(163, 177, 198, 0.28)) 50%);
+}
+
+.cal-day.range-end {
+  background: linear-gradient(to left, transparent 50%, var(--range-band, rgba(163, 177, 198, 0.28)) 50%);
 }
 
 .cal-day.sel {
-  background: var(--text);
   color: #fff;
+}
+
+.cal-day.sel::before {
+  background: var(--text);
 }
 
 .cal-day.disabled {
   color: #c3c9d6;
   cursor: default;
-}
-
-.cal-chips {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-  justify-content: center;
-  margin-top: 22px;
-}
-
-.cal-chip {
-  padding: 8px 16px;
-  border-radius: var(--r-pill);
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--text-2);
-  box-shadow: var(--card-ring);
-  background: var(--surface);
-  transition: box-shadow 0.12s, color 0.12s;
-}
-
-.cal-chip.active {
-  background: var(--primary-tint);
-  color: var(--primary);
 }
 
 @media (max-width: 760px) {

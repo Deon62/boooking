@@ -41,7 +41,17 @@ function Month({ year, month, start, end, minDate, disabledDates, onPick, classN
           const disabled = (minDate && dIso < minDate) || (disabledDates && disabledDates.has(dIso));
           const isSel = dIso === start || dIso === end;
           const inRange = start && end && dIso > start && dIso < end;
-          const cls = ['cal-day', disabled && 'disabled', isSel && 'sel', inRange && 'in-range']
+          // Endpoint half-bands (only for a real range) so the highlight flows
+          // into the round start/end tokens instead of ending square.
+          const hasRange = start && end && start !== end;
+          const cls = [
+            'cal-day',
+            disabled && 'disabled',
+            isSel && 'sel',
+            inRange && 'in-range',
+            hasRange && dIso === start && 'range-start',
+            hasRange && dIso === end && 'range-end',
+          ]
             .filter(Boolean)
             .join(' ');
           return (
@@ -97,14 +107,11 @@ export function SingleDateCalendar({ value, onChange, minDate }) {
   );
 }
 
-const FLEX_CHIPS = ['Exact dates', '± 1 day', '± 2 days', '± 3 days', '± 7 days', '± 14 days'];
-
 export function DateRangeCalendar({ start, end, onChange, minDate, disabledDates }) {
   const [view, setView] = useState(() => {
     const d = start ? new Date(start + 'T00:00:00') : new Date();
     return { year: d.getFullYear(), month: d.getMonth() };
   });
-  const [chip, setChip] = useState('Exact dates');
 
   const shift = (n) =>
     setView((v) => {
@@ -121,14 +128,6 @@ export function DateRangeCalendar({ start, end, onChange, minDate, disabledDates
 
   return (
     <div className="cal">
-      <div className="cal-tabs">
-        <button type="button" className="cal-tab active">
-          Dates
-        </button>
-        <button type="button" className="cal-tab">
-          Flexible
-        </button>
-      </div>
       <div className="cal-months">
         <button type="button" className="cal-arrow left" onClick={() => shift(-1)} aria-label="Previous month">
           ‹
@@ -155,18 +154,6 @@ export function DateRangeCalendar({ start, end, onChange, minDate, disabledDates
         <button type="button" className="cal-arrow right" onClick={() => shift(1)} aria-label="Next month">
           ›
         </button>
-      </div>
-      <div className="cal-chips">
-        {FLEX_CHIPS.map((c) => (
-          <button
-            type="button"
-            key={c}
-            className={`cal-chip${chip === c ? ' active' : ''}`}
-            onClick={() => setChip(c)}
-          >
-            {c}
-          </button>
-        ))}
       </div>
     </div>
   );
