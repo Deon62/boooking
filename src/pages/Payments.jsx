@@ -123,68 +123,80 @@ export default function Payments() {
                 <div className="debit-card img-skel" style={{ position: 'relative' }} />
                 <div className="debit-card img-skel" style={{ position: 'relative' }} />
               </div>
-            ) : methods.length === 0 ? (
-              <EmptyState
-                variant="compact"
-                icon={<CreditCardIcon size={22} />}
-                title="No saved methods yet"
-                message="Add your M-Pesa number below, or just pay at checkout and we’ll save it for next time."
-              />
             ) : (
-              <div className="dc-grid">
-                {methods.map((m) => (
-                  <div key={m.id}>
-                    <DebitCard m={m} />
-                    <div className="dc-actions">
-                      {!m.is_default && (
-                        <button className="link" onClick={() => makeDefault(m.id)}>
-                          Make default
+              <>
+                {methods.length === 0 && (
+                  <EmptyState
+                    variant="compact"
+                    icon={<CreditCardIcon size={22} />}
+                    title="No saved methods yet"
+                    message="Add your M-Pesa number below, or just pay at checkout and we’ll save it for next time."
+                  />
+                )}
+                {/* The add form is a cell of the same grid, so it lines up with
+                    the saved cards instead of spanning the whole column. */}
+                <div className="dc-grid">
+                  {methods.map((m) => (
+                    <div key={m.id}>
+                      <DebitCard m={m} />
+                      <div className="dc-actions">
+                        {!m.is_default && (
+                          <button className="link" onClick={() => makeDefault(m.id)}>
+                            Make default
+                          </button>
+                        )}
+                        <button
+                          className="link"
+                          style={{ color: 'var(--error)' }}
+                          onClick={() => remove(m.id)}
+                        >
+                          Remove
                         </button>
-                      )}
-                      <button
-                        className="link"
-                        style={{ color: 'var(--error)' }}
-                        onClick={() => remove(m.id)}
-                      >
-                        Remove
-                      </button>
+                      </div>
                     </div>
-                  </div>
-                ))}
-              </div>
-            )}
+                  ))}
 
-            <div className="form-card" style={{ marginTop: 26 }}>
-              <div className="field" style={{ marginBottom: 0 }}>
-                <label>Add an M-Pesa number</label>
-                <div className="pm-add-row">
-                  <div className="control" style={{ flex: 1 }}>
-                    <input
-                      type="tel"
-                      placeholder="+254 7XX XXX XXX"
-                      value={phone}
-                      onChange={(e) => setPhone(e.target.value)}
-                    />
+                  <div className="pm-add-card">
+                    <div className="field" style={{ marginBottom: 0 }}>
+                      <label>Add an M-Pesa number</label>
+                      <div className="pm-add-row">
+                        <div className="control" style={{ flex: 1 }}>
+                          <input
+                            type="tel"
+                            placeholder="+254 7XX XXX XXX"
+                            value={phone}
+                            onChange={(e) => setPhone(e.target.value)}
+                          />
+                        </div>
+                        <button
+                          className="btn-primary"
+                          disabled={busy || phone.replace(/\D/g, '').length < 9}
+                          onClick={addMpesa}
+                        >
+                          {busy ? 'Saving…' : 'Save number'}
+                        </button>
+                      </div>
+                      <p className="info-note" style={{ paddingBottom: 0 }}>
+                        Cards are added automatically the first time you pay by card. Card details
+                        are entered on Paystack&apos;s secure page, never here.
+                      </p>
+                    </div>
+                    {error && (
+                      <div
+                        style={{
+                          color: 'var(--error)',
+                          fontSize: 'var(--fs-sm)',
+                          fontWeight: 700,
+                          marginTop: 'var(--sp-3)',
+                        }}
+                      >
+                        {error}
+                      </div>
+                    )}
                   </div>
-                  <button
-                    className="btn-primary"
-                    disabled={busy || phone.replace(/\D/g, '').length < 9}
-                    onClick={addMpesa}
-                  >
-                    {busy ? 'Saving…' : 'Save number'}
-                  </button>
                 </div>
-                <p className="info-note" style={{ paddingBottom: 0 }}>
-                  Cards are added automatically the first time you pay by card. Card details are
-                  entered on Paystack&apos;s secure page, never here.
-                </p>
-              </div>
-              {error && (
-                <div style={{ color: 'var(--error)', fontSize: 'var(--fs-sm)', fontWeight: 700, marginTop: 'var(--sp-3)' }}>
-                  {error}
-                </div>
-              )}
-            </div>
+              </>
+            )}
           </div>
 
           <aside className="pm-info">

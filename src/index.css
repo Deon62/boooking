@@ -2789,14 +2789,37 @@ textarea {
   padding: 8px 2px 2px;
 }
 
+/* The "add a number" tile is a cell of .dc-grid, so it shares the card column
+   width and its edges line up with the saved cards at every count. It matches
+   the debit card's treatment (surface + hairline) but sizes to its content. */
+.pm-add-card {
+  grid-column: span 1;
+  align-self: start;
+  padding: 22px 24px 20px;
+  background: var(--surface);
+  border: 1px solid var(--card-border);
+  box-shadow: var(--shadow-md);
+}
+
+/* an empty state sits above the grid — keep them apart */
+.empty-state + .dc-grid {
+  margin-top: 20px;
+}
+
+/* At the card width the input and button stack rather than squeeze. */
 .pm-add-row {
   display: flex;
-  gap: 14px;
+  gap: var(--sp-3);
   align-items: stretch;
   flex-wrap: wrap;
 }
 
+.pm-add-row .control {
+  min-width: 100%;
+}
+
 .pm-add-row .btn-primary {
+  flex: 1;
   flex-shrink: 0;
 }
 
