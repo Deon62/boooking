@@ -180,7 +180,7 @@ export default function Payments() {
                 </p>
               </div>
               {error && (
-                <div style={{ color: 'var(--error)', fontSize: 13.5, fontWeight: 700, marginTop: 12 }}>
+                <div style={{ color: 'var(--error)', fontSize: 'var(--fs-sm)', fontWeight: 700, marginTop: 'var(--sp-3)' }}>
                   {error}
                 </div>
               )}

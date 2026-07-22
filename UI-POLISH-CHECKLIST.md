@@ -8,29 +8,28 @@ Legend: `- [ ]` todo · 🔴 P0 · 🟠 P1 · 🟡 P2 · ⚪ P3
 
 ---
 
-## 1. Global design system & token cleanup 🔴🟠
+## 1. Global design system & token cleanup 🔴🟠 — ✅ DONE
 
-- [ ] 🔴 Retire the legacy `--neo-*` token names entirely (currently kept as flat
-      aliases so ~100 call sites didn't need renaming).
-- [ ] 🔴 **Elevation tokens everywhere**: `--shadow-sm/-md/-lg` and the hairline
-      border exist as tokens, but ~27 inline `rgba(22,24,29,…)` borders/shadows
-      are still copy-pasted across `index.css` — replace them with the tokens.
-- [ ] 🟠 Sweep the ~30 `--neo-in` **active/selected** states and swap the
-      inset-hairline for a `--primary-tint` fill where it reads better
-      (done for `.nav-link.active`; consider `.msg-item.active`, side-nav tabs,
-      `.report-reason.selected`).
-- [ ] 🟠 **Type scale**: formalize a scale (e.g. 12 / 13.5 / 15 / 17 / 20 / 26 / 34)
-      as tokens. Font sizes are currently one-off numbers (14.5px, 16.5px, 13.5px…)
-      scattered across the file.
-- [ ] 🟠 **Spacing scale**: adopt a 4px-based scale (4/8/12/16/24/32/48) and replace
-      the many one-off paddings/margins and inline `style={{ marginTop: … }}`.
-- [ ] 🟠 **Color tokens**: add semantic tokens for surfaces, borders, and text on
-      surfaces (`--card`, `--card-border`, `--text-on-card`) rather than literal
-      `#fff` / `#2b2d33` / `#55575e` repeated inline.
-- [ ] 🟡 **Consider a refined brand accent** beyond `#007ffa` — a deeper or more
-      characterful primary + one warm secondary reads more "designed" than stock blue.
-- [ ] ⚪ **Dark mode** — tokens are light-only today. Optional, but a theme-aware
-      palette is a strong premium signal (and the app already implies theming).
+The whole site now reads from one token sheet at the top of `index.css`:
+semantic color tokens (surfaces, wells, dividers, ink-inversion chips,
+on-primary text), a formal type scale (`--fs-2xs…--fs-3xl`), a 4px spacing
+scale (`--sp-1…--sp-7`), an amber secondary accent (`--accent`, used for
+rating stars), and a **dark theme** (graphite + sky-mint, mirroring the b2b
+dashboard) applied via `data-theme="dark"` on `<html>` — toggle in the header,
+per-device via localStorage `ardena-theme` (`src/theme.js`). Legacy `.neo-*`
+classes are gone (`.neo-btn` → `.btn-secondary`; unused primitives deleted).
+
+Scale adoption is finished in both `index.css` and JSX inline styles, and the
+dark theme has been swept across every page and overlay (home, car details,
+booking, payments, profile, login, trips, notifications, wishlist, messages,
+404, filter modal, date-range calendar, city dropdown). The one regression
+found — the Payments "How payments work" panel becoming a full mint slab —
+is fixed via `--brand-panel-*` tokens: an accent fill in light, a plain card
+in dark.
+
+Deliberate exceptions, do not "fix": the QR code, Google button, photo-overlay
+badges, and switch knob stay hard-white; Mastercard/Visa marks keep brand
+colours.
 
 ---
 

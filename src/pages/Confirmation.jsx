@@ -108,11 +108,11 @@ export default function Confirmation() {
             </div>
           </div>
 
-          <div style={{ display: 'flex', gap: 14, marginTop: 24, flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', gap: 14, marginTop: 'var(--sp-5)', flexWrap: 'wrap' }}>
             <Link to="/trips" className="btn-primary" style={{ flex: 1, textAlign: 'center' }}>
               View my trips
             </Link>
-            <Link to="/" className="neo-btn" style={{ flex: 1, textAlign: 'center', padding: '14px 22px' }}>
+            <Link to="/" className="btn-secondary" style={{ flex: 1, textAlign: 'center', padding: '14px 22px' }}>
               Book another car
             </Link>
           </div>

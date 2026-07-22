@@ -271,7 +271,7 @@ export default function Messages() {
               <span className="skel-line" style={{ width: 180, height: 11, alignSelf: 'center' }} />
               <span
                 className="skel-line"
-                style={{ width: '100%', height: 60, marginTop: 16, borderRadius: 14 }}
+                style={{ width: '100%', height: 60, marginTop: 'var(--sp-4)', borderRadius: 14 }}
               />
             </aside>
           </div>
@@ -354,7 +354,7 @@ export default function Messages() {
               )}
             </div>
             {error && (
-              <div style={{ color: 'var(--error)', fontSize: 13, fontWeight: 700, padding: '6px 18px' }}>
+              <div style={{ color: 'var(--error)', fontSize: 'var(--fs-sm)', fontWeight: 700, padding: '6px 18px' }}>
                 {error}
               </div>
             )}
@@ -380,7 +380,7 @@ export default function Messages() {
 
           <aside className="msg-side">
             <HostAvatar thread={thread} size={96} fontSize={34} />
-            <b style={{ fontSize: 15.5, textAlign: 'center' }}>{thread.hostName}</b>
+            <b style={{ fontSize: 'var(--fs-md)', textAlign: 'center' }}>{thread.hostName}</b>
             {isSupport ? (
               <>
                 <div className="car-meta" style={{ textAlign: 'center' }}>
@@ -391,7 +391,7 @@ export default function Messages() {
                     <span>
                       <MailIcon size={15} /> Email
                     </span>
-                    <b style={{ fontSize: 12.5 }}>support@ardena.co.ke</b>
+                    <b style={{ fontSize: 'var(--fs-xs)' }}>support@ardena.co.ke</b>
                   </div>
                   <div className="widget-row">
                     <span>
@@ -400,7 +400,7 @@ export default function Messages() {
                     <b>+254 707 856 829</b>
                   </div>
                 </div>
-                <div className="notice" style={{ marginTop: 4, fontSize: 12.5 }}>
+                <div className="notice" style={{ marginTop: 'var(--sp-1)', fontSize: 'var(--fs-xs)' }}>
                   <ShieldIcon size={14} style={{ verticalAlign: '-2px', marginRight: 6 }} />
                   We never ask for your M-Pesa PIN, card details or password.
                 </div>
@@ -416,7 +416,7 @@ export default function Messages() {
                       })}`
                     : ''}
                 </div>
-                <div className="notice" style={{ marginTop: 16, fontSize: 12.5 }}>
+                <div className="notice" style={{ marginTop: 'var(--sp-4)', fontSize: 'var(--fs-xs)' }}>
                   <ChatIcon size={14} style={{ verticalAlign: '-2px', marginRight: 6 }} />
                   Messages sync with the Ardena app — your host sees them there too.
                 </div>

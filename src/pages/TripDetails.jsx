@@ -177,7 +177,7 @@ function HandoverCard({ bookingId }) {
           refreshing={refreshing === 'return'}
         />
       </div>
-      <p className="info-note" style={{ paddingTop: 12 }}>
+      <p className="info-note" style={{ paddingTop: 'var(--sp-3)' }}>
         Give the pickup code to your host when collecting the car, and the return code when you
         bring it back — same codes as in the app. Getting a new code cancels the old one.
       </p>
@@ -637,12 +637,12 @@ export default function TripDetails() {
             </div>
 
             {cancelNote && (
-              <div className="notice" style={{ marginTop: 16 }}>
+              <div className="notice" style={{ marginTop: 'var(--sp-4)' }}>
                 {cancelNote}
               </div>
             )}
             {booking.status === 'cancelled' && !cancelNote && (
-              <div className="notice" style={{ marginTop: 16 }}>
+              <div className="notice" style={{ marginTop: 'var(--sp-4)' }}>
                 This trip was cancelled
                 {booking.cancellationReason ? ` — ${booking.cancellationReason}` : '.'}
                 {booking.refundPolicyReason ? ` ${booking.refundPolicyReason}` : ''}
@@ -717,7 +717,7 @@ export default function TripDetails() {
               <div>
                 <h2>Your host</h2>
                 <div className="host-panel">
-                  <span className="avatar" style={{ width: 68, height: 68, fontSize: 24 }}>
+                  <span className="avatar" style={{ width: 68, height: 68, fontSize: 'var(--fs-2xl)' }}>
                     {hostAvatar ? <img src={hostAvatar} alt={host.name} /> : host.name[0]}
                   </span>
                   <b className="host-name">{host.name}</b>
@@ -738,7 +738,7 @@ export default function TripDetails() {
                       <span>Hosting</span>
                     </div>
                   </div>
-                  <button className="neo-btn host-msg" disabled={!paid} onClick={messageHost}>
+                  <button className="btn-secondary host-msg" disabled={!paid} onClick={messageHost}>
                     <ChatIcon size={16} /> Message {hostFirstName}
                   </button>
                   {!paid && (
@@ -791,7 +791,7 @@ export default function TripDetails() {
                 )}
                 <div className="info-row">
                   <span>Total</span>
-                  <b style={{ fontSize: 15.5 }}>{formatKES(booking.total)}</b>
+                  <b style={{ fontSize: 'var(--fs-md)' }}>{formatKES(booking.total)}</b>
                 </div>
                 {booking.depositStatus === 'partial_refund' && booking.depositRefunded != null && (
                   <p className="info-note">
@@ -809,7 +809,7 @@ export default function TripDetails() {
                     <span>
                       <CreditCardIcon size={17} /> PDF with booking, payment and host details
                     </span>
-                    <button className="neo-btn" onClick={getReceipt} disabled={receiptBusy}>
+                    <button className="btn-secondary" onClick={getReceipt} disabled={receiptBusy}>
                       {receiptBusy ? 'Preparing…' : 'Download receipt'}
                     </button>
                   </div>
@@ -818,7 +818,7 @@ export default function TripDetails() {
             )}
 
             {error && (
-              <div style={{ color: 'var(--error)', fontSize: 13.5, fontWeight: 700, marginTop: 16 }}>
+              <div style={{ color: 'var(--error)', fontSize: 'var(--fs-sm)', fontWeight: 700, marginTop: 'var(--sp-4)' }}>
                 {error}
               </div>
             )}
@@ -842,7 +842,7 @@ export default function TripDetails() {
                   <Link
                     to={`/cars/${liveCar.id}`}
                     className="link"
-                    style={{ fontSize: 13.5, textAlign: 'center', display: 'block', marginTop: 12 }}
+                    style={{ fontSize: 'var(--fs-sm)', textAlign: 'center', display: 'block', marginTop: 'var(--sp-3)' }}
                   >
                     View listing
                   </Link>
@@ -865,11 +865,11 @@ export default function TripDetails() {
                   <>
                     <div className="cancel-confirm" style={{ flexWrap: 'wrap', justifyContent: 'center' }}>
                       <span>Cancel this trip?</span>
-                      <button className="neo-btn danger-btn" onClick={doCancel} disabled={cancelling}>
+                      <button className="btn-secondary danger-btn" onClick={doCancel} disabled={cancelling}>
                         {cancelling ? 'Cancelling…' : 'Yes, cancel'}
                       </button>
                       <button
-                        className="neo-btn"
+                        className="btn-secondary"
                         onClick={() => setConfirmCancel(false)}
                         disabled={cancelling}
                       >
@@ -898,7 +898,7 @@ export default function TripDetails() {
                 ) : (
                   <>
                     <button
-                      className="neo-btn danger-btn btn-block"
+                      className="btn-secondary danger-btn btn-block"
                       style={{ width: '100%' }}
                       onClick={openCancel}
                     >

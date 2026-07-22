@@ -214,7 +214,7 @@ function ReportListing({ carId }) {
           </button>
         ))}
       </div>
-      <div className="field" style={{ marginTop: 16, marginBottom: 0 }}>
+      <div className="field" style={{ marginTop: 'var(--sp-4)', marginBottom: 0 }}>
         <label>Tell us more</label>
         <div className="control">
           <textarea
@@ -226,11 +226,11 @@ function ReportListing({ carId }) {
         </div>
       </div>
       {error && (
-        <div style={{ color: 'var(--error)', fontSize: 13.5, fontWeight: 700, marginTop: 10 }}>
+        <div style={{ color: 'var(--error)', fontSize: 'var(--fs-sm)', fontWeight: 700, marginTop: 10 }}>
           {error}
         </div>
       )}
-      <div style={{ display: 'flex', gap: 12, marginTop: 16, paddingBottom: 14 }}>
+      <div style={{ display: 'flex', gap: 'var(--sp-3)', marginTop: 'var(--sp-4)', paddingBottom: 14 }}>
         <button
           className="btn-primary"
           disabled={busy || !reason || !details.trim()}
@@ -238,7 +238,7 @@ function ReportListing({ carId }) {
         >
           {busy ? 'Sending…' : 'Send report'}
         </button>
-        <button className="neo-btn" onClick={() => setOpen(false)} disabled={busy}>
+        <button className="btn-secondary" onClick={() => setOpen(false)} disabled={busy}>
           Cancel
         </button>
       </div>
@@ -576,7 +576,7 @@ export default function CarDetails() {
               <div>
                 <h2>Meet your host</h2>
                 <div className="host-panel">
-                  <span className="avatar" style={{ width: 68, height: 68, fontSize: 24 }}>
+                  <span className="avatar" style={{ width: 68, height: 68, fontSize: 'var(--fs-2xl)' }}>
                     {hostAvatar ? (
                       <img src={hostAvatar} alt={car.host.name} />
                     ) : (
@@ -604,7 +604,7 @@ export default function CarDetails() {
                     </div>
                   </div>
                   <button
-                    className="neo-btn host-msg"
+                    className="btn-secondary host-msg"
                     disabled={!hasBooked}
                     onClick={messageHost}
                   >

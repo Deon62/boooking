@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { useApp } from './store.jsx';
+import { useTheme, toggleTheme } from './theme.js';
 import { formatKES } from './data.js';
 import logoUrl from './assets/logo.svg';
 import logomarkUrl from './assets/logomark.svg';
@@ -28,6 +29,8 @@ import {
   TikTokIcon,
   LinkedInIcon,
   WhatsAppIcon,
+  SunIcon,
+  MoonIcon,
 } from './icons.jsx';
 
 /** Floating back arrow, far left — shown on pages that have a page to go back to. */
@@ -58,8 +61,8 @@ export function CarPhoto({ car, index = 0, className, onClick }) {
   if (failed || !src) {
     return (
       <div className={frameCls} {...clickProps}>
-        <div className="ph" style={{ background: 'linear-gradient(135deg,#dfe6f3,#c9d4ea)' }}>
-          <CarIcon size={44} style={{ color: '#93a1ba' }} />
+        <div className="ph" style={{ background: 'linear-gradient(135deg, var(--skel-a), var(--skel-b))' }}>
+          <CarIcon size={44} style={{ color: 'var(--text-faint)' }} />
         </div>
       </div>
     );
@@ -293,6 +296,21 @@ function AccountMenu() {
   );
 }
 
+function ThemeButton() {
+  const theme = useTheme();
+  const dark = theme === 'dark';
+  return (
+    <button
+      className="icon-btn"
+      onClick={toggleTheme}
+      aria-label={dark ? 'Switch to light theme' : 'Switch to dark theme'}
+      title={dark ? 'Light theme' : 'Dark theme'}
+    >
+      {dark ? <SunIcon size={17} /> : <MoonIcon size={17} />}
+    </button>
+  );
+}
+
 export function Header() {
   // Flat at the top of the page; the shadow only appears once you scroll.
   const [scrolled, setScrolled] = useState(false);
@@ -317,6 +335,7 @@ export function Header() {
           <NavLink to="/trips" className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`}>
             My trips
           </NavLink>
+          <ThemeButton />
           <AccountMenu />
         </nav>
       </div>

@@ -97,10 +97,10 @@ export default function Notifications() {
                 </button>
               </div>
               <button
-                className="neo-btn"
+                className="btn-secondary"
                 disabled={busy || unread.length === 0}
                 onClick={markAll}
-                style={{ padding: '9px 18px', fontSize: 13 }}
+                style={{ padding: '9px 18px', fontSize: 'var(--fs-sm)' }}
               >
                 Mark all as read
               </button>

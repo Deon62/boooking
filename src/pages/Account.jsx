@@ -100,10 +100,10 @@ export function Profile() {
     <AccountLayout>
       <div className="cards-row">
         <div className="form-card">
-          <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 26 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--sp-4)', marginBottom: 26 }}>
             <Avatar user={user} size={64} fontSize={22} />
             <div>
-              <b style={{ fontSize: 18 }}>{user.fullName}</b>
+              <b style={{ fontSize: 'var(--fs-lg)' }}>{user.fullName}</b>
               <div className="car-meta">
                 Ardena member{user.memberSince ? ` since ${user.memberSince}` : ''}
               </div>
@@ -153,7 +153,7 @@ export function Profile() {
         </div>
 
         <div className="form-card">
-          <h2 style={{ fontSize: 16, fontWeight: 700, marginBottom: 16 }}>About</h2>
+          <h2 style={{ fontSize: 'var(--fs-lg)', fontWeight: 700, marginBottom: 'var(--sp-4)' }}>About</h2>
           <div className="field">
             <label>Bio</label>
             <div className="control" style={{ height: 'auto' }}>
@@ -167,13 +167,13 @@ export function Profile() {
           </div>
           <button
             className="btn-primary btn-block"
-            style={{ marginTop: 16 }}
+            style={{ marginTop: 'var(--sp-4)' }}
             disabled={saving || !changed}
             onClick={save}
           >
             {saving ? 'Saving…' : 'Save changes'}
           </button>
-          <div className="notice" style={{ marginTop: 16 }}>
+          <div className="notice" style={{ marginTop: 'var(--sp-4)' }}>
             Web and the <b>Ardena app</b> share one account — changes you save here appear in the
             app automatically. Profile photo and ID number are managed in the app.
           </div>
@@ -375,13 +375,13 @@ export function License() {
                   </div>
                 </div>
                 {lookup ? (
-                  <p style={{ fontSize: 13, color: 'var(--success)', fontWeight: 700, marginTop: 10 }}>
+                  <p style={{ fontSize: 'var(--fs-sm)', color: 'var(--success)', fontWeight: 700, marginTop: 10 }}>
                     <CheckIcon size={13} /> Confirmed: {lookup.verified_name}
                   </p>
                 ) : (
                   <button
-                    className="neo-btn"
-                    style={{ marginTop: 12 }}
+                    className="btn-secondary"
+                    style={{ marginTop: 'var(--sp-3)' }}
                     disabled={lookupBusy || !idNumber.trim()}
                     onClick={confirmId}
                   >
@@ -389,7 +389,7 @@ export function License() {
                   </button>
                 )}
                 {lookupError && (
-                  <p style={{ color: 'var(--error)', fontSize: 13, fontWeight: 700, marginTop: 10 }}>
+                  <p style={{ color: 'var(--error)', fontSize: 'var(--fs-sm)', fontWeight: 700, marginTop: 10 }}>
                     {lookupError}
                   </p>
                 )}
@@ -434,8 +434,8 @@ export function License() {
                   href={session.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="neo-btn"
-                  style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}
+                  className="btn-secondary"
+                  style={{ display: 'inline-flex', alignItems: 'center', gap: 'var(--sp-2)' }}
                 >
                   <PhoneIcon size={15} /> On this phone? Verify now
                 </a>
@@ -448,7 +448,7 @@ export function License() {
           )}
 
           {error && (
-            <p style={{ color: 'var(--error)', fontSize: 13.5, fontWeight: 700, marginTop: 14 }}>
+            <p style={{ color: 'var(--error)', fontSize: 'var(--fs-sm)', fontWeight: 700, marginTop: 14 }}>
               {error}
             </p>
           )}

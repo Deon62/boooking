@@ -199,8 +199,15 @@ export const FlagIcon = (p) => (
   </I>
 );
 
-export const StarIcon = ({ size = 16, ...p }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" {...p}>
+export const StarIcon = ({ size = 16, style, ...p }) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="currentColor"
+    style={{ color: 'var(--accent)', ...style }}
+    {...p}
+  >
     <path d="M12 2.5l2.9 6.2 6.6.8-4.9 4.6 1.3 6.6-5.9-3.3-5.9 3.3 1.3-6.6L2.5 9.5l6.6-.8z" />
   </svg>
 );
@@ -334,4 +341,24 @@ export const GooglePlayIcon = (p) => (
   <F {...p}>
     <path d="M3 20.5v-17c0-.59.34-1.11.84-1.35L13.69 12l-9.85 9.85c-.5-.24-.84-.76-.84-1.35zm13.81-5.38L6.05 21.34l8.49-8.49 2.27 2.27zm3.35-4.31c.34.27.59.68.59 1.19s-.22.9-.57 1.18l-2.29 1.32-2.5-2.5 2.5-2.5 2.27 1.31zM6.05 2.66l10.76 6.22-2.27 2.27-8.49-8.49z" />
   </F>
+);
+
+export const SunIcon = (p) => (
+  <I {...p}>
+    <circle cx="12" cy="12" r="4" />
+    <line x1="12" y1="2" x2="12" y2="4.5" />
+    <line x1="12" y1="19.5" x2="12" y2="22" />
+    <line x1="4.9" y1="4.9" x2="6.7" y2="6.7" />
+    <line x1="17.3" y1="17.3" x2="19.1" y2="19.1" />
+    <line x1="2" y1="12" x2="4.5" y2="12" />
+    <line x1="19.5" y1="12" x2="22" y2="12" />
+    <line x1="4.9" y1="19.1" x2="6.7" y2="17.3" />
+    <line x1="17.3" y1="6.7" x2="19.1" y2="4.9" />
+  </I>
+);
+
+export const MoonIcon = (p) => (
+  <I {...p}>
+    <path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z" />
+  </I>
 );

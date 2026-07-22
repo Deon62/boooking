@@ -84,7 +84,7 @@ function GoogleButton({ onSignedIn, onError }) {
 function FormError({ children }) {
   if (!children) return null;
   return (
-    <div style={{ color: 'var(--error)', fontSize: 13.5, fontWeight: 700, marginTop: 10 }}>
+    <div style={{ color: 'var(--error)', fontSize: 'var(--fs-sm)', fontWeight: 700, marginTop: 10 }}>
       {children}
     </div>
   );
@@ -189,7 +189,7 @@ export default function Login() {
           <button
             type="submit"
             className="btn-primary btn-block"
-            style={{ marginTop: 4 }}
+            style={{ marginTop: 'var(--sp-1)' }}
             disabled={busy}
           >
             {busy ? 'Logging in…' : 'Log in'}
@@ -319,7 +319,7 @@ export function Signup() {
           <button
             type="submit"
             className="btn-primary btn-block"
-            style={{ marginTop: 4 }}
+            style={{ marginTop: 'var(--sp-1)' }}
             disabled={busy}
           >
             {busy ? 'Creating account…' : 'Sign up'}
@@ -425,7 +425,7 @@ export function Forgot() {
                 <button
                   type="submit"
                   className="btn-primary btn-block"
-                  style={{ marginTop: 4 }}
+                  style={{ marginTop: 'var(--sp-1)' }}
                   disabled={busy}
                 >
                   {busy ? 'Sending…' : 'Send code'}
@@ -435,7 +435,7 @@ export function Forgot() {
 
             {step === 2 && (
               <>
-                <p style={{ color: 'var(--text-2)', fontSize: 14, marginBottom: 18 }}>
+                <p style={{ color: 'var(--text-2)', fontSize: 'var(--fs-sm)', marginBottom: 18 }}>
                   We sent a 6-digit code to <b>{email}</b>. It expires in 5 minutes.
                 </p>
                 <div className="field">
@@ -456,7 +456,7 @@ export function Forgot() {
                 <button
                   type="submit"
                   className="btn-primary btn-block"
-                  style={{ marginTop: 4 }}
+                  style={{ marginTop: 'var(--sp-1)' }}
                   disabled={busy}
                 >
                   {busy ? 'Verifying…' : 'Verify code'}
@@ -486,7 +486,7 @@ export function Forgot() {
                 <button
                   type="submit"
                   className="btn-primary btn-block"
-                  style={{ marginTop: 4 }}
+                  style={{ marginTop: 'var(--sp-1)' }}
                   disabled={busy}
                 >
                   {busy ? 'Resetting…' : 'Reset password'}

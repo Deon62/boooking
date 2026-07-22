@@ -1,36 +1,77 @@
 /* ============================================================
-   Ardena Bookings — neomorphic design system
-   Brand tokens mirror the client app theme (palettes.js):
-   primary #007AFF, Nunito, KES, soft backgrounds.
+   Ardena Bookings — flat premium design system.
+   Every color, size, and space reads from the tokens below, so the
+   whole site re-skins from this sheet (see the dark theme block).
+   Token definitions use compact rgba() on purpose — keep it that way.
    ============================================================ */
 
 :root {
-  /* ==========================================================
-     Ardena — flat premium design language.
-     White surfaces, hairline borders, sharp corners; a soft drop
-     shadow only for floating things (modals, dropdowns, sticky
-     widgets). Surface treatments are box-shadow based (--card-ring,
-     --elevated, --inset-ring) so applying them never shifts layout.
-     ========================================================== */
-  --bg: #f4f5f7;
-  --surface: #ffffff;
+  /* ---- brand ---- */
   --primary: #007ffa;
   --primary-dark: #0069d3;
-  --primary-tint: rgba(0, 127, 250, 0.08);
+  --primary-tint: rgba(0,127,250,0.08); /* selected/active fills */
+  --primary-tint-strong: rgba(0,127,250,0.16); /* hover on tinted chips */
+  --primary-tint-soft: rgba(0,127,250,0.045); /* tinted row hover */
+  --primary-border: rgba(0,127,250,0.55); /* input hover border */
+  --on-primary: #ffffff; /* text/icons on a primary fill */
+  --accent: #ffb43a; /* warm secondary — use sparingly (badges, highlights) */
+
+  /* ---- neutrals / surfaces ---- */
+  --bg: #f4f5f7;
+  --surface: #ffffff;
+  --well: #e9edf3; /* sunken/placeholder surfaces (photo frames, collage) */
+  --well-tint: rgba(163,177,198,0.08); /* readonly inputs, neutral row hover */
+  --chip-tint: rgba(163,177,198,0.18); /* neutral badge fill */
+  --hover-tint: rgba(22,24,29,0.05); /* flat hover/press wash */
+  --skel-a: #dee4ef; /* skeleton shimmer pair */
+  --skel-b: #ecf0f7;
+  --glass: rgba(244,245,247,0.85); /* frosted sticky header */
+  --glass-scrim: rgba(244,245,247,0.72); /* frosted full-screen overlay */
+  --scrim: rgba(11,11,15,0.4); /* modal backdrop */
+  --scrim-heavy: rgba(11,11,15,0.92); /* lightbox backdrop */
+
+  /* ---- text ---- */
   --text: #0b0b0f;
+  --text-soft: #2b2d33; /* card titles */
   --text-2: #4a4a4a;
   --hint: #6a6a6a;
+  --text-faint: #c3c9d6; /* disabled calendar days */
+
+  /* ---- ink inversion: dark chip in light theme, light chip in dark
+     (primary buttons excepted). Used by the toast, selected filter chips,
+     message-host button, selected calendar days, avatars. ---- */
+  --ink-inv: #16181d;
+  --ink-inv-hover: #23262e;
+  --on-ink: #ffffff;
+  --avatar-bg: linear-gradient(135deg, #2b303c, #0b0b0f);
+
+  /* ---- brand-filled info panel (Payments sidebar). A large accent fill only
+     works while the accent is a deep blue; the dark theme re-points these to a
+     plain surface so the mint accent never becomes a full-height slab. ---- */
+  --brand-panel: var(--primary);
+  --brand-panel-text: var(--on-primary);
+  --brand-panel-text-soft: rgba(255,255,255,0.92);
+  --brand-panel-rule: rgba(255,255,255,0.35);
+  --brand-panel-tint: rgba(255,255,255,0.14);
+  --brand-panel-ring: none;
+
+  /* ---- status ---- */
   --success: #34c759;
   --warning: #ff9800;
   --error: #ff3b30;
 
-  --card-border: rgba(22, 24, 29, 0.09);
-  --input-border: rgba(22, 24, 29, 0.16);
+  /* ---- borders & dividers ---- */
+  --card-border: rgba(22,24,29,0.09); /* resting card hairline */
+  --input-border: rgba(22,24,29,0.16); /* inputs + emphasised hairline */
+  --control-border: rgba(122,138,160,0.7); /* radio/check outlines */
+  --divider: rgba(163,177,198,0.3); /* row separators */
+  --divider-strong: rgba(163,177,198,0.4); /* panel/section separators */
+  --range-band: rgba(163,177,198,0.28); /* calendar range fill */
 
-  /* elevation — real drop shadows, floating elements only */
-  --shadow-sm: 0 1px 2px rgba(16, 24, 40, 0.05);
-  --shadow-md: 0 8px 24px rgba(16, 24, 40, 0.08);
-  --shadow-lg: 0 22px 50px rgba(16, 24, 40, 0.16);
+  /* ---- elevation — real drop shadows, floating elements only ---- */
+  --shadow-sm: 0 1px 2px rgba(16,24,40,0.05);
+  --shadow-md: 0 8px 24px rgba(16,24,40,0.08);
+  --shadow-lg: 0 22px 50px rgba(16,24,40,0.16);
 
   /* surface treatments (box-shadow based, so no layout shift):
      --card-ring  = hairline border for a resting card/surface
@@ -40,6 +81,25 @@
   --elevated: 0 0 0 1px var(--card-border), var(--shadow-md);
   --inset-ring: inset 0 0 0 1px var(--input-border);
 
+  /* ---- type scale (only these sizes; display sizes >30px stay bespoke) ---- */
+  --fs-2xs: 11px;
+  --fs-xs: 12px;
+  --fs-sm: 13.5px;
+  --fs-md: 15px;
+  --fs-lg: 17px;
+  --fs-xl: 20px;
+  --fs-2xl: 24px;
+  --fs-3xl: 30px;
+
+  /* ---- spacing scale (4px base) ---- */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 24px;
+  --sp-6: 32px;
+  --sp-7: 48px;
+
   /* sharp corners for cards/containers/inputs; pills stay round */
   --r-sm: 0;
   --r-md: 0;
@@ -47,6 +107,73 @@
   --r-pill: 999px;
 
   --maxw: 1180px;
+}
+
+/* ============================================================
+   Dark theme — graphite surfaces, sky-mint accent; mirrors the
+   Ardena for Business dashboard palette. Only token values change;
+   applied via data-theme="dark" on <html> (see src/theme.js).
+   ============================================================ */
+[data-theme='dark'] {
+  color-scheme: dark;
+
+  /* accent shifts from brand blue to sky mint on graphite */
+  --primary: #b8f7e4;
+  --primary-dark: #8fe9cf;
+  --primary-tint: rgba(184,247,228,0.12);
+  --primary-tint-strong: rgba(184,247,228,0.2);
+  --primary-tint-soft: rgba(184,247,228,0.06);
+  --primary-border: rgba(184,247,228,0.55);
+  --on-primary: #10201a;
+
+  --bg: #25272c;
+  --surface: #2d3037;
+  --well: #26282e;
+  --well-tint: rgba(0,0,0,0.18);
+  --chip-tint: rgba(255,255,255,0.09);
+  --hover-tint: rgba(255,255,255,0.06);
+  --skel-a: #33363d;
+  --skel-b: #2b2e34;
+  --glass: rgba(37,39,44,0.85);
+  --glass-scrim: rgba(37,39,44,0.72);
+  --scrim: rgba(0,0,0,0.55);
+  --scrim-heavy: rgba(5,6,8,0.94);
+
+  --text: #e9ecf1;
+  --text-soft: #dfe3ea;
+  --text-2: #a8afba;
+  --hint: #767d89;
+  --text-faint: #4c515b;
+
+  /* ink chips invert to light-on-graphite */
+  --ink-inv: #e9ecf1;
+  --ink-inv-hover: #ffffff;
+  --on-ink: #23252b;
+  --avatar-bg: linear-gradient(135deg, #e9ecf1, #c6ccd6);
+
+  /* the accent panel becomes a normal card on graphite */
+  --brand-panel: var(--surface);
+  --brand-panel-text: var(--text);
+  --brand-panel-text-soft: var(--text-2);
+  --brand-panel-rule: var(--divider-strong);
+  --brand-panel-tint: var(--well-tint);
+  --brand-panel-ring: var(--card-ring);
+
+  /* status brightened for contrast on graphite */
+  --success: #34d399;
+  --warning: #fbbf24;
+  --error: #f05252;
+
+  --card-border: rgba(255,255,255,0.08);
+  --input-border: rgba(255,255,255,0.16);
+  --control-border: rgba(255,255,255,0.4);
+  --divider: rgba(255,255,255,0.09);
+  --divider-strong: rgba(255,255,255,0.14);
+  --range-band: rgba(184,247,228,0.14);
+
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.4);
+  --shadow-md: 0 8px 24px rgba(0,0,0,0.45);
+  --shadow-lg: 0 22px 50px rgba(0,0,0,0.55);
 }
 
 * {
@@ -65,7 +192,7 @@ body {
   font-family: 'Nunito', -apple-system, 'Segoe UI', sans-serif;
   background: var(--bg);
   color: var(--text);
-  font-size: 15px;
+  font-size: var(--fs-md);
   line-height: 1.5;
 }
 
@@ -98,7 +225,7 @@ input,
 select,
 textarea {
   font-family: inherit;
-  font-size: 15px;
+  font-size: var(--fs-md);
   border: none;
   outline: none;
   background: transparent;
@@ -140,59 +267,41 @@ textarea {
   }
 }
 
-/* ---------- neo primitives ---------- */
+/* ---------- button primitives ---------- */
 
-.neo {
-  background: var(--surface);
-  border-radius: var(--r-lg);
-  box-shadow: var(--card-ring);
-}
-
-.neo-sm {
-  background: var(--surface);
-  border-radius: var(--r-md);
-  box-shadow: var(--card-ring);
-}
-
-.neo-in {
-  background: var(--surface);
-  border-radius: var(--r-md);
-  box-shadow: var(--inset-ring);
-}
-
-.neo-btn {
+.btn-secondary {
   background: var(--surface);
   border-radius: var(--r-pill);
   box-shadow: var(--card-ring);
   padding: 12px 22px;
   font-weight: 700;
-  font-size: 14px;
+  font-size: var(--fs-sm);
   color: var(--text-2);
   transition: box-shadow 0.15s ease, color 0.15s ease, transform 0.1s ease;
   white-space: nowrap;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: var(--sp-2);
 }
 
-.neo-btn:hover {
+.btn-secondary:hover {
   color: var(--primary);
 }
 
-.neo-btn:active,
-.neo-btn.active {
+.btn-secondary:active,
+.btn-secondary.active {
   box-shadow: var(--inset-ring);
   color: var(--primary);
 }
 
 .btn-primary {
   background: var(--primary);
-  color: #fff;
+  color: var(--on-primary);
   border-radius: var(--r-pill);
   padding: 14px 30px;
   font-weight: 700;
-  font-size: 15px;
+  font-size: var(--fs-md);
   transition: background 0.15s ease, transform 0.1s ease, opacity 0.15s;
   white-space: nowrap;
 }
@@ -213,7 +322,7 @@ textarea {
 
 /* Shared button behaviour: one smooth transition + one press feedback across
    every button style, so pressing anything feels the same. */
-.neo-btn,
+.btn-secondary,
 .flat-btn,
 .icon-btn,
 .pill-action,
@@ -223,7 +332,7 @@ textarea {
     box-shadow 0.13s ease, transform 0.1s ease;
 }
 
-.neo-btn:active:not(:disabled),
+.btn-secondary:active:not(:disabled),
 .flat-btn:active:not(:disabled),
 .icon-btn:active:not(:disabled),
 .pill-action:active,
@@ -234,7 +343,7 @@ textarea {
 
 @media (prefers-reduced-motion: reduce) {
   .btn-primary:active,
-  .neo-btn:active,
+  .btn-secondary:active,
   .flat-btn:active,
   .icon-btn:active,
   .pill-action:active,
@@ -256,15 +365,15 @@ textarea {
   position: sticky;
   top: 0;
   z-index: 50;
-  background: rgba(244, 245, 247, 0.85);
+  background: var(--glass);
   backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(163, 177, 198, 0.35);
+  border-bottom: 1px solid var(--divider-strong);
   box-shadow: none;
   transition: box-shadow 0.2s ease;
 }
 
 .header.scrolled {
-  box-shadow: 0 6px 18px rgba(163, 177, 198, 0.28);
+  box-shadow: var(--shadow-md);
 }
 
 .header-inner {
@@ -298,14 +407,14 @@ textarea {
 .header-nav {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--sp-2);
 }
 
 .nav-link {
   padding: 10px 16px;
   border-radius: var(--r-pill);
   font-weight: 600;
-  font-size: 14px;
+  font-size: var(--fs-sm);
   color: var(--text-2);
   transition: all 0.15s;
 }
@@ -334,7 +443,7 @@ textarea {
   background: var(--surface);
   box-shadow: var(--card-ring);
   font-weight: 800;
-  font-size: 14px;
+  font-size: var(--fs-sm);
   color: var(--text);
   transition: box-shadow 0.15s;
 }
@@ -355,12 +464,12 @@ textarea {
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #2b303c, #0b0b0f);
-  color: #fff;
+  background: var(--avatar-bg);
+  color: var(--on-ink);
   display: grid;
   place-items: center;
   font-weight: 800;
-  font-size: 14px;
+  font-size: var(--fs-sm);
   flex-shrink: 0;
   overflow: hidden;
 }
@@ -386,17 +495,17 @@ textarea {
 
 .account-menu .who {
   padding: 10px 12px 12px;
-  border-bottom: 1px solid rgba(163, 177, 198, 0.35);
-  margin-bottom: 8px;
+  border-bottom: 1px solid var(--divider-strong);
+  margin-bottom: var(--sp-2);
 }
 
 .account-menu .who b {
   display: block;
-  font-size: 15px;
+  font-size: var(--fs-md);
 }
 
 .account-menu .who span {
-  font-size: 12.5px;
+  font-size: var(--fs-xs);
   color: var(--hint);
 }
 
@@ -408,7 +517,7 @@ textarea {
   padding: 11px 12px;
   border-radius: 10px;
   font-weight: 700;
-  font-size: 14px;
+  font-size: var(--fs-sm);
   color: var(--text-2);
   text-align: left;
   transition: all 0.12s;
@@ -455,7 +564,7 @@ textarea {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 8px;
+  gap: var(--sp-2);
   margin: 14px auto 0;
   max-width: 860px;
 }
@@ -466,16 +575,16 @@ textarea {
   gap: 6px;
   padding: 7px 8px 7px 14px;
   border-radius: var(--r-pill);
-  background: var(--primary-tint, rgba(0, 127, 250, 0.1));
+  background: var(--primary-tint);
   color: var(--primary);
   border: 1px solid transparent;
-  font-size: 13px;
+  font-size: var(--fs-sm);
   font-weight: 700;
   transition: background 0.15s, transform 0.1s;
 }
 
 .active-filter:hover {
-  background: rgba(0, 127, 250, 0.16);
+  background: var(--primary-tint-strong);
 }
 
 .active-filter:active {
@@ -489,7 +598,7 @@ textarea {
 .active-filter-clear {
   padding: 7px 14px;
   border-radius: var(--r-pill);
-  font-size: 13px;
+  font-size: var(--fs-sm);
   font-weight: 700;
   color: var(--hint);
   text-decoration: underline;
@@ -509,7 +618,7 @@ textarea {
 
 .search-field .value {
   font-weight: 700;
-  font-size: 14.5px;
+  font-size: var(--fs-md);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -520,12 +629,12 @@ textarea {
 }
 
 .search-field + .search-field {
-  border-left: 1px solid rgba(163, 177, 198, 0.4);
+  border-left: 1px solid var(--divider-strong);
 }
 
 .search-field label {
   display: block;
-  font-size: 11.5px;
+  font-size: var(--fs-xs);
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.8px;
@@ -536,7 +645,7 @@ textarea {
 .search-field input,
 .search-field select {
   font-weight: 700;
-  font-size: 14.5px;
+  font-size: var(--fs-md);
   appearance: none;
   cursor: pointer;
 }
@@ -548,7 +657,7 @@ textarea {
   height: 50px;
   border-radius: 50%;
   background: var(--primary);
-  color: #fff;
+  color: var(--on-primary);
   display: grid;
   place-items: center;
   flex-shrink: 0;
@@ -614,11 +723,11 @@ textarea {
 }
 
 .shelf-head {
-  margin-bottom: 12px;
+  margin-bottom: var(--sp-3);
 }
 
 .shelf-title {
-  font-size: 19px;
+  font-size: var(--fs-xl);
   font-weight: 800;
   letter-spacing: -0.3px;
 }
@@ -626,7 +735,7 @@ textarea {
 .shelf-sub {
   margin-top: 2px;
   color: var(--hint);
-  font-size: 13.5px;
+  font-size: var(--fs-sm);
   font-weight: 600;
 }
 
@@ -652,7 +761,7 @@ textarea {
   border-radius: 999px;
   background: var(--error);
   color: #fff;
-  font-size: 11px;
+  font-size: var(--fs-2xs);
   font-weight: 800;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 }
@@ -664,8 +773,8 @@ textarea {
   z-index: 200;
   display: grid;
   place-items: center;
-  padding: 24px;
-  background: rgba(11, 11, 15, 0.4);
+  padding: var(--sp-5);
+  background: var(--scrim);
   backdrop-filter: blur(6px);
   animation: pay-fade 0.2s ease;
 }
@@ -675,8 +784,8 @@ textarea {
   max-height: 92vh;
   display: flex;
   flex-direction: column;
-  background: #fff;
-  box-shadow: 0 30px 80px rgba(16, 24, 40, 0.28);
+  background: var(--surface);
+  box-shadow: var(--shadow-lg);
 }
 
 .filter-head {
@@ -684,11 +793,11 @@ textarea {
   align-items: center;
   justify-content: space-between;
   padding: 22px 30px;
-  border-bottom: 1px solid rgba(22, 24, 29, 0.08);
+  border-bottom: 1px solid var(--card-border);
 }
 
 .filter-head h2 {
-  font-size: 20px;
+  font-size: var(--fs-xl);
   font-weight: 800;
   letter-spacing: -0.3px;
 }
@@ -701,7 +810,7 @@ textarea {
   border-radius: 50%;
   color: var(--text-2);
   background: transparent;
-  border: 1px solid rgba(22, 24, 29, 0.16);
+  border: 1px solid var(--input-border);
   transition: border-color 0.12s, color 0.12s;
 }
 
@@ -726,7 +835,7 @@ textarea {
 }
 
 .filter-section h3 {
-  font-size: 11.5px;
+  font-size: var(--fs-xs);
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.7px;
@@ -744,9 +853,9 @@ textarea {
 .filter-chip {
   padding: 9px 17px;
   border-radius: var(--r-pill);
-  background: #fff;
-  border: 1px solid rgba(22, 24, 29, 0.16);
-  font-size: 13.5px;
+  background: var(--surface);
+  border: 1px solid var(--input-border);
+  font-size: var(--fs-sm);
   font-weight: 600;
   color: var(--text-2);
   transition: border-color 0.12s, color 0.12s, background 0.12s;
@@ -758,23 +867,23 @@ textarea {
 }
 
 .filter-chip.on {
-  border-color: var(--text);
-  background: var(--text);
-  color: #fff;
+  border-color: var(--ink-inv);
+  background: var(--ink-inv);
+  color: var(--on-ink);
 }
 
 .filter-foot {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
+  gap: var(--sp-4);
   padding: 18px 30px;
-  border-top: 1px solid rgba(22, 24, 29, 0.08);
+  border-top: 1px solid var(--card-border);
 }
 
 .filter-reset {
   font-weight: 800;
-  font-size: 14px;
+  font-size: var(--fs-sm);
   color: var(--text-2);
   text-decoration: underline;
   text-underline-offset: 3px;
@@ -872,7 +981,7 @@ textarea {
 .skel-line,
 .skel-circle,
 .skel-bubble {
-  background: linear-gradient(90deg, #dee4ef 25%, #ecf0f7 50%, #dee4ef 75%);
+  background: linear-gradient(90deg, var(--skel-a) 25%, var(--skel-b) 50%, var(--skel-a) 75%);
   background-size: 200% 100%;
   animation: shimmer 1.6s linear infinite;
 }
@@ -886,7 +995,7 @@ textarea {
 .skel-line {
   height: 15px;
   border-radius: 8px;
-  margin-top: 12px;
+  margin-top: var(--sp-3);
 }
 
 .skel-circle {
@@ -928,10 +1037,10 @@ textarea {
   position: absolute;
   top: 12px;
   left: 12px;
-  background: rgba(255, 255, 255, 0.94);
+  background: var(--surface);
   border-radius: var(--r-pill);
   padding: 5px 12px;
-  font-size: 12px;
+  font-size: var(--fs-xs);
   font-weight: 800;
   color: var(--text-2);
   box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12);
@@ -976,16 +1085,16 @@ textarea {
 }
 
 .car-title {
-  font-size: 14.5px;
+  font-size: var(--fs-md);
   font-weight: 600;
-  color: #2b2d33;
+  color: var(--text-soft);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 .rating {
-  font-size: 13px;
+  font-size: var(--fs-sm);
   font-weight: 500;
   color: var(--text-2);
   white-space: nowrap;
@@ -993,24 +1102,24 @@ textarea {
 
 .car-meta {
   color: var(--hint);
-  font-size: 13.5px;
+  font-size: var(--fs-sm);
   margin-top: 3px;
 }
 
 .car-price {
   margin-top: 3px;
-  font-size: 14px;
-  color: #55575e;
+  font-size: var(--fs-sm);
+  color: var(--text-2);
 }
 
 .car-price b {
   font-weight: 600;
-  color: #2b2d33;
+  color: var(--text-soft);
 }
 
 .car-price span {
   color: var(--hint);
-  font-size: 13px;
+  font-size: var(--fs-sm);
 }
 
 /* ---------- car details page ---------- */
@@ -1042,7 +1151,7 @@ textarea {
 @media (max-width: 900px) {
   .back-fab {
     position: static;
-    margin-bottom: 16px;
+    margin-bottom: var(--sp-4);
   }
 }
 
@@ -1072,9 +1181,9 @@ textarea {
   bottom: 16px;
   padding: 9px 16px;
   border-radius: var(--r-pill);
-  background: #fff;
-  border: 1px solid rgba(22, 24, 29, 0.14);
-  font-size: 13px;
+  background: var(--surface);
+  border: 1px solid var(--input-border);
+  font-size: var(--fs-sm);
   font-weight: 700;
   color: var(--text);
   box-shadow: var(--shadow-sm);
@@ -1122,7 +1231,7 @@ textarea {
   display: grid;
   place-items: center;
   padding: 40px;
-  background: rgba(11, 11, 15, 0.92);
+  background: var(--scrim-heavy);
   animation: pay-fade 0.2s ease;
 }
 
@@ -1180,13 +1289,13 @@ textarea {
   border-radius: var(--r-pill);
   background: rgba(255, 255, 255, 0.14);
   color: #fff;
-  font-size: 13px;
+  font-size: var(--fs-sm);
   font-weight: 700;
 }
 
 @media (max-width: 640px) {
   .lightbox {
-    padding: 12px;
+    padding: var(--sp-3);
   }
   .lightbox-nav {
     width: 42px;
@@ -1207,7 +1316,7 @@ textarea {
   height: 300px;
   overflow: hidden;
   border: 1px solid var(--card-border);
-  background: #e9edf3;
+  background: var(--well);
 }
 
 .pickup-map iframe {
@@ -1236,16 +1345,16 @@ textarea {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
+  gap: var(--sp-3);
   flex-wrap: wrap;
-  margin-top: 12px;
+  margin-top: var(--sp-3);
 }
 
 .pickup-place {
   display: inline-flex;
   align-items: center;
   gap: 9px;
-  font-size: 14px;
+  font-size: var(--fs-sm);
   font-weight: 700;
   color: var(--text-2);
 }
@@ -1259,7 +1368,7 @@ textarea {
   align-items: center;
   gap: 6px;
   color: var(--text-2);
-  font-size: 14.5px;
+  font-size: var(--fs-md);
   font-weight: 600;
 }
 
@@ -1268,7 +1377,7 @@ textarea {
 }
 
 .section h2 {
-  font-size: 19px;
+  font-size: var(--fs-xl);
   font-weight: 800;
   margin-bottom: 14px;
 }
@@ -1284,7 +1393,7 @@ textarea {
   display: flex;
   align-items: center;
   gap: 15px;
-  padding: 12px 16px;
+  padding: var(--sp-3) var(--sp-4);
   border: 1px solid var(--card-border);
   border-radius: var(--r-md);
 }
@@ -1302,13 +1411,13 @@ textarea {
 
 .spec-label {
   display: block;
-  font-size: 12px;
+  font-size: var(--fs-xs);
   color: var(--hint);
   font-weight: 600;
 }
 
 .spec-item b {
-  font-size: 14.5px;
+  font-size: var(--fs-md);
   font-weight: 700;
 }
 
@@ -1316,7 +1425,7 @@ textarea {
 .host-duo {
   display: grid;
   grid-template-columns: minmax(0, 360px) minmax(0, 1fr);
-  gap: 32px;
+  gap: var(--sp-6);
   align-items: start;
 }
 
@@ -1332,7 +1441,7 @@ textarea {
   flex-direction: column;
   align-items: center;
   text-align: center;
-  gap: 4px;
+  gap: var(--sp-1);
   padding: 28px 26px 24px;
   border-radius: var(--r-lg);
   background: var(--surface);
@@ -1341,8 +1450,8 @@ textarea {
 }
 
 .host-panel .host-name {
-  font-size: 17px;
-  margin-top: 8px;
+  font-size: var(--fs-lg);
+  margin-top: var(--sp-2);
 }
 
 .host-stats {
@@ -1359,19 +1468,19 @@ textarea {
 }
 
 .host-stats > div + div {
-  border-left: 1px solid rgba(163, 177, 198, 0.4);
+  border-left: 1px solid var(--divider-strong);
 }
 
 .host-stats b {
-  font-size: 15.5px;
+  font-size: var(--fs-md);
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 4px;
+  gap: var(--sp-1);
 }
 
 .host-stats span {
-  font-size: 12px;
+  font-size: var(--fs-xs);
   color: var(--hint);
   font-weight: 600;
 }
@@ -1380,22 +1489,22 @@ textarea {
 .host-msg:hover,
 .host-msg:active,
 .host-msg.active {
-  background: #16181d;
-  color: #fff;
+  background: var(--ink-inv);
+  color: var(--on-ink);
   box-shadow: 0 6px 16px rgba(18, 20, 26, 0.28);
 }
 
 .host-msg {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--sp-2);
   width: 100%;
   justify-content: center;
   transition: background 0.12s, transform 0.1s;
 }
 
 .host-msg:hover {
-  background: #23262e;
+  background: var(--ink-inv-hover);
 }
 
 .host-msg:active {
@@ -1414,13 +1523,13 @@ textarea {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
+  gap: var(--sp-4);
   padding: 13px 0;
-  font-size: 14px;
+  font-size: var(--fs-sm);
 }
 
 .info-row + .info-row {
-  border-top: 1px solid rgba(163, 177, 198, 0.3);
+  border-top: 1px solid var(--divider);
 }
 
 .info-row > span {
@@ -1449,7 +1558,7 @@ textarea {
 
 .info-note {
   padding: 4px 0 14px;
-  font-size: 13px;
+  font-size: var(--fs-sm);
   color: var(--hint);
 }
 
@@ -1458,21 +1567,21 @@ textarea {
 .section.detail-divide {
   margin-top: 34px;
   padding-top: 28px;
-  border-top: 1px solid rgba(163, 177, 198, 0.4);
+  border-top: 1px solid var(--divider-strong);
 }
 
 .detail-list .info-row:first-child {
-  padding-top: 4px;
+  padding-top: var(--sp-1);
 }
 
 /* small host/company blurb, right of the host panel — plain text, no card */
 .host-about {
   max-width: 460px;
-  padding-top: 4px;
+  padding-top: var(--sp-1);
 }
 
 .host-about p {
-  font-size: 14px;
+  font-size: var(--fs-sm);
   line-height: 1.65;
   color: var(--text-2);
   font-weight: 600;
@@ -1487,7 +1596,7 @@ textarea {
   align-items: center;
   gap: 9px;
   font-weight: 700;
-  font-size: 13.5px;
+  font-size: var(--fs-sm);
   color: var(--hint);
   text-decoration: underline;
   text-underline-offset: 3px;
@@ -1504,7 +1613,7 @@ textarea {
 }
 
 .report-card h3 {
-  font-size: 15px;
+  font-size: var(--fs-md);
   font-weight: 800;
   margin-bottom: 14px;
 }
@@ -1523,7 +1632,7 @@ textarea {
   border-radius: var(--r-pill);
   background: var(--surface);
   border: 1.5px solid var(--input-border);
-  font-size: 13.5px;
+  font-size: var(--fs-sm);
   font-weight: 700;
   color: var(--text-2);
   text-align: left;
@@ -1550,14 +1659,14 @@ textarea {
 }
 
 .review + .review {
-  border-top: 1px solid rgba(163, 177, 198, 0.3);
+  border-top: 1px solid var(--divider);
 }
 
 .review .r-head {
   display: flex;
   justify-content: space-between;
   font-weight: 800;
-  font-size: 13.5px;
+  font-size: var(--fs-sm);
   margin-bottom: 6px;
 }
 
@@ -1568,7 +1677,7 @@ textarea {
 
 .review p {
   color: var(--text-2);
-  font-size: 14px;
+  font-size: var(--fs-sm);
 }
 
 /* sticky booking widget */
@@ -1583,12 +1692,12 @@ textarea {
 }
 
 .book-widget .price-line {
-  font-size: 24px;
+  font-size: var(--fs-2xl);
   font-weight: 800;
 }
 
 .book-widget .price-line span {
-  font-size: 14px;
+  font-size: var(--fs-sm);
   color: var(--hint);
   font-weight: 600;
 }
@@ -1605,12 +1714,12 @@ textarea {
   justify-content: space-between;
   align-items: center;
   padding: 11px 0;
-  font-size: 14px;
+  font-size: var(--fs-sm);
   color: var(--text-2);
 }
 
 .widget-row + .widget-row {
-  border-top: 1px solid rgba(163, 177, 198, 0.3);
+  border-top: 1px solid var(--divider);
 }
 
 .widget-row b {
@@ -1622,7 +1731,7 @@ textarea {
 
 .widget-foot {
   text-align: center;
-  font-size: 12.5px;
+  font-size: var(--fs-xs);
   color: var(--hint);
   margin-top: 14px;
 }
@@ -1642,12 +1751,12 @@ textarea {
 
 .field > label {
   display: block;
-  font-size: 12px;
+  font-size: var(--fs-xs);
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.8px;
   color: var(--hint);
-  margin-bottom: 8px;
+  margin-bottom: var(--sp-2);
 }
 
 /* Editable fields read as "fill me in": dashed outline, solid blue on focus. */
@@ -1662,7 +1771,7 @@ textarea {
 }
 
 .field .control:hover:not(.readonly) {
-  border-color: rgba(0, 127, 250, 0.55);
+  border-color: var(--primary-border);
 }
 
 .field .control:focus-within {
@@ -1683,7 +1792,7 @@ textarea {
 .field-error {
   display: block;
   margin-top: 6px;
-  font-size: 12.5px;
+  font-size: var(--fs-xs);
   font-weight: 700;
   color: var(--error);
 }
@@ -1701,7 +1810,7 @@ textarea {
   border: none;
   padding: 13px 18px;
   box-shadow: var(--inset-ring);
-  background: rgba(163, 177, 198, 0.08);
+  background: var(--well-tint);
 }
 
 .field textarea {
@@ -1718,11 +1827,11 @@ textarea {
 
 .seg {
   display: flex;
-  gap: 12px;
+  gap: var(--sp-3);
   flex-wrap: wrap;
 }
 
-.seg .neo-btn {
+.seg .btn-secondary {
   flex: 1;
   text-align: center;
   min-width: 130px;
@@ -1732,11 +1841,11 @@ textarea {
 
 .choose-hint {
   font-weight: 700;
-  font-size: 11px;
+  font-size: var(--fs-2xs);
   color: var(--primary);
   text-transform: none;
   letter-spacing: 0.2px;
-  margin-left: 8px;
+  margin-left: var(--sp-2);
 }
 
 .choice-btn {
@@ -1749,7 +1858,7 @@ textarea {
   background: var(--surface);
   border: 1.5px solid var(--input-border);
   font-weight: 700;
-  font-size: 14px;
+  font-size: var(--fs-sm);
   color: var(--text-2);
   transition: border-color 0.13s ease, color 0.13s ease, background 0.13s ease;
 }
@@ -1769,7 +1878,7 @@ textarea {
   width: 16px;
   height: 16px;
   border-radius: 50%;
-  border: 2px solid rgba(122, 138, 160, 0.7);
+  border: 2px solid var(--control-border);
   flex-shrink: 0;
   display: inline-block;
   position: relative;
@@ -1801,7 +1910,7 @@ textarea {
 .protect-list {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: var(--sp-3);
 }
 
 .protect-card {
@@ -1841,32 +1950,32 @@ textarea {
 
 .protect-name {
   font-weight: 800;
-  font-size: 14px;
+  font-size: var(--fs-sm);
   color: var(--text);
 }
 
 .protect-tag {
   font-style: normal;
-  font-size: 10.5px;
+  font-size: var(--fs-2xs);
   font-weight: 800;
   letter-spacing: 0.5px;
   text-transform: uppercase;
   color: var(--primary);
-  background: rgba(0, 127, 250, 0.1);
+  background: var(--primary-tint);
   border-radius: var(--r-pill);
   padding: 3px 9px;
   margin-left: 9px;
 }
 
 .protect-desc {
-  font-size: 12.5px;
+  font-size: var(--fs-xs);
   font-weight: 600;
   color: var(--hint);
   line-height: 1.45;
 }
 
 .protect-price {
-  font-size: 13.5px;
+  font-size: var(--fs-sm);
   flex-shrink: 0;
   color: var(--text);
 }
@@ -1883,7 +1992,7 @@ textarea {
 .visa-logo {
   font-style: italic;
   font-weight: 900;
-  font-size: 14px;
+  font-size: var(--fs-sm);
   letter-spacing: 0.5px;
   color: #1a1f71;
 }
@@ -1899,7 +2008,7 @@ textarea {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 16px;
+  gap: var(--sp-4);
   flex-wrap: wrap;
 }
 
@@ -1907,7 +2016,7 @@ textarea {
   display: flex;
   gap: 10px;
   flex-shrink: 0;
-  padding-top: 4px;
+  padding-top: var(--sp-1);
 }
 
 .pill-action {
@@ -1919,7 +2028,7 @@ textarea {
   background: var(--surface);
   box-shadow: var(--card-ring);
   font-weight: 800;
-  font-size: 13px;
+  font-size: var(--fs-sm);
   color: var(--text-2);
   transition: color 0.12s, transform 0.1s;
 }
@@ -1946,7 +2055,7 @@ textarea {
 }
 
 .car-desc {
-  margin-top: 16px;
+  margin-top: var(--sp-4);
   color: var(--text-2);
   max-width: 640px;
   line-height: 1.6;
@@ -1971,15 +2080,15 @@ textarea {
   background: var(--surface);
   box-shadow: var(--card-ring);
   color: var(--primary);
-  margin-bottom: 8px;
+  margin-bottom: var(--sp-2);
 }
 
 .reviews-empty b {
-  font-size: 15px;
+  font-size: var(--fs-md);
 }
 
 .reviews-empty p {
-  font-size: 13px;
+  font-size: var(--fs-sm);
   color: var(--hint);
   font-weight: 600;
   margin: 0;
@@ -1991,13 +2100,13 @@ textarea {
 }
 
 .host-msg:disabled:hover {
-  background: #16181d;
+  background: var(--ink-inv);
 }
 
 .host-msg-hint {
   display: block;
   margin-top: 9px;
-  font-size: 11.5px;
+  font-size: var(--fs-xs);
   font-weight: 700;
   color: var(--hint);
   text-align: center;
@@ -2011,7 +2120,7 @@ textarea {
 
 .manage-methods {
   display: inline-block;
-  font-size: 13px;
+  font-size: var(--fs-sm);
   margin-top: 2px;
 }
 
@@ -2022,7 +2131,7 @@ textarea {
 
 .wl-sub {
   color: var(--hint);
-  font-size: 14px;
+  font-size: var(--fs-sm);
   font-weight: 600;
   margin-top: 2px;
 }
@@ -2031,7 +2140,7 @@ textarea {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 22px;
-  margin-top: 24px;
+  margin-top: var(--sp-5);
   max-width: 760px;
 }
 
@@ -2043,15 +2152,15 @@ textarea {
 }
 
 .wish-card {
-  background: #fff;
-  border: 1px solid rgba(22, 24, 29, 0.1);
+  background: var(--surface);
+  border: 1px solid var(--card-border);
   overflow: hidden;
   transition: box-shadow 0.15s ease, border-color 0.15s ease;
 }
 
 .wish-card:hover {
-  border-color: rgba(22, 24, 29, 0.18);
-  box-shadow: 0 10px 24px rgba(16, 24, 40, 0.07);
+  border-color: var(--input-border);
+  box-shadow: var(--shadow-md);
 }
 
 /* collage: a mosaic of up to four car photos that reshapes to the count */
@@ -2059,7 +2168,7 @@ textarea {
   aspect-ratio: 1 / 1;
   display: grid;
   gap: 2px;
-  background: rgba(22, 24, 29, 0.06);
+  background: var(--hover-tint);
   position: relative;
 }
 
@@ -2091,7 +2200,7 @@ textarea {
   position: relative;
   overflow: hidden;
   display: block;
-  background: #eef1f8;
+  background: var(--well);
 }
 
 .collage-tile .collage-pic,
@@ -2117,7 +2226,7 @@ textarea {
   height: 100%;
   display: grid;
   place-items: center;
-  font-size: 30px;
+  font-size: var(--fs-3xl);
 }
 
 /* "+N" badge over the last tile when more cars exist than fit */
@@ -2128,7 +2237,7 @@ textarea {
   place-items: center;
   background: rgba(11, 11, 15, 0.52);
   color: #fff;
-  font-size: 24px;
+  font-size: var(--fs-2xl);
   font-weight: 800;
   letter-spacing: 0.5px;
 }
@@ -2137,7 +2246,7 @@ textarea {
 .collage.collage-empty {
   display: grid;
   place-items: center;
-  background: linear-gradient(160deg, #f4f6fb, #e9edf6);
+  background: linear-gradient(160deg, var(--bg), var(--well));
 }
 
 .collage-empty-icon {
@@ -2146,9 +2255,9 @@ textarea {
   display: grid;
   place-items: center;
   border-radius: 50%;
-  background: #fff;
+  background: var(--surface);
   color: var(--hint);
-  box-shadow: 0 6px 16px rgba(16, 24, 40, 0.06);
+  box-shadow: var(--shadow-md);
 }
 
 .collage.skeleton {
@@ -2168,7 +2277,7 @@ textarea {
   display: inline-flex;
   align-items: center;
   gap: 9px;
-  font-size: 14.5px;
+  font-size: var(--fs-md);
   font-weight: 800;
   color: var(--text);
 }
@@ -2178,16 +2287,16 @@ textarea {
 }
 
 .wish-card-count {
-  font-size: 12.5px;
+  font-size: var(--fs-xs);
   font-weight: 700;
   color: var(--hint);
   white-space: nowrap;
 }
 
 .missing-hint {
-  margin-top: 12px;
+  margin-top: var(--sp-3);
   text-align: center;
-  font-size: 12.5px;
+  font-size: var(--fs-xs);
   font-weight: 600;
   color: var(--hint);
 }
@@ -2199,7 +2308,7 @@ textarea {
 /* driver's licence / KYC verification */
 .kyc-verify {
   display: flex;
-  gap: 24px;
+  gap: var(--sp-5);
   align-items: center;
   padding: 20px;
   border-radius: var(--r-lg);
@@ -2212,7 +2321,7 @@ textarea {
   height: 168px;
   flex-shrink: 0;
   border-radius: var(--r-md);
-  background: #fff;
+  background: #ffffff; /* QR needs white */
   box-shadow: var(--card-ring);
   display: grid;
   place-items: center;
@@ -2234,11 +2343,11 @@ textarea {
 }
 
 .kyc-steps b {
-  font-size: 15px;
+  font-size: var(--fs-md);
 }
 
 .kyc-steps p {
-  font-size: 13px;
+  font-size: var(--fs-sm);
   color: var(--text-2);
   font-weight: 600;
   line-height: 1.5;
@@ -2270,7 +2379,7 @@ textarea {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
+  gap: var(--sp-4);
   padding: 16px 18px;
   border-radius: var(--r-md);
   background: var(--surface);
@@ -2279,11 +2388,11 @@ textarea {
 
 .toggle-row .t-label b {
   display: block;
-  font-size: 14.5px;
+  font-size: var(--fs-md);
 }
 
 .toggle-row .t-label span {
-  font-size: 13px;
+  font-size: var(--fs-sm);
   color: var(--hint);
 }
 
@@ -2305,8 +2414,8 @@ textarea {
   width: 24px;
   height: 24px;
   border-radius: 50%;
-  background: #fff;
-  box-shadow: 2px 2px 6px rgba(163, 177, 198, 0.8);
+  background: #ffffff;
+  box-shadow: var(--shadow-sm);
   transition: transform 0.2s;
 }
 
@@ -2333,7 +2442,7 @@ textarea {
   align-items: baseline;
   gap: 22px;
   padding: 11px 0;
-  font-size: 14px;
+  font-size: var(--fs-sm);
   color: var(--text-2);
 }
 
@@ -2356,7 +2465,7 @@ textarea {
   border-top: 1.5px solid var(--card-border);
   margin-top: 10px;
   padding-top: 14px;
-  font-size: 17px;
+  font-size: var(--fs-lg);
   font-weight: 800;
   color: var(--text);
 }
@@ -2387,8 +2496,8 @@ textarea {
 }
 
 .breakdown-note {
-  margin-top: 12px;
-  font-size: 12.5px;
+  margin-top: var(--sp-3);
+  font-size: var(--fs-xs);
   font-weight: 600;
   line-height: 1.5;
   color: var(--hint);
@@ -2399,7 +2508,7 @@ textarea {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: var(--sp-2);
   margin: 4px 0 28px;
 }
 
@@ -2416,14 +2525,14 @@ textarea {
   place-items: center;
   border-radius: 50%;
   border: 1.5px solid var(--input-border);
-  background: #fff;
-  font-size: 12.5px;
+  background: var(--surface);
+  font-size: var(--fs-xs);
   font-weight: 800;
   color: var(--hint);
 }
 
 .bstep-label {
-  font-size: 13.5px;
+  font-size: var(--fs-sm);
   font-weight: 700;
   color: var(--hint);
 }
@@ -2441,7 +2550,7 @@ textarea {
 .bstep.done .bstep-dot {
   border-color: var(--primary);
   background: var(--primary);
-  color: #fff;
+  color: var(--on-primary);
 }
 
 .bstep.done .bstep-label {
@@ -2509,7 +2618,7 @@ textarea {
   height: 100%;
   display: grid;
   place-items: center;
-  font-size: 28px;
+  font-size: var(--fs-3xl);
 }
 
 /* payment methods */
@@ -2551,7 +2660,7 @@ textarea {
 }
 
 .pm-page .page-title {
-  margin-bottom: 4px;
+  margin-bottom: var(--sp-1);
 }
 
 .pm-page .page-sub {
@@ -2592,9 +2701,9 @@ textarea {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  background: #fff;
-  color: #16181d;
-  border: 1px solid rgba(22, 24, 29, 0.08);
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--card-border);
   box-shadow: var(--shadow-md);
 }
 
@@ -2605,22 +2714,22 @@ textarea {
 }
 
 .dc-default {
-  font-size: 10.5px;
+  font-size: var(--fs-2xs);
   font-weight: 800;
   letter-spacing: 0.8px;
   text-transform: uppercase;
-  padding: 4px 12px;
+  padding: var(--sp-1) var(--sp-3);
   border-radius: var(--r-pill);
   background: var(--primary);
-  color: #fff;
+  color: var(--on-primary);
 }
 
 .dc-number {
-  font-size: 19px;
+  font-size: var(--fs-xl);
   font-weight: 700;
   letter-spacing: 2.5px;
   word-spacing: 6px;
-  color: #16181d;
+  color: var(--text);
 }
 
 .dc-bottom {
@@ -2645,7 +2754,7 @@ textarea {
 }
 
 .dc-meta b {
-  font-size: 13px;
+  font-size: var(--fs-sm);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -2669,13 +2778,13 @@ textarea {
   gap: 18px;
   justify-content: flex-end;
   padding: 10px 6px 0;
-  font-size: 13px;
+  font-size: var(--fs-sm);
   font-weight: 700;
 }
 
 .pm-empty {
   color: var(--text-2);
-  font-size: 14.5px;
+  font-size: var(--fs-md);
   font-weight: 600;
   padding: 8px 2px 2px;
 }
@@ -2691,32 +2800,33 @@ textarea {
   flex-shrink: 0;
 }
 
-/* blue info panel, mirrors the reference design's settings panel */
+/* brand info panel: an accent fill in light, a plain card in dark */
 .pm-info {
-  background: var(--primary);
+  background: var(--brand-panel);
   border-radius: 0;
   padding: 26px 26px 24px;
-  color: #fff;
+  color: var(--brand-panel-text);
+  box-shadow: var(--brand-panel-ring);
   position: sticky;
   top: 100px;
 }
 
 .pm-info h3 {
-  font-size: 15.5px;
+  font-size: var(--fs-md);
   font-weight: 800;
   margin-bottom: 10px;
 }
 
 .pm-info p {
-  font-size: 13.5px;
+  font-size: var(--fs-sm);
   line-height: 1.6;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.92);
+  color: var(--brand-panel-text-soft);
   margin: 0;
 }
 
 .pm-info a {
-  color: #fff;
+  color: var(--brand-panel-text);
   font-weight: 800;
   text-decoration: underline;
   text-underline-offset: 3px;
@@ -2724,7 +2834,7 @@ textarea {
 
 .pm-info hr {
   border: none;
-  border-top: 1px dashed rgba(255, 255, 255, 0.35);
+  border-top: 1px dashed var(--brand-panel-rule);
   margin: 20px 0;
 }
 
@@ -2735,8 +2845,8 @@ textarea {
   margin-top: 18px;
   padding: 14px 16px;
   border-radius: var(--r-md);
-  background: rgba(255, 255, 255, 0.14);
-  font-size: 12.5px;
+  background: var(--brand-panel-tint);
+  font-size: var(--fs-xs);
   line-height: 1.55;
   font-weight: 600;
 }
@@ -2752,7 +2862,7 @@ textarea {
   border-radius: 12px;
   display: grid;
   place-items: center;
-  font-size: 21px;
+  font-size: var(--fs-xl);
   background: var(--bg);
   box-shadow: var(--inset-ring);
   flex-shrink: 0;
@@ -2760,7 +2870,7 @@ textarea {
 
 .pay-method .sub {
   display: block;
-  font-size: 12.5px;
+  font-size: var(--fs-xs);
   color: var(--hint);
   font-weight: 600;
 }
@@ -2792,7 +2902,7 @@ textarea {
   border-radius: var(--r-pill);
   box-shadow: var(--inset-ring);
   font-weight: 800;
-  font-size: 17px;
+  font-size: var(--fs-lg);
   letter-spacing: 2.5px;
   color: var(--primary);
 }
@@ -2805,8 +2915,8 @@ textarea {
   z-index: 100;
   display: grid;
   place-items: center;
-  padding: 24px;
-  background: rgba(244, 245, 247, 0.72);
+  padding: var(--sp-5);
+  background: var(--glass-scrim);
   backdrop-filter: blur(8px);
   animation: pay-fade 0.2s ease;
 }
@@ -2824,9 +2934,9 @@ textarea {
   width: 100%;
   max-width: 360px;
   padding: 18px 34px 30px;
-  background: #fff;
+  background: var(--surface);
   border-radius: var(--r-lg);
-  box-shadow: 0 24px 60px rgba(16, 24, 40, 0.2);
+  box-shadow: var(--shadow-lg);
   text-align: center;
   display: flex;
   flex-direction: column;
@@ -2840,15 +2950,15 @@ textarea {
 }
 
 .pay-overlay-title {
-  margin-top: 4px;
-  font-size: 17px;
+  margin-top: var(--sp-1);
+  font-size: var(--fs-lg);
   font-weight: 800;
   color: var(--text);
 }
 
 .pay-overlay-text {
-  margin-top: 8px;
-  font-size: 13.5px;
+  margin-top: var(--sp-2);
+  font-size: var(--fs-sm);
   font-weight: 600;
   line-height: 1.5;
   color: var(--text-2);
@@ -2935,7 +3045,7 @@ a.trip-card:hover {
   height: 100%;
   display: grid;
   place-items: center;
-  font-size: 28px;
+  font-size: var(--fs-3xl);
 }
 
 .trip-main {
@@ -2949,17 +3059,17 @@ a.trip-card:hover {
 .trip-title {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--sp-3);
   flex-wrap: wrap;
 }
 
 .trip-title b {
-  font-size: 15.5px;
+  font-size: var(--fs-md);
 }
 
 .trip-dates {
   font-weight: 700;
-  font-size: 13.5px;
+  font-size: var(--fs-sm);
   color: var(--text-2);
 }
 
@@ -2967,7 +3077,7 @@ a.trip-card:hover {
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 12.5px;
+  font-size: var(--fs-xs);
   font-weight: 600;
   color: var(--hint);
 }
@@ -2976,16 +3086,16 @@ a.trip-card:hover {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  gap: 4px;
+  gap: var(--sp-1);
   flex-shrink: 0;
 }
 
 .trip-end b {
-  font-size: 16px;
+  font-size: var(--fs-lg);
 }
 
 .trip-code {
-  font-size: 11.5px;
+  font-size: var(--fs-xs);
   font-weight: 800;
   letter-spacing: 0.8px;
   color: var(--hint);
@@ -3005,8 +3115,8 @@ a.trip-card:hover {
 }
 
 .trips-none {
-  margin-top: 16px;
-  font-size: 14px;
+  margin-top: var(--sp-4);
+  font-size: var(--fs-sm);
   font-weight: 600;
   color: var(--text-2);
 }
@@ -3027,7 +3137,7 @@ a.trip-card:hover {
 
 /* plain section labels that sit on the page background */
 .plain-label {
-  font-size: 15px;
+  font-size: var(--fs-md);
   font-weight: 800;
   color: var(--text);
   letter-spacing: 0.2px;
@@ -3035,8 +3145,8 @@ a.trip-card:hover {
 
 .past-panel {
   margin-top: 14px;
-  background: #fff;
-  border: 1px solid rgba(22, 24, 29, 0.08);
+  background: var(--surface);
+  border: 1px solid var(--card-border);
   border-radius: 0;
   padding: 8px 26px;
 }
@@ -3053,11 +3163,11 @@ a.trip-card:hover {
 }
 
 .past-row:hover {
-  background: rgba(0, 127, 250, 0.045);
+  background: var(--primary-tint-soft);
 }
 
 .past-row + .past-row {
-  border-top: 1px solid rgba(163, 177, 198, 0.25);
+  border-top: 1px solid var(--divider);
 }
 
 .past-row .pic {
@@ -3066,7 +3176,7 @@ a.trip-card:hover {
   border-radius: 50%;
   overflow: hidden;
   flex-shrink: 0;
-  border: 1px solid rgba(22, 24, 29, 0.08);
+  border: 1px solid var(--card-border);
 }
 
 .past-row .pic img {
@@ -3080,7 +3190,7 @@ a.trip-card:hover {
   height: 100%;
   display: grid;
   place-items: center;
-  font-size: 24px;
+  font-size: var(--fs-2xl);
 }
 
 .past-main {
@@ -3093,14 +3203,14 @@ a.trip-card:hover {
 }
 
 .past-main b {
-  font-size: 15px;
+  font-size: var(--fs-md);
 }
 
 .past-main > span {
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  font-size: 12.5px;
+  font-size: var(--fs-xs);
   font-weight: 600;
   color: var(--text-2);
 }
@@ -3115,17 +3225,17 @@ a.trip-card:hover {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  gap: 4px;
+  gap: var(--sp-1);
   flex-shrink: 0;
 }
 
 .past-total {
-  font-size: 15px;
-  margin-top: 4px;
+  font-size: var(--fs-md);
+  margin-top: var(--sp-1);
 }
 
 .past-days {
-  font-size: 11.5px;
+  font-size: var(--fs-xs);
   font-weight: 700;
   color: var(--hint);
 }
@@ -3139,12 +3249,12 @@ a.trip-card:hover {
 
 .btn-sm {
   padding: 8px 18px;
-  font-size: 12.5px;
+  font-size: var(--fs-xs);
 }
 
 /* simple status: colored text, no pill */
 .status-text {
-  font-size: 11.5px;
+  font-size: var(--fs-xs);
   font-weight: 800;
   letter-spacing: 0.8px;
   text-transform: uppercase;
@@ -3174,11 +3284,11 @@ a.trip-card:hover {
 /* flat controls for the trips page */
 .flat-btn {
   padding: 8px 20px;
-  font-size: 12.5px;
+  font-size: var(--fs-xs);
   font-weight: 700;
   color: var(--text-2);
-  background: #fff;
-  border: 1px solid rgba(22, 24, 29, 0.14);
+  background: var(--surface);
+  border: 1px solid var(--input-border);
   border-radius: var(--r-pill);
   transition: border-color 0.12s, color 0.12s;
 }
@@ -3194,8 +3304,8 @@ a.trip-card:hover {
   display: grid;
   place-items: center;
   border-radius: 50%;
-  background: #fff;
-  border: 1px solid rgba(22, 24, 29, 0.14);
+  background: var(--surface);
+  border: 1px solid var(--input-border);
   color: var(--text-2);
   transition: border-color 0.12s, color 0.12s;
 }
@@ -3227,8 +3337,8 @@ a.trip-card:hover {
 /* suggestions panel (right column) — flat */
 .love-panel {
   margin-top: 14px;
-  background: #fff;
-  border: 1px solid rgba(22, 24, 29, 0.08);
+  background: var(--surface);
+  border: 1px solid var(--card-border);
   border-radius: 0;
   padding: 10px 20px;
 }
@@ -3242,7 +3352,7 @@ a.trip-card:hover {
 }
 
 .love-item + .love-item {
-  border-top: 1px solid rgba(163, 177, 198, 0.22);
+  border-top: 1px solid var(--divider);
 }
 
 .love-item .pic {
@@ -3251,7 +3361,7 @@ a.trip-card:hover {
   border-radius: 50%;
   overflow: hidden;
   flex-shrink: 0;
-  border: 1px solid rgba(22, 24, 29, 0.08);
+  border: 1px solid var(--card-border);
   transition: transform 0.15s ease;
 }
 
@@ -3270,18 +3380,18 @@ a.trip-card:hover {
   height: 100%;
   display: grid;
   place-items: center;
-  font-size: 18px;
+  font-size: var(--fs-lg);
 }
 
 .love-text {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: var(--sp-1);
   min-width: 0;
 }
 
 .love-text b {
-  font-size: 13.5px;
+  font-size: var(--fs-sm);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -3291,7 +3401,7 @@ a.trip-card:hover {
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  font-size: 11.5px;
+  font-size: var(--fs-xs);
   font-weight: 600;
   color: var(--hint);
 }
@@ -3301,7 +3411,7 @@ a.trip-card:hover {
 }
 
 .love-price {
-  font-size: 12.5px;
+  font-size: var(--fs-xs);
   font-weight: 800;
   color: var(--text);
   margin-top: 2px;
@@ -3363,7 +3473,7 @@ a.trip-card:hover {
   border-radius: 50%;
   overflow: hidden;
   align-self: center;
-  margin-bottom: 12px;
+  margin-bottom: var(--sp-3);
   box-shadow: var(--card-ring);
 }
 
@@ -3378,12 +3488,12 @@ a.trip-card:hover {
   height: 100%;
   display: grid;
   place-items: center;
-  font-size: 30px;
+  font-size: var(--fs-3xl);
 }
 
 .rebook-card .rebook-name {
   text-align: center;
-  font-size: 16px;
+  font-size: var(--fs-lg);
 }
 
 .rebook-card .price-line {
@@ -3391,7 +3501,7 @@ a.trip-card:hover {
 }
 
 .handover-code {
-  font-size: 16px;
+  font-size: var(--fs-lg);
   letter-spacing: 3px;
   color: var(--primary);
 }
@@ -3401,8 +3511,8 @@ a.trip-card:hover {
 .trip-detail .info-card,
 .trip-detail .host-panel,
 .trip-detail .book-widget {
-  background: #fff;
-  border: 1px solid rgba(22, 24, 29, 0.08);
+  background: var(--surface);
+  border: 1px solid var(--card-border);
   border-radius: 0;
   box-shadow: none;
 }
@@ -3411,37 +3521,37 @@ a.trip-card:hover {
 .page.trip-detail .status-pill,
 .page.trip-detail .notice {
   box-shadow: none;
-  background: #fff;
-  border: 1px solid rgba(22, 24, 29, 0.12);
+  background: var(--surface);
+  border: 1px solid var(--input-border);
 }
 
-.trip-detail .neo-btn {
+.trip-detail .btn-secondary {
   box-shadow: none;
-  background: #fff;
-  border: 1px solid rgba(22, 24, 29, 0.14);
+  background: var(--surface);
+  border: 1px solid var(--input-border);
   transition: border-color 0.12s, color 0.12s;
 }
 
-.trip-detail .neo-btn:hover {
+.trip-detail .btn-secondary:hover {
   border-color: var(--primary);
   color: var(--primary);
 }
 
-.trip-detail .neo-btn.danger-btn:hover {
+.trip-detail .btn-secondary.danger-btn:hover {
   border-color: var(--error);
   color: var(--error);
 }
 
 .trip-detail .host-msg,
 .trip-detail .host-msg:hover {
-  background: #16181d;
+  background: var(--ink-inv);
   border: none;
-  color: #fff;
+  color: var(--on-ink);
 }
 
 .trip-detail .rebook-card .pic {
   box-shadow: none;
-  border: 1px solid rgba(22, 24, 29, 0.08);
+  border: 1px solid var(--card-border);
 }
 
 /* dashed header card: one car pic + name + status */
@@ -3451,7 +3561,7 @@ a.trip-card:hover {
   gap: 20px;
   padding: 20px 24px;
   border-radius: 0;
-  background: #fff;
+  background: var(--surface);
 }
 
 .trip-head-pic {
@@ -3460,7 +3570,7 @@ a.trip-card:hover {
   border-radius: 50%;
   overflow: hidden;
   flex-shrink: 0;
-  border: 1px solid rgba(22, 24, 29, 0.08);
+  border: 1px solid var(--card-border);
 }
 
 .trip-head-pic img {
@@ -3489,8 +3599,8 @@ a.trip-card:hover {
 
 .handover-tile {
   padding: 18px 20px 16px;
-  background: #fff;
-  border: 1px solid rgba(22, 24, 29, 0.08);
+  background: var(--surface);
+  border: 1px solid var(--card-border);
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -3500,8 +3610,8 @@ a.trip-card:hover {
 .handover-label {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  font-size: 11.5px;
+  gap: var(--sp-2);
+  font-size: var(--fs-xs);
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.8px;
@@ -3524,7 +3634,7 @@ a.trip-card:hover {
 }
 
 .handover-big {
-  font-size: 30px;
+  font-size: var(--fs-3xl);
   font-weight: 800;
   letter-spacing: 6px;
   line-height: 1.2;
@@ -3542,7 +3652,7 @@ a.trip-card:hover {
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  font-size: 13px;
+  font-size: var(--fs-sm);
   font-weight: 700;
   color: var(--hint);
   padding: 10px 0;
@@ -3555,7 +3665,7 @@ a.trip-card:hover {
 .handover-actions {
   display: flex;
   gap: 20px;
-  border-top: 1px dashed rgba(122, 138, 160, 0.45);
+  border-top: 1px dashed var(--divider-strong);
   width: 100%;
   padding-top: 10px;
 }
@@ -3564,7 +3674,7 @@ a.trip-card:hover {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-size: 12.5px;
+  font-size: var(--fs-xs);
   font-weight: 700;
   color: var(--hint);
   padding: 0;
@@ -3612,10 +3722,10 @@ a.trip-card:hover {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 12px 16px;
+  padding: var(--sp-3) var(--sp-4);
   border: 1.5px solid var(--input-border);
   font-weight: 700;
-  font-size: 14px;
+  font-size: var(--fs-sm);
   color: var(--text-2);
   text-align: left;
   transition: border-color 0.12s, color 0.12s;
@@ -3629,7 +3739,7 @@ a.trip-card:hover {
 .ext-pay-btn {
   padding: 12px 22px;
   border-radius: var(--r-md);
-  font-size: 14px;
+  font-size: var(--fs-sm);
   white-space: nowrap;
 }
 
@@ -3641,8 +3751,8 @@ a.trip-card:hover {
 .ext-cal {
   margin: 14px 0 4px;
   padding: 20px 18px 16px;
-  background: #fff;
-  border: 1px solid rgba(22, 24, 29, 0.08);
+  background: var(--surface);
+  border: 1px solid var(--card-border);
   display: flex;
   justify-content: center;
 }
@@ -3663,8 +3773,8 @@ a.trip-card:hover {
 
 .cal-single .cal-arrow {
   box-shadow: none;
-  background: #fff;
-  border: 1px solid rgba(22, 24, 29, 0.14);
+  background: var(--surface);
+  border: 1px solid var(--input-border);
 }
 
 .cal-single .cal-arrow:active {
@@ -3675,7 +3785,7 @@ a.trip-card:hover {
   background: var(--primary);
 }
 
-.receipt-card .neo-btn {
+.receipt-card .btn-secondary {
   flex-shrink: 0;
 }
 
@@ -3695,8 +3805,8 @@ a.trip-card:hover {
 .cancel-confirm {
   display: inline-flex;
   align-items: center;
-  gap: 12px;
-  font-size: 13.5px;
+  gap: var(--sp-3);
+  font-size: var(--fs-sm);
   font-weight: 700;
   color: var(--text-2);
 }
@@ -3704,7 +3814,7 @@ a.trip-card:hover {
 .status-pill {
   padding: 5px 14px;
   border-radius: var(--r-pill);
-  font-size: 12px;
+  font-size: var(--fs-xs);
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.6px;
@@ -3745,7 +3855,7 @@ a.trip-card:hover {
   min-width: 250px;
   background: var(--surface);
   border-radius: 20px;
-  box-shadow: var(--elevated), 0 24px 60px rgba(80, 95, 130, 0.25);
+  box-shadow: var(--elevated), var(--shadow-lg);
   padding: 10px;
   z-index: 70;
 }
@@ -3754,12 +3864,12 @@ a.trip-card:hover {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
+  gap: var(--sp-3);
   width: 100%;
   padding: 12px 14px;
   border-radius: 13px;
   font-weight: 600;
-  font-size: 14px;
+  font-size: var(--fs-sm);
   color: var(--text-2);
   text-align: left;
   transition: all 0.12s;
@@ -3788,7 +3898,7 @@ a.trip-card:hover {
   z-index: 70;
   background: var(--surface);
   border-radius: 26px;
-  box-shadow: var(--elevated), 0 24px 60px rgba(80, 95, 130, 0.25);
+  box-shadow: var(--elevated), var(--shadow-lg);
   padding: 24px 40px 26px;
 }
 
@@ -3813,7 +3923,7 @@ a.trip-card:hover {
   border-radius: 50%;
   display: grid;
   place-items: center;
-  font-size: 20px;
+  font-size: var(--fs-xl);
   color: var(--text-2);
   box-shadow: var(--card-ring);
   background: var(--surface);
@@ -3839,7 +3949,7 @@ a.trip-card:hover {
 .cal-title {
   text-align: center;
   font-weight: 800;
-  font-size: 15px;
+  font-size: var(--fs-md);
   margin-bottom: 14px;
   line-height: 34px;
 }
@@ -3852,7 +3962,7 @@ a.trip-card:hover {
 
 .cal-dow {
   text-align: center;
-  font-size: 11px;
+  font-size: var(--fs-2xs);
   font-weight: 800;
   color: var(--hint);
   padding-bottom: 6px;
@@ -3861,7 +3971,7 @@ a.trip-card:hover {
 .cal-day {
   position: relative;
   height: 38px;
-  font-size: 13.5px;
+  font-size: var(--fs-sm);
   font-weight: 700;
   color: var(--text);
   display: grid;
@@ -3885,27 +3995,27 @@ a.trip-card:hover {
 /* Continuous range band. The two endpoints carry a half-band on their inner
  * side so the fill runs seamlessly out of each round token — no square edges. */
 .cal-day.in-range {
-  background: var(--range-band, rgba(163, 177, 198, 0.28));
+  background: var(--range-band);
 }
 
 .cal-day.range-start {
-  background: linear-gradient(to right, transparent 50%, var(--range-band, rgba(163, 177, 198, 0.28)) 50%);
+  background: linear-gradient(to right, transparent 50%, var(--range-band) 50%);
 }
 
 .cal-day.range-end {
-  background: linear-gradient(to left, transparent 50%, var(--range-band, rgba(163, 177, 198, 0.28)) 50%);
+  background: linear-gradient(to left, transparent 50%, var(--range-band) 50%);
 }
 
 .cal-day.sel {
-  color: #fff;
+  color: var(--on-ink);
 }
 
 .cal-day.sel::before {
-  background: var(--text);
+  background: var(--ink-inv);
 }
 
 .cal-day.disabled {
-  color: #c3c9d6;
+  color: var(--text-faint);
   cursor: default;
 }
 
@@ -3945,13 +4055,13 @@ a.trip-card:hover {
 .side-nav {
   position: sticky;
   top: 100px;
-  padding: 12px;
+  padding: var(--sp-3);
   border-radius: var(--r-lg);
   background: var(--surface);
   box-shadow: var(--card-ring);
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: var(--sp-1);
 }
 
 .side-link {
@@ -3961,7 +4071,7 @@ a.trip-card:hover {
   padding: 12px 14px;
   border-radius: 13px;
   font-weight: 600;
-  font-size: 14px;
+  font-size: var(--fs-sm);
   color: var(--text-2);
   transition: all 0.12s;
 }
@@ -4002,7 +4112,7 @@ a.trip-card:hover {
 }
 
 .notif-row + .notif-row {
-  border-top: 1px solid rgba(163, 177, 198, 0.3);
+  border-top: 1px solid var(--divider);
 }
 
 .notif-icon {
@@ -4022,16 +4132,16 @@ a.trip-card:hover {
 
 .notif-text b {
   display: block;
-  font-size: 14px;
+  font-size: var(--fs-sm);
 }
 
 .notif-text span {
-  font-size: 13px;
+  font-size: var(--fs-sm);
   color: var(--text-2);
 }
 
 .notif-time {
-  font-size: 12px;
+  font-size: var(--fs-xs);
   color: var(--hint);
   white-space: nowrap;
 }
@@ -4059,8 +4169,8 @@ a.trip-card:hover {
 
 /* pinned Ardena support thread: white circle with the Ardena mark */
 .support-avatar {
-  background: #fff;
-  border: 1px solid rgba(22, 24, 29, 0.1);
+  background: #ffffff; /* dark logomark needs white */
+  border: 1px solid var(--card-border);
 }
 
 .support-avatar img {
@@ -4071,10 +4181,10 @@ a.trip-card:hover {
 }
 
 .msg-item.support {
-  border-bottom: 1px solid rgba(163, 177, 198, 0.3);
+  border-bottom: 1px solid var(--divider);
   border-radius: 0;
   padding-bottom: 14px;
-  margin-bottom: 8px;
+  margin-bottom: var(--sp-2);
 }
 
 .msg-side > .avatar {
@@ -4094,7 +4204,7 @@ a.trip-card:hover {
   height: 8px;
   border-radius: 50%;
   background: var(--primary);
-  margin-left: 8px;
+  margin-left: var(--sp-2);
   vertical-align: 1px;
 }
 
@@ -4104,12 +4214,12 @@ a.trip-card:hover {
 }
 
 .msg-item-time {
-  font-size: 11px;
+  font-size: var(--fs-2xs);
   color: var(--hint);
   font-weight: 700;
   flex-shrink: 0;
   align-self: flex-start;
-  margin-top: 4px;
+  margin-top: var(--sp-1);
 }
 
 .msg-head {
@@ -4145,16 +4255,16 @@ a.trip-card:hover {
 .msg-item {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--sp-3);
   width: 100%;
-  padding: 12px;
+  padding: var(--sp-3);
   border-radius: 14px;
   text-align: left;
   transition: all 0.12s;
 }
 
 .msg-item:hover {
-  background: rgba(22, 24, 29, 0.04);
+  background: var(--hover-tint);
 }
 
 .msg-item.active {
@@ -4168,12 +4278,12 @@ a.trip-card:hover {
 
 .msg-item-text b {
   display: block;
-  font-size: 14px;
+  font-size: var(--fs-sm);
 }
 
 .msg-item-text span {
   display: block;
-  font-size: 12.5px;
+  font-size: var(--fs-xs);
   color: var(--hint);
   white-space: nowrap;
   overflow: hidden;
@@ -4191,8 +4301,8 @@ a.trip-card:hover {
 
 .msg-head {
   padding: 16px 22px;
-  border-bottom: 1px solid rgba(163, 177, 198, 0.35);
-  font-size: 15px;
+  border-bottom: 1px solid var(--divider-strong);
+  font-size: var(--fs-md);
 }
 
 .msg-body {
@@ -4208,13 +4318,13 @@ a.trip-card:hover {
   max-width: 72%;
   padding: 10px 14px;
   border-radius: 16px;
-  font-size: 14px;
+  font-size: var(--fs-sm);
   line-height: 1.45;
 }
 
 .bubble .bubble-time {
   display: block;
-  font-size: 10.5px;
+  font-size: var(--fs-2xs);
   opacity: 0.65;
   margin-top: 3px;
 }
@@ -4222,13 +4332,13 @@ a.trip-card:hover {
 .bubble.me {
   align-self: flex-end;
   background: var(--primary);
-  color: #fff;
+  color: var(--on-primary);
   border-bottom-right-radius: 6px;
 }
 
 .bubble.host {
   align-self: flex-start;
-  background: #fff;
+  background: var(--surface);
   color: var(--text-2);
   box-shadow: var(--card-ring);
   border-bottom-left-radius: 6px;
@@ -4238,7 +4348,7 @@ a.trip-card:hover {
   display: flex;
   gap: 10px;
   padding: 14px 16px;
-  border-top: 1px solid rgba(163, 177, 198, 0.35);
+  border-top: 1px solid var(--divider-strong);
   align-items: center;
 }
 
@@ -4276,7 +4386,7 @@ a.trip-card:hover {
 /* ---------- misc ---------- */
 
 .page-title {
-  font-size: 26px;
+  font-size: var(--fs-2xl);
   font-weight: 700;
   letter-spacing: -0.4px;
   margin-bottom: 6px;
@@ -4294,7 +4404,7 @@ a.trip-card:hover {
   gap: 14px;
   margin: 20px 0;
   color: var(--hint);
-  font-size: 13px;
+  font-size: var(--fs-sm);
   font-weight: 600;
 }
 
@@ -4303,7 +4413,7 @@ a.trip-card:hover {
   content: '';
   flex: 1;
   height: 1px;
-  background: rgba(163, 177, 198, 0.45);
+  background: var(--divider-strong);
 }
 
 .btn-google {
@@ -4314,9 +4424,9 @@ a.trip-card:hover {
   width: 100%;
   padding: 13px;
   border-radius: var(--r-pill);
-  background: #fff;
+  background: #ffffff; /* Google brand */
   font-weight: 700;
-  font-size: 14.5px;
+  font-size: var(--fs-md);
   color: #3c4043;
   box-shadow: var(--card-ring);
   transition: transform 0.1s;
@@ -4336,7 +4446,7 @@ a.trip-card:hover {
 .gsi-unavailable {
   text-align: center;
   color: var(--hint);
-  font-size: 13.5px;
+  font-size: var(--fs-sm);
 }
 
 .btn-primary:disabled {
@@ -4349,14 +4459,14 @@ a.trip-card:hover {
   justify-content: space-between;
   align-items: center;
   margin-top: 18px;
-  font-size: 13.5px;
+  font-size: var(--fs-sm);
   color: var(--hint);
 }
 
 .auth-links.stack {
   flex-direction: column;
   justify-content: center;
-  gap: 12px;
+  gap: var(--sp-3);
   text-align: center;
 }
 
@@ -4392,7 +4502,7 @@ a.trip-card:hover {
   padding: 14px 18px;
   border-radius: var(--r-md);
   box-shadow: var(--inset-ring);
-  font-size: 13.5px;
+  font-size: var(--fs-sm);
   color: var(--text-2);
   margin-top: 18px;
 }
@@ -4429,15 +4539,15 @@ a.trip-card:hover {
 }
 
 .empty-state b {
-  font-size: 19px;
+  font-size: var(--fs-xl);
   font-weight: 800;
   color: var(--text);
 }
 
 .empty-state p {
-  margin-top: 8px;
+  margin-top: var(--sp-2);
   max-width: 420px;
-  font-size: 14px;
+  font-size: var(--fs-sm);
   font-weight: 600;
   line-height: 1.6;
   color: var(--hint);
@@ -4464,23 +4574,23 @@ a.trip-card:hover {
 }
 
 .empty-state--compact b {
-  font-size: 16px;
+  font-size: var(--fs-lg);
 }
 
 .empty-state--compact p {
-  font-size: 13px;
+  font-size: var(--fs-sm);
   margin-top: 6px;
 }
 
 .empty-state--compact .btn-primary {
-  margin-top: 16px;
+  margin-top: var(--sp-4);
 }
 
 /* Footer — mirrors ardena.co.ke (ardena-web/styles.css) */
 .footer {
   margin-top: 60px;
-  background: linear-gradient(180deg, #f9f9f9 0%, #f0f0f0 100%);
-  border-top: 1px solid #e8e8e8;
+  background: linear-gradient(180deg, var(--surface) 0%, var(--bg) 100%);
+  border-top: 1px solid var(--card-border);
   padding: 0;
 }
 
@@ -4501,13 +4611,13 @@ a.trip-card:hover {
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
-  gap: 24px;
+  gap: var(--sp-5);
 }
 
 .footer-brand {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--sp-2);
 }
 
 .footer-logo {
@@ -4517,22 +4627,22 @@ a.trip-card:hover {
 }
 
 .footer-tagline {
-  color: #666;
-  font-size: 15px;
+  color: var(--text-2);
+  font-size: var(--fs-md);
   margin: 0;
   max-width: 400px;
 }
 
 .footer-divider {
   border: none;
-  border-top: 1px solid #e8e8e8;
+  border-top: 1px solid var(--card-border);
   margin: 32px 0;
 }
 
 .footer-main {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr auto;
-  gap: 48px;
+  gap: var(--sp-7);
   align-items: start;
 }
 
@@ -4553,10 +4663,10 @@ a.trip-card:hover {
 }
 
 .footer-col-title {
-  font-size: 14px;
+  font-size: var(--fs-sm);
   font-weight: 700;
   color: var(--text);
-  margin-bottom: 16px;
+  margin-bottom: var(--sp-4);
   text-transform: uppercase;
   letter-spacing: 0.03em;
 }
@@ -4578,14 +4688,14 @@ a.trip-card:hover {
   align-items: center;
   flex-wrap: wrap;
   gap: 6px;
-  color: #555;
-  font-size: 15px;
+  color: var(--text-2);
+  font-size: var(--fs-md);
 }
 
 .footer-links a,
 .footer-contact a {
   color: var(--text-2);
-  font-size: 15px;
+  font-size: var(--fs-md);
   font-weight: 600;
   transition: color 0.2s ease;
 }
@@ -4634,7 +4744,7 @@ a.trip-card:hover {
 .footer-social {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
+  gap: var(--sp-3);
   align-items: center;
 }
 
@@ -4644,7 +4754,7 @@ a.trip-card:hover {
   justify-content: center;
   width: 28px;
   height: 28px;
-  color: #555;
+  color: var(--text-2);
   transition: color 0.2s, transform 0.2s;
 }
 
@@ -4657,7 +4767,7 @@ a.trip-card:hover {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 12px 16px;
+  gap: var(--sp-3) var(--sp-4);
   width: 100%;
   padding-top: 2px;
 }
@@ -4676,7 +4786,7 @@ a.trip-card:hover {
 }
 
 .footer-store-badge--appstore {
-  border: 1px solid #000;
+  border: 1px solid var(--text);
   box-sizing: border-box;
   overflow: hidden;
 }
@@ -4693,24 +4803,24 @@ a.trip-card:hover {
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
-  gap: 16px;
+  gap: var(--sp-4);
 }
 
 .footer-copyright {
-  color: #999;
-  font-size: 13.5px;
+  color: var(--hint);
+  font-size: var(--fs-sm);
   margin: 0;
 }
 
 .footer-legal {
   display: flex;
   flex-wrap: wrap;
-  gap: 24px;
+  gap: var(--sp-5);
 }
 
 .footer-legal a {
-  color: #999;
-  font-size: 13.5px;
+  color: var(--hint);
+  font-size: var(--fs-sm);
   transition: color 0.2s ease;
 }
 
@@ -4758,10 +4868,10 @@ a.trip-card:hover {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
-  margin-bottom: 8px;
+  gap: var(--sp-4);
+  margin-bottom: var(--sp-2);
   padding-bottom: 14px;
-  border-bottom: 1px solid rgba(163, 177, 198, 0.3);
+  border-bottom: 1px solid var(--divider);
 }
 
 .nots-tabs {
@@ -4772,8 +4882,8 @@ a.trip-card:hover {
 .nots-tab {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  font-size: 14px;
+  gap: var(--sp-2);
+  font-size: var(--fs-sm);
   font-weight: 700;
   color: var(--hint);
   padding: 6px 2px;
@@ -4797,11 +4907,11 @@ a.trip-card:hover {
 }
 
 .not-row + .not-row {
-  border-top: 1px solid rgba(163, 177, 198, 0.22);
+  border-top: 1px solid var(--divider);
 }
 
 .not-row:hover {
-  background: rgba(163, 177, 198, 0.08);
+  background: var(--well-tint);
 }
 
 .not-dot {
@@ -4826,12 +4936,12 @@ a.trip-card:hover {
 }
 
 .not-main b {
-  font-size: 14.5px;
+  font-size: var(--fs-md);
   color: var(--text);
 }
 
 .not-main > span {
-  font-size: 13px;
+  font-size: var(--fs-sm);
   color: var(--text-2);
   font-weight: 600;
   line-height: 1.5;
@@ -4847,18 +4957,18 @@ a.trip-card:hover {
 
 .not-type {
   font-style: normal;
-  font-size: 10.5px;
+  font-size: var(--fs-2xs);
   font-weight: 800;
   letter-spacing: 0.5px;
   text-transform: uppercase;
   color: var(--text-2);
-  background: rgba(163, 177, 198, 0.18);
+  background: var(--chip-tint);
   padding: 3px 10px;
   border-radius: var(--r-pill);
 }
 
 .not-time {
-  font-size: 12px;
+  font-size: var(--fs-xs);
   font-weight: 700;
   color: var(--hint);
   min-width: 74px;
@@ -4875,20 +4985,20 @@ a.trip-card:hover {
 }
 
 .nots-empty b {
-  font-size: 15px;
+  font-size: var(--fs-md);
 }
 
 .nots-empty p {
-  font-size: 13px;
+  font-size: var(--fs-sm);
   color: var(--hint);
   font-weight: 600;
   margin: 0;
 }
 
 .nots-settings h3 {
-  font-size: 15px;
+  font-size: var(--fs-md);
   font-weight: 800;
-  margin-bottom: 16px;
+  margin-bottom: var(--sp-4);
 }
 
 .nots-settings .toggle-row + .toggle-row {
@@ -4916,7 +5026,7 @@ a.trip-card:hover {
 
   .search-field + .search-field {
     border-left: none;
-    border-top: 1px solid rgba(163, 177, 198, 0.4);
+    border-top: 1px solid var(--divider-strong);
   }
 
   .search-icon-btn {
@@ -4982,9 +5092,9 @@ a.trip-card:hover {
   align-items: center;
   gap: 10px;
   padding: 13px 18px;
-  background: #16181d;
-  color: #fff;
-  font-size: 13.5px;
+  background: var(--ink-inv);
+  color: var(--on-ink);
+  font-size: var(--fs-sm);
   font-weight: 700;
   text-align: left;
   box-shadow: var(--shadow-lg);
@@ -5028,7 +5138,7 @@ a.trip-card:hover {
   flex-direction: column;
   align-items: center;
   text-align: center;
-  gap: 8px;
+  gap: var(--sp-2);
   padding: 70px 20px 110px;
 }
 
@@ -5177,7 +5287,7 @@ a.trip-card:hover {
 }
 
 .notfound b {
-  font-size: 20px;
+  font-size: var(--fs-xl);
   margin-top: 6px;
 }
 
@@ -5188,5 +5298,14 @@ a.trip-card:hover {
 }
 
 .notfound .btn-primary {
-  margin-top: 16px;
+  margin-top: var(--sp-4);
+}
+
+/* ---------- dark theme fix-ups ---------- */
+
+/* Monochrome (#1d1d1f) brand marks flip to light on graphite. */
+[data-theme='dark'] .logo-mark-img,
+[data-theme='dark'] .footer-logo,
+[data-theme='dark'] .msg-side .support-logo {
+  filter: invert(1);
 }

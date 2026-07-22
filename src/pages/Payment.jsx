@@ -259,7 +259,7 @@ export default function Payment() {
             {error && (
               <div
                 className="field"
-                style={{ color: 'var(--error)', fontSize: 13.5, fontWeight: 700 }}
+                style={{ color: 'var(--error)', fontSize: 'var(--fs-sm)', fontWeight: 700 }}
               >
                 {error}
               </div>
