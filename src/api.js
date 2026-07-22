@@ -175,6 +175,12 @@ export function getMe() {
   return request('/client/me', { auth: true });
 }
 
+/** Partial profile update (full_name, mobile_number, date_of_birth, gender, bio, …).
+ * Returns the updated client profile. */
+export function updateProfile(fields) {
+  return request('/client/profile', { method: 'PUT', body: fields, auth: true });
+}
+
 // ---------- cars (public, no token needed) ----------
 
 export function listCars(params = {}) {

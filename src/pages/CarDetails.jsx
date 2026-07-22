@@ -763,7 +763,7 @@ export default function CarDetails() {
                 </div>
                 <div className="info-row rule">
                   <span>
-                    <PhoneIcon size={16} /> 24/7 support on +254 702 248 984 if anything goes wrong
+                    <PhoneIcon size={16} /> 24/7 support on +254 707 856 829 if anything goes wrong
                   </span>
                 </div>
                 <div className="info-row rule">

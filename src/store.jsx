@@ -137,6 +137,15 @@ export function AppProvider({ children }) {
     setClient(null);
   };
 
+  /** PUT /client/profile with only the changed fields; adopts the returned profile. */
+  const updateProfile = async (fields) => {
+    const updated = await api.updateProfile(fields);
+    // Some deployments return { client: {...} } or a bare message — fall back to a refetch.
+    const profile = updated && updated.id ? updated : (updated && updated.client) || (await api.getMe());
+    adoptProfile(profile);
+    return profile;
+  };
+
   const value = {
     user: mapClient(client),
     authPending,
@@ -144,6 +153,7 @@ export function AppProvider({ children }) {
     signInWithGoogle,
     signUp,
     signOut,
+    updateProfile,
     wishlist,
     toggleWish,
   };

@@ -397,7 +397,7 @@ export default function Messages() {
                     <span>
                       <PhoneIcon size={15} /> Call
                     </span>
-                    <b>+254 702 248 984</b>
+                    <b>+254 707 856 829</b>
                   </div>
                 </div>
                 <div className="notice" style={{ marginTop: 4, fontSize: 12.5 }}>

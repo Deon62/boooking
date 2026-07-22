@@ -453,7 +453,7 @@ export function Footer() {
                 <span className="footer-contact-icon" aria-hidden="true">
                   <PhoneIcon size={15} />
                 </span>
-                +254 702 248 984
+                +254 707 856 829
               </li>
               <li>
                 <span className="footer-contact-icon" aria-hidden="true">

@@ -3,6 +3,7 @@ import { NavLink } from 'react-router-dom';
 import { useApp } from '../store.jsx';
 import { Avatar } from '../components.jsx';
 import * as api from '../api.js';
+import { useToast } from '../toast.jsx';
 import { UserIcon, IdCardIcon, CheckIcon, PhoneIcon, ShieldIcon } from '../icons.jsx';
 
 function AccountLayout({ children }) {
@@ -34,8 +35,67 @@ function InfoRow({ label, value }) {
   );
 }
 
+const GENDERS = ['Male', 'Female', 'Other', 'Prefer not to say'];
+
 export function Profile() {
-  const { user } = useApp();
+  const { user, updateProfile } = useApp();
+  const toast = useToast();
+  const fromUser = () => ({
+    fullName: user.fullName || '',
+    phone: user.phone || '',
+    dob: user.dob || '',
+    gender: user.gender || '',
+    bio: user.bio || '',
+  });
+  const [form, setForm] = useState(fromUser);
+  const [dirty, setDirty] = useState(false);
+  const [saving, setSaving] = useState(false);
+
+  // The profile re-hydrates from the backend after mount — keep the form in sync
+  // until the user starts editing, so it never shows stale cached values.
+  useEffect(() => {
+    if (!dirty) setForm(fromUser());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dirty, user.fullName, user.phone, user.dob, user.gender, user.bio]);
+
+  const set = (key) => (e) => {
+    setDirty(true);
+    const { value } = e.target;
+    setForm((f) => ({ ...f, [key]: value }));
+  };
+
+  const changed =
+    form.fullName.trim() !== (user.fullName || '') ||
+    form.phone.trim() !== (user.phone || '') ||
+    form.dob !== (user.dob || '') ||
+    form.gender !== (user.gender || '') ||
+    form.bio.trim() !== (user.bio || '');
+
+  const save = async () => {
+    if (saving || !changed) return;
+    if (!form.fullName.trim()) {
+      toast.error('Full name can’t be empty');
+      return;
+    }
+    setSaving(true);
+    try {
+      // Partial update — only send what changed.
+      const fields = {};
+      if (form.fullName.trim() !== (user.fullName || '')) fields.full_name = form.fullName.trim();
+      if (form.phone.trim() !== (user.phone || '')) fields.mobile_number = form.phone.trim();
+      if (form.dob !== (user.dob || '')) fields.date_of_birth = form.dob;
+      if (form.gender !== (user.gender || '')) fields.gender = form.gender;
+      if (form.bio.trim() !== (user.bio || '')) fields.bio = form.bio.trim();
+      await updateProfile(fields);
+      setDirty(false);
+      toast.success('Profile updated');
+    } catch (e) {
+      toast.error(e.message || 'Could not save your profile. Please try again.');
+    } finally {
+      setSaving(false);
+    }
+  };
+
   return (
     <AccountLayout>
       <div className="cards-row">
@@ -50,23 +110,72 @@ export function Profile() {
             </div>
           </div>
           <div className="two-col">
-            <InfoRow label="Full name" value={user.fullName} />
-            <InfoRow label="Mobile" value={user.phone} />
+            <div className="field">
+              <label>Full name</label>
+              <div className="control">
+                <input value={form.fullName} onChange={set('fullName')} autoComplete="name" />
+              </div>
+            </div>
+            <div className="field">
+              <label>Mobile</label>
+              <div className="control">
+                <input
+                  value={form.phone}
+                  onChange={set('phone')}
+                  placeholder="+254 7XX XXX XXX"
+                  autoComplete="tel"
+                  inputMode="tel"
+                />
+              </div>
+            </div>
+            <div className="field">
+              <label>Date of birth</label>
+              <div className="control">
+                <input type="date" value={form.dob} onChange={set('dob')} />
+              </div>
+            </div>
+            <div className="field">
+              <label>Gender</label>
+              <div className="control">
+                <select value={form.gender} onChange={set('gender')}>
+                  <option value="">Select…</option>
+                  {GENDERS.map((g) => (
+                    <option key={g} value={g}>
+                      {g}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
             <InfoRow label="ID number" value={user.idNumber} />
-            <InfoRow label="Date of birth" value={user.dob} />
-            <InfoRow label="Gender" value={user.gender} />
             <InfoRow label="Email" value={user.email} />
           </div>
         </div>
 
         <div className="form-card">
           <h2 style={{ fontSize: 16, fontWeight: 700, marginBottom: 16 }}>About</h2>
-          <p style={{ color: 'var(--text-2)', fontSize: 14.5, minHeight: 42 }}>
-            {user.bio || 'No bio yet.'}
-          </p>
+          <div className="field">
+            <label>Bio</label>
+            <div className="control" style={{ height: 'auto' }}>
+              <textarea
+                rows={4}
+                value={form.bio}
+                onChange={set('bio')}
+                placeholder="Tell hosts a little about yourself"
+              />
+            </div>
+          </div>
+          <button
+            className="btn-primary btn-block"
+            style={{ marginTop: 16 }}
+            disabled={saving || !changed}
+            onClick={save}
+          >
+            {saving ? 'Saving…' : 'Save changes'}
+          </button>
           <div className="notice" style={{ marginTop: 16 }}>
-            To edit your details or photo, use the <b>Ardena app</b> → Profile. Web and app share
-            one account, so changes appear here automatically.
+            Web and the <b>Ardena app</b> share one account — changes you save here appear in the
+            app automatically. Profile photo and ID number are managed in the app.
           </div>
         </div>
       </div>

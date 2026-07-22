@@ -199,7 +199,7 @@ export default function Payments() {
             <p>
               Report anything suspicious to{' '}
               <a href="mailto:support@ardena.co.ke">support@ardena.co.ke</a> or call{' '}
-              <a href="tel:+254702248984">+254 702 248 984</a>.
+              <a href="tel:+254707856829">+254 707 856 829</a>.
             </p>
             <div className="pm-never">
               <ShieldIcon size={17} />
