@@ -391,7 +391,7 @@ export default function Home() {
               </button>
               <button
                 className="search-icon-btn"
-                aria-label="Filters"
+                aria-label="Search and filter cars"
                 onClick={() => {
                   setCalOpen(false);
                   setCityOpen(false);
@@ -402,6 +402,7 @@ export default function Home() {
                   <circle cx="10.5" cy="10.5" r="6.5" />
                   <line x1="15.5" y1="15.5" x2="21" y2="21" />
                 </svg>
+                <span className="search-btn-label">Search cars</span>
                 {activeFilters > 0 && <span className="filter-badge">{activeFilters}</span>}
               </button>
             </div>

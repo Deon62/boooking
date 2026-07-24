@@ -672,6 +672,12 @@ textarea {
   transform: scale(0.96);
 }
 
+/* Desktop keeps the search button a bare icon circle; the label only appears
+ * when the button expands to a full-width pill on phones. */
+.search-btn-label {
+  display: none;
+}
+
 /* filter chips */
 
 .chips {
@@ -893,21 +899,92 @@ textarea {
   color: var(--text);
 }
 
+/* On phones the filter becomes a proper bottom sheet: it rises from the bottom
+ * edge with a grab handle, rounded top, sticky header + footer, and a scrolling
+ * body — a mobile-native pattern rather than a shrunk-down desktop dialog. */
 @media (max-width: 720px) {
   .filter-overlay {
     padding: 0;
+    place-items: end center;
+    backdrop-filter: blur(3px);
   }
 
   .filter-modal {
-    width: 100vw;
-    height: 100vh;
-    max-height: none;
+    width: 100%;
+    max-width: 620px;
+    height: auto;
+    max-height: 92vh;
+    border-radius: 26px 26px 0 0;
+    overflow: hidden;
+    box-shadow: 0 -12px 44px rgba(0, 0, 0, 0.24);
+    animation: sheet-up 0.3s cubic-bezier(0.22, 0.61, 0.36, 1);
+  }
+
+  .filter-head {
+    position: relative;
+    padding: 26px 20px 15px;
+    flex-shrink: 0;
+  }
+
+  /* grab handle */
+  .filter-head::before {
+    content: '';
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 42px;
+    height: 5px;
+    border-radius: 3px;
+    background: var(--divider-strong);
+  }
+
+  .filter-head h2 {
+    font-size: var(--fs-lg);
   }
 
   .filter-body {
     grid-template-columns: 1fr;
     grid-auto-flow: row;
     overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 2px 20px 14px;
+  }
+
+  .filter-section {
+    padding: 13px 0;
+  }
+
+  /* larger, thumb-friendly chips */
+  .filter-chip {
+    padding: 11px 18px;
+    font-size: var(--fs-md);
+  }
+
+  .filter-foot {
+    flex-shrink: 0;
+    gap: 14px;
+    padding: 16px 20px calc(16px + env(safe-area-inset-bottom));
+  }
+
+  .filter-foot .btn-primary {
+    flex: 1;
+    padding: 15px 22px;
+    font-size: var(--fs-md);
+    border-radius: 15px;
+  }
+
+  .filter-reset {
+    flex-shrink: 0;
+  }
+}
+
+@keyframes sheet-up {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
   }
 }
 
@@ -4053,6 +4130,50 @@ a.trip-card:hover {
   }
 }
 
+/* On phones the single-month picker docks to the bottom as a sheet, so it always
+ * fits edge-to-edge with roomy, thumb-sized day cells — no cramped popover that
+ * can spill off a narrow screen. The !important beats the inline anchor styles
+ * the Booking/Home calendars set for their desktop popover position. */
+@media (max-width: 640px) {
+  .cal-pop,
+  .cal-pop.center {
+    position: fixed !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    top: auto !important;
+    transform: none !important;
+    width: 100% !important;
+    max-width: none !important;
+    z-index: 200;
+    border-radius: 26px 26px 0 0;
+    padding: 28px 16px calc(20px + env(safe-area-inset-bottom));
+    box-shadow: 0 -12px 44px rgba(0, 0, 0, 0.24);
+    animation: sheet-up 0.3s cubic-bezier(0.22, 0.61, 0.36, 1);
+  }
+
+  /* grab handle */
+  .cal-pop::before {
+    content: '';
+    position: absolute;
+    top: 11px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 42px;
+    height: 5px;
+    border-radius: 3px;
+    background: var(--divider-strong);
+  }
+
+  .cal-month {
+    width: 100%;
+  }
+
+  .cal-day {
+    height: 44px;
+  }
+}
+
 /* ---------- account section (sidebar layout) ---------- */
 
 .account-layout {
@@ -5090,6 +5211,53 @@ a.trip-card:hover {
 
   .container {
     padding: 0 18px;
+  }
+}
+
+/* ---------- phone-specific premium polish ---------- */
+@media (max-width: 640px) {
+  /* Search: fields stack as tidy rows and the action becomes a confident,
+   * full-width pill with a label instead of a small floating circle. */
+  .hero {
+    padding: 18px 0 6px;
+  }
+
+  .searchbar {
+    padding: 8px;
+    gap: 2px;
+  }
+
+  .search-field {
+    padding: 12px 16px;
+  }
+
+  .search-icon-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    width: 100%;
+    height: 52px;
+    margin: 6px 0 0;
+    border-radius: 15px;
+    font-size: var(--fs-md);
+    font-weight: 800;
+  }
+
+  .search-btn-label {
+    display: inline;
+  }
+
+  /* count badge rides inline with the label on the pill */
+  .search-icon-btn .filter-badge {
+    position: static;
+    box-shadow: none;
+  }
+
+  /* Footer wordmark is sized for desktop; rein it in so it never spills
+   * off a narrow screen. */
+  .footer-logo {
+    height: 50px;
   }
 }
 
