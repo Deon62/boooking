@@ -3,7 +3,7 @@ import { useLocation } from 'react-router-dom';
 import * as api from '../api.js';
 import { EmptyState } from '../components.jsx';
 import logoMark from '../assets/logo.png';
-import { SendIcon, ChatIcon, MailIcon, PhoneIcon, ShieldIcon } from '../icons.jsx';
+import { SendIcon, ChatIcon, MailIcon, PhoneIcon, ShieldIcon, ArrowLeftIcon } from '../icons.jsx';
 
 // Real client↔host chat plus the Ardena support conversation — same threads
 // as the app. No websocket; we fetch on open/send and poll while visible.
@@ -89,6 +89,8 @@ export default function Messages() {
   const [activeHostId, setActiveHostId] = useState(state?.hostId ?? null);
   const [draft, setDraft] = useState('');
   const [sending, setSending] = useState(false);
+  // Mobile only: the conversation list is a slide-in drawer over the chat.
+  const [listOpen, setListOpen] = useState(false);
   const bodyRef = useRef(null);
   const tempIdRef = useRef(-1);
 
@@ -156,6 +158,8 @@ export default function Messages() {
 
   const openThread = (hostId) => {
     setActiveHostId(hostId);
+    setListOpen(false); // reveal the chat on mobile
+
     if (hostId === SUPPORT_ID) {
       api
         .getSupportConversation()
@@ -283,8 +287,11 @@ export default function Messages() {
   return (
     <div className="page">
       <div className="container wide">
-        <div className="msg-layout">
-          <div className="msg-list">
+        <div className={`msg-layout${listOpen ? ' list-open' : ''}`}>
+          {listOpen && (
+            <div className="msg-scrim" onClick={() => setListOpen(false)} aria-hidden="true" />
+          )}
+          <div className={`msg-list${listOpen ? ' open' : ''}`}>
             {/* Ardena support is always available, pinned on top */}
             <button
               className={`msg-item support${isSupport ? ' active' : ''}`}
@@ -327,6 +334,14 @@ export default function Messages() {
 
           <div className="msg-thread">
             <div className="msg-head">
+              <button
+                type="button"
+                className="msg-list-toggle"
+                aria-label="Show conversations"
+                onClick={() => setListOpen(true)}
+              >
+                <ArrowLeftIcon size={18} />
+              </button>
               <HostAvatar thread={thread} size={30} fontSize={13} />
               <b>{thread.hostName}</b>
               {!isSupport && state?.carName && state?.hostId === thread.hostId && (
