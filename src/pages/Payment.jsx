@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { formatKES, formatDateLong } from '../data.js';
-import { CarPhoto, BackButton, MastercardMark, BookingSteps } from '../components.jsx';
+import { CarPhoto, BackButton, MastercardMark, BookingSteps, StickyActionBar } from '../components.jsx';
 import mpesaImg from '../assets/mpesa.png';
 import payingVideo from '../assets/payment.webm';
 import { useApp } from '../store.jsx';
@@ -60,6 +60,16 @@ export default function Payment() {
   const busy = phase === 'working' || phase === 'waiting';
   const payValid = method === 'mpesa' ? phone.replace(/\D/g, '').length >= 9 : true;
   const totalDue = bookingRef.current?.total_price ?? state.total;
+
+  // Shared by the in-card button and the mobile sticky bar so they never drift.
+  const payLabel =
+    phase === 'working'
+      ? 'Starting payment…'
+      : phase === 'waiting'
+        ? 'Waiting for payment…'
+        : phase === 'failed'
+          ? `Try again — pay ${formatKES(totalDue)}`
+          : `Pay ${formatKES(totalDue)}`;
 
   const ensureBooking = async () => {
     if (bookingRef.current) return bookingRef.current;
@@ -266,18 +276,12 @@ export default function Payment() {
             )}
 
             <button
-              className="btn-primary btn-block"
+              className="btn-primary btn-block cta-desktop-only"
               style={{ marginTop: 10 }}
               disabled={!payValid || busy}
               onClick={payNow}
             >
-              {phase === 'working'
-                ? 'Starting payment…'
-                : phase === 'waiting'
-                  ? 'Waiting for payment…'
-                  : phase === 'failed'
-                    ? `Try again — pay ${formatKES(totalDue)}`
-                    : `Pay ${formatKES(totalDue)}`}
+              {payLabel}
             </button>
 
             <div className="notice">
@@ -348,6 +352,19 @@ export default function Payment() {
           </aside>
         </div>
       </div>
+
+      <StickyActionBar
+        info={
+          <>
+            <span className="sab-label">Total due now</span>
+            <b>{formatKES(totalDue)}</b>
+          </>
+        }
+      >
+        <button className="btn-primary" disabled={!payValid || busy} onClick={payNow}>
+          {payLabel}
+        </button>
+      </StickyActionBar>
     </div>
   );
 }

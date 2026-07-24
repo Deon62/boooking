@@ -9,7 +9,7 @@ import {
 } from '../data.js';
 import { useCar, unavailableDateSet } from '../cars.js';
 import { getCarAvailability } from '../api.js';
-import { CarPhoto, Toggle, BackButton, BookingSteps } from '../components.jsx';
+import { CarPhoto, Toggle, BackButton, BookingSteps, StickyActionBar } from '../components.jsx';
 import { DateRangeCalendar, fmtShort } from '../Calendar.jsx';
 import { CalendarIcon, MapPinIcon, SteeringIcon, UsersIcon, PhoneIcon } from '../icons.jsx';
 
@@ -431,7 +431,7 @@ function BookingForm({ car }) {
               </div>
 
               <button
-                className="btn-primary btn-block"
+                className="btn-primary btn-block cta-desktop-only"
                 style={{ marginTop: 22 }}
                 disabled={!canContinue}
                 onClick={continueToPayment}
@@ -447,6 +447,19 @@ function BookingForm({ car }) {
           </aside>
         </div>
       </div>
+
+      <StickyActionBar
+        info={
+          <>
+            <span className="sab-label">Total due now</span>
+            <b>{formatKES(pricing.total)}</b>
+          </>
+        }
+      >
+        <button className="btn-primary" disabled={!canContinue} onClick={continueToPayment}>
+          Continue to payment
+        </button>
+      </StickyActionBar>
     </div>
   );
 }

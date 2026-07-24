@@ -107,6 +107,20 @@ export function BookingSteps({ current }) {
   );
 }
 
+/** Fixed bottom action bar for the key checkout steps (Reserve / Continue to
+ * payment / Pay). Phones only — it keeps the primary CTA in reach without
+ * scrolling down to the summary card. On desktop it's hidden (CSS) and the
+ * in-card button is used instead. `info` is an optional left-side summary
+ * (price / total); `children` is the button. */
+export function StickyActionBar({ info, children }) {
+  return (
+    <div className="sticky-action-bar">
+      {info && <div className="sab-info">{info}</div>}
+      <div className="sab-action">{children}</div>
+    </div>
+  );
+}
+
 /** Reusable empty state. `variant="animation"` shows the empty.webm hero loop
  * (for full-page empties); `variant="compact"` shows an icon in a tinted circle
  * (for panels and inline empties). `action` is an optional button/link node. */

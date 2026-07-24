@@ -10,7 +10,7 @@ import {
   useHostAvatar,
 } from '../cars.js';
 import { fmtShort } from '../Calendar.jsx';
-import { CarPhoto, BackButton } from '../components.jsx';
+import { CarPhoto, BackButton, StickyActionBar } from '../components.jsx';
 import { useApp } from '../store.jsx';
 import { useToast } from '../toast.jsx';
 import { useScrollLock } from '../useScrollLock.js';
@@ -824,13 +824,26 @@ export default function CarDetails() {
                 </b>
               </div>
             </div>
-            <button className="btn-primary btn-block" onClick={startBooking}>
+            <button className="btn-primary btn-block cta-desktop-only" onClick={startBooking}>
               Reserve
             </button>
             <p className="widget-foot">You won&apos;t be charged until you confirm payment.</p>
           </aside>
         </div>
       </div>
+
+      <StickyActionBar
+        info={
+          <>
+            <b>{formatKES(car.pricePerDay)}</b>
+            <span className="unit">/ day</span>
+          </>
+        }
+      >
+        <button className="btn-primary" onClick={startBooking}>
+          Reserve
+        </button>
+      </StickyActionBar>
     </div>
   );
 }

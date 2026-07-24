@@ -5261,6 +5261,91 @@ a.trip-card:hover {
   }
 }
 
+/* ---------- mobile sticky action bar (checkout CTAs) ---------- */
+/* Hidden on desktop — the in-card button carries the action there. */
+.sticky-action-bar {
+  display: none;
+}
+
+@media (max-width: 760px) {
+  .sticky-action-bar {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 90;
+    padding: 12px 18px calc(12px + env(safe-area-inset-bottom));
+    background: var(--surface);
+    border-top: 1px solid var(--card-border);
+    box-shadow: 0 -6px 24px rgba(0, 0, 0, 0.1);
+    animation: sheet-up 0.28s cubic-bezier(0.22, 0.61, 0.36, 1);
+  }
+
+  .sab-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    line-height: 1.2;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .sab-label {
+    font-size: var(--fs-2xs);
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: var(--hint);
+  }
+
+  .sab-info b {
+    font-size: var(--fs-lg);
+    font-weight: 800;
+    letter-spacing: -0.2px;
+  }
+
+  .sab-info .unit {
+    font-size: var(--fs-sm);
+    font-weight: 700;
+    color: var(--hint);
+  }
+
+  .sab-action {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .sab-action .btn-primary {
+    width: 100%;
+    padding: 14px 18px;
+    font-size: var(--fs-md);
+  }
+
+  /* the in-card button is redundant once the bar is present */
+  .cta-desktop-only {
+    display: none;
+  }
+
+  /* clear the fixed bar: pad whichever element is last in the scroll flow —
+   * the footer when it's shown (car details), otherwise the page itself
+   * (booking / payment hide the footer). */
+  body:has(.sticky-action-bar):has(.footer) .footer-wrapper {
+    padding-bottom: calc(84px + env(safe-area-inset-bottom));
+  }
+
+  body:has(.sticky-action-bar):not(:has(.footer)) .page {
+    padding-bottom: calc(84px + env(safe-area-inset-bottom));
+  }
+
+  /* keep toasts above the bar */
+  body:has(.sticky-action-bar) .toast-stack {
+    bottom: calc(84px + env(safe-area-inset-bottom));
+  }
+}
+
 /* ---------- global toast ---------- */
 .toast-stack {
   position: fixed;
