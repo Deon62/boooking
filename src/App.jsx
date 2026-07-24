@@ -3,7 +3,7 @@ import { HashRouter, Routes, Route, Navigate, useLocation, Link } from 'react-ro
 import { useEffect } from 'react';
 import { AppProvider, useApp } from './store.jsx';
 import { ToastProvider } from './toast.jsx';
-import { Header, Footer } from './components.jsx';
+import { Header, Footer, AppBanner } from './components.jsx';
 import Home from './pages/Home.jsx';
 import CarDetails from './pages/CarDetails.jsx';
 import Booking from './pages/Booking.jsx';
@@ -109,6 +109,7 @@ export default function App() {
         <HashRouter>
           <ScrollToTop />
           <Header />
+          <AppBanner />
           <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/cars/:id" element={<CarDetails />} />

@@ -5,6 +5,7 @@ import { useTheme, toggleTheme } from './theme.js';
 import { formatKES } from './data.js';
 import logoUrl from './assets/logo.svg';
 import logomarkUrl from './assets/logomark.svg';
+import blueMarkUrl from './assets/blue.png';
 import appstoreImg from './assets/appstore.png';
 import playImg from './assets/play.png';
 import emptyVideo from './assets/empty.webm';
@@ -31,6 +32,7 @@ import {
   WhatsAppIcon,
   SunIcon,
   MoonIcon,
+  XIcon,
 } from './icons.jsx';
 
 /** Floating back arrow, far left — shown on pages that have a page to go back to. */
@@ -322,6 +324,66 @@ function ThemeButton() {
     >
       {dark ? <SunIcon size={17} /> : <MoonIcon size={17} />}
     </button>
+  );
+}
+
+const APP_BANNER_KEY = 'ardena.appBannerDismissed';
+
+/** A small, friendly "keep going in the app" nudge — mobile only, dismissible,
+ * and remembered so it never nags twice. Deep-links into the native Ardena app
+ * (Android package com.ardena.client), falling back to the relevant store. */
+export function AppBanner() {
+  // null until we know we're on a phone and the user hasn't dismissed it.
+  const [platform, setPlatform] = useState(null);
+
+  useEffect(() => {
+    let stored;
+    try {
+      stored = localStorage.getItem(APP_BANNER_KEY);
+    } catch {
+      stored = null;
+    }
+    if (stored === '1') return;
+    const ua = navigator.userAgent || '';
+    if (/android/i.test(ua)) setPlatform('android');
+    else if (/iphone|ipad|ipod/i.test(ua)) setPlatform('ios');
+  }, []);
+
+  if (!platform) return null;
+
+  // Android: open the app if it's installed (App Links), else land on Play.
+  const androidHref =
+    'intent://bookings.ardena.co.ke/#Intent;scheme=https;package=com.ardena.client;' +
+    'S.browser_fallback_url=' +
+    encodeURIComponent('https://play.google.com/store/apps/details?id=com.ardena.client') +
+    ';end';
+  const href = platform === 'android' ? androidHref : 'https://apps.apple.com/app/id6772513965';
+
+  const dismiss = () => {
+    try {
+      localStorage.setItem(APP_BANNER_KEY, '1');
+    } catch {
+      /* private mode — just hide for this session */
+    }
+    setPlatform(null);
+  };
+
+  return (
+    <div className="app-banner" role="complementary" aria-label="Open in the Ardena app">
+      <span className="app-banner-mark">
+        <img src={blueMarkUrl} alt="" />
+      </span>
+      <div className="app-banner-copy">
+        <b>Smoother in the app</b>
+        <span>Book, pay and chat in a tap</span>
+      </div>
+      <a className="app-banner-open" href={href}>
+        Open
+      </a>
+      <button className="app-banner-close" aria-label="Not now" onClick={dismiss}>
+        <XIcon size={15} />
+      </button>
+    </div>
   );
 }
 
